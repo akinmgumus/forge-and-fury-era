@@ -1,0 +1,278 @@
+ZVSE2
+
+** ATTACK SPEED - replaces ERA Scripts option 996 "Gnolls Marauders Strike First"
+**
+** Every creature has an Attack Speed (1-10, table in "-2000 attack speed table.erm", made from
+** "src/attack speed values.md"). In a melee attack, if the defender's Attack Speed is HIGHER than
+** the attacker's, the defender strikes first (its retaliation comes before the attack). Equal or
+** lower: normal order.
+** No first strike when: the attacker has "no enemy retaliation" (Vampire Lord...), the attacker is a
+** war machine, the defender has no retaliation left, or the defender is blind / petrified /
+** paralyzed. Unlimited retaliations (Royal Griffin...) can strike first against every attack.
+**
+** Attack Speed changes (only these, commander level-ups don't change it):
+**   - Cavalier, Champion, Holy Champion: full value when they attack after moving (charge), half
+**     (rounded down) when they attack an adjacent enemy without moving or when they defend
+**   - Slow: -1 (Basic / Advanced), -2 (Expert)
+**   - Haste: +1 (Basic / Advanced), +2 (Expert)
+**   - Svalinn: -1 for all enemy stacks of the hero wearing it
+**   - never below 1
+**
+** The first strike mechanism is the one of option 996 (by Berserker, daemon_n and Archer30), with
+** "is a Gnoll Marauder" replaced by the Attack Speed comparison. Option 996's own check is switched off
+** below, so the Marauders don't strike first twice.
+** Enabled/disabled with WoG option 996 (renamed "Attack Speed").
+
+!#DC(AS_OPTION)             = 996;
+!#DC(AS_DEFAULT)            = 5;        [creatures missing from the table]
+!#DC(AS_SVALINN)            = 289;
+
+!#DC(AS_MON_CAVALIER)       = 10;
+!#DC(AS_MON_CHAMPION)       = 11;
+!#DC(AS_MON_HOLY_CHAMPION)  = 201;
+
+!#UN:P(AS_OPTION)/?i^as_enabled^;
+!#VRi^as_enabled^|i^cr_hasEraScripts^<>(TRUE):S(FALSE); [needs EraScripts, see "31 forge and fury - dependencies.erm"]
+
+!?FU(OnStartOrLoad);
+!!UN:P(AS_OPTION)/?i^as_enabled^;
+!!VRi^as_enabled^|i^cr_hasEraScripts^<>(TRUE):S(FALSE); [needs EraScripts, see "31 forge and fury - dependencies.erm"]
+
+; ============= SWITCH OFF THE ORIGINAL OPTION 996 CHECK ===========================================
+; Runs after ERA Scripts' own function: no creature is "eligible" for its first strike any more.
+
+!?FU(ES_996_CheckIfMonIsEligible);
+!#VA(mon:x) (result:x);
+!!VR(result):S(FALSE);
+
+; ============= TABLE ==============================================================================
+
+!?FU(OnAfterErmInstructions);
+!!FU(AS_SetUpTable):P;
+
+; ============= CREATURE INFO DIALOG: "ATTACK SPEED" ROW ===========================================
+; The creature info dialog has 7 stat rows, made by game functions: Health (5F6180), Health Left
+; (5F6420, only called in battle) and Speed (5F66A0). Game Enhancement Mod rebuilds the dialog, so the
+; texts are changed while the rows are created, by writing into the game's text buffer (697428):
+;   - Health (battle only): "13(5)" = health and, in brackets, health left of the top creature
+;   - Health Left row: label "Attack Speed", value "7" / "7(5)" (cavalry "8/4" / "8/4(7/3)"); in battle
+;     with Slow / Haste / Svalinn
+;   - outside battle the Health Left row doesn't exist: it is created when the Speed row is made
+; The icon of that row is the Speed icon: Data/Pcx/dlg_bg/gemCrIBg.png in "forge and fury.zip".
+; Which stack the dialog is for is saved at the start of the three dialog constructors.
+
+!#DC(AS_TEXT_BUFFER)            = 6911016;  [697428]
+!#DC(AS_FUNC_ADD_HEALTH_LEFT)   = 6251552;  [5F6420, thiscall(dlg, value)]
+
+!?FU(ES_CreateERMHook);
+!#VA(address:x);
+!!SN:E(address)/1/6240062/(AS_HOOK_BattleDlgStart);   [5F373E: battle dialog, [ebp+8] = battle stack]
+!!SN:E(address)/1/6242097/(AS_HOOK_OtherDlgStart);    [5F3F31: adventure map dialog]
+!!SN:E(address)/1/6243822/(AS_HOOK_OtherDlgStart);    [5F45EE: hero / town / recruit dialog]
+!!SN:E(address)/1/6251071/(AS_HOOK_HealthValue);      [5F623F: health value printed]
+!!SN:E(address)/1/6251640/(AS_HOOK_Row6Label);        [5F6478: push ecx (Health Left label)]
+!!SN:E(address)/1/6251714/(AS_HOOK_Row6Value);        [5F64C2: health left value printed]
+!!SN:E(address)/1/6252278/(AS_HOOK_SpeedRow);         [5F66F6: Speed row, before its label]
+
+!?FU(AS_HOOK_BattleDlgStart);
+!#VA(hook:x);
+!!VRi^as_dlgStack^:S-1;
+!!VRi^as_dlgIsBattle^:S(TRUE);
+!!VRi^as_dlgRow6^:S(FALSE);
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EBP)/(UNC_INT)/?(ebp:y);
+!!UN:C(ebp)/8/(UNC_INT)/?(stackPtr:y);
+!!FU&(stackPtr)=0:E;
+!!UN:C(stackPtr)/244/(UNC_INT)/?(side:y) C(stackPtr)/248/(UNC_INT)/?(index:y);
+!!VR(stack:y):S(side) *(BATTLE_STACKS_PER_SIDE) +(index);
+!!VRi^as_dlgStack^&(stack)>=0/(stack)<=41:S(stack);
+
+!?FU(AS_HOOK_OtherDlgStart);
+!#VA(hook:x);
+!!VRi^as_dlgStack^:S-1;
+!!VRi^as_dlgIsBattle^:S(FALSE);
+!!VRi^as_dlgRow6^:S(FALSE);
+
+; Text of an Attack Speed: "7", "7(5)", cavalry "8/4", "8/4(7/3)"
+!?FU(AS_GetDialogAttackSpeedText);
+!#VA(stack:x) (monType:x);
+
+!!VR(base:y):Si^as_base_%(monType)^;
+!!VR(base)&(base)<=0:S(AS_DEFAULT);
+!!VR(baseHalf:y):S(base);
+!!VR(isCavalry:y):S(FALSE);
+!!VR(isCavalry)|(monType)=(AS_MON_CAVALIER)/(monType)=(AS_MON_CHAMPION)/(monType)=(AS_MON_HOLY_CHAMPION):S(TRUE);
+!!VR(baseHalf)&(isCavalry):S(base) :2 F1/(INT_MAX);
+
+!!VR(cur:y):S(base);
+!!VR(curHalf:y):S(baseHalf);
+!!if&(stack)>=0;
+  !!FU(AS_GetStackAttackSpeed):P(stack)/(TRUE)/1/?(cur);
+  !!FU(AS_GetStackAttackSpeed):P(stack)/(FALSE)/0/?(curHalf);
+!!en;
+
+!!VR(baseText:z):S^%(base)^;
+!!VR(curText:z):S^%(cur)^;
+!!if&(isCavalry);
+  !!VR(baseText):S^%(base)/%(baseHalf)^;
+  !!VR(curText):S^%(cur)/%(curHalf)^;
+!!en;
+
+!!VRs^as_atkSpeedText^:S(baseText);
+!!VRs^as_atkSpeedText^|(cur)<>(base)/(curHalf)<>(baseHalf):S^%(baseText)(%(curText))^;
+
+; Health (battle): "13(5)"
+!?FU(AS_HOOK_HealthValue)&i^as_enabled^/i^as_dlgIsBattle^/i^as_dlgStack^>=0;
+!#VA(hook:x);
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EBP)/(UNC_INT)/?(ebp:y);
+!!UN:C(ebp)/12/(UNC_INT)/?(maxHp:y);
+!!BMi^as_dlgStack^:L?(lostHp:y);
+!!VR(hpLeft:y):S(maxHp) -(lostHp) F0/(INT_MAX);
+!!VR(text:z):S^%(maxHp)(%(hpLeft))^;
+!!VR(buffer:y):S(AS_TEXT_BUFFER);
+!!SN:B(buffer)/d/(text);
+
+; Health Left row -> Attack Speed
+!?FU(AS_HOOK_Row6Label)&i^as_enabled^;
+!#VA(hook:x);
+!!VR(text:z):S^Attack Speed^;
+!!VR(buffer:y):S(AS_TEXT_BUFFER);
+!!SN:B(buffer)/d/(text);
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_ECX)/(UNC_INT)/(AS_TEXT_BUFFER);
+
+!?FU(AS_HOOK_Row6Value)&i^as_enabled^;
+!#VA(hook:x);
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_ESI)/(UNC_INT)/?(itemList:y);  [esi = dialog + 0x30 here]
+!!VR(dlg:y):S(itemList) -48;
+!!UN:C(dlg)/96/(UNC_INT)/?(monType:y);
+!!FU(GetMaxMonsterId):P?(lastMon:y);
+!!FU|(monType)<0/(monType)>(lastMon):E;
+
+!!VR(stack:y):S-1;
+!!VR(stack)&i^as_dlgIsBattle^:Si^as_dlgStack^;
+!!FU(AS_GetDialogAttackSpeedText):P(stack)/(monType);
+!!VR(text:z):Ss^as_atkSpeedText^;
+!!VR(buffer:y):S(AS_TEXT_BUFFER);
+!!SN:B(buffer)/d/(text);
+!!VRi^as_dlgRow6^:S(TRUE);
+
+; Outside battle: create the row (right before the Speed row)
+!?FU(AS_HOOK_SpeedRow)&i^as_enabled^/i^as_dlgIsBattle^<>(TRUE)/i^as_dlgRow6^<>(TRUE);
+!#VA(hook:x);
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_ESI)/(UNC_INT)/?(dlg:y);
+!!FU&(dlg)=0:E;
+!!VRi^as_dlgRow6^:S(TRUE);
+!!SN:E(AS_FUNC_ADD_HEALTH_LEFT)/(CALLCONV_THISCALL)/(dlg)/0;
+
+; ============= ATTACK SPEED OF A STACK ============================================================
+
+!?FU(AS_GetStackAttackSpeed);
+!#VA(stack:x) (isAttacker:x) (steps:x) (result:x);
+
+!!BM(stack):T?(type:y) I?(side:y);
+!!VR(result):Si^as_base_%(type)^;
+!!VR(result)&(result)<=0:S(AS_DEFAULT);
+
+; Cavalry: full value only when charging
+!!if|(type)=(AS_MON_CAVALIER)/(type)=(AS_MON_CHAMPION)/(type)=(AS_MON_HOLY_CHAMPION);
+  !!VR(charging:y):S(FALSE);
+  !!VR(charging)&(isAttacker)/(steps)>0:S(TRUE);
+  !!VR(result)&(charging)<>(TRUE):S(result) :2;
+!!en;
+
+; Slow / Haste
+!!BM(stack):G(SPELL_SLOW)/?(slowRounds:y)/?(slowLevel:y);
+!!if&(slowRounds)>0;
+  !!VR(result):-1;
+  !!VR(result)&(slowLevel)>=(SKILL_EXPERT):-1;
+!!en;
+
+!!BM(stack):G(SPELL_HASTE)/?(hasteRounds:y)/?(hasteLevel:y);
+!!if&(hasteRounds)>0;
+  !!VR(result):+1;
+  !!VR(result)&(hasteLevel)>=(SKILL_EXPERT):+1;
+!!en;
+
+; Svalinn on the enemy side
+!!VR(enemySide:y):S(side) X1;
+!!FU(SV_SideHasArt):P(enemySide)/(AS_SVALINN)/(AS_SVALINN)/?(enemySvalinn:y);
+!!VR(result)&(enemySvalinn):-1;
+
+!!VR(result):F1/(INT_MAX);
+
+; ============= FIRST STRIKE =======================================================================
+
+!?FU(ES_CreateERMHook);
+!#VA(address:x);
+!!SN:E(address)/1/4463326/(AS_HOOK_BeforeStackAttackMelee); [right before a melee attack, before the retaliation] 441ADE
+
+!?FU(AS_HOOK_BeforeStackAttackMelee);
+!#VA(hook:x);
+
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EDI)/(UNC_INT)/?(actingStack:y) C(hook)/(STRUCT_HOOK_CONTEXT_EBX)/(UNC_INT)/?(actingStackDir:y);
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_ESI)/(UNC_INT)/?(targetStack:y);
+!!FU|(actingStack)=0/(targetStack)=0:E;
+
+!!UN:C(actingStack)/244/(UNC_INT)/?(atkSide:y) C(actingStack)/248/(UNC_INT)/?(atkIndex:y);
+!!UN:C(targetStack)/244/(UNC_INT)/?(defSide:y) C(targetStack)/248/(UNC_INT)/?(defIndex:y);
+!!VR(atkId:y):S(atkSide) *(BATTLE_STACKS_PER_SIDE) +(atkIndex);
+!!VR(defId:y):S(defSide) *(BATTLE_STACKS_PER_SIDE) +(defIndex);
+
+; Svalinn / Frostbite Axe: 15% chance that the target can't retaliate (so it can't strike first either)
+!!FU(SV_BeforeMeleeAttack)&i^sv_enabled^:P(atkId)/(defId);
+
+!!FU&i^as_enabled^<>(TRUE):E;
+
+!!UN:C(actingStack)/132/(UNC_INT)/?(atkFlags:y);
+!!VR(noRetaliation:y):S(atkFlags) &(MON_FLAG_NO_RETALIATION);
+!!VR(warMachine:y):S(atkFlags) &(MON_FLAG_SIEGE_WEAPON);
+!!FU|(noRetaliation)<>0/(warMachine)<>0:E;
+
+!!UN:C(targetStack)/1108/(UNC_INT)/?(retaliation:y);
+!!FU&(retaliation)<=0:E;
+!!FU(AS_CheckStackCanAct):P(targetStack)/?(defCanAct:y);
+!!FU&(defCanAct)<>(TRUE):E;
+
+; Compare Attack Speeds
+!!UN:C(actingStack)/1168/(UNC_INT)/?(steps:y);
+!!FU(AS_GetStackAttackSpeed):P(atkId)/(TRUE)/(steps)/?(atkSpeed:y);
+!!FU(AS_GetStackAttackSpeed):P(defId)/(FALSE)/0/?(defSpeed:y);
+!!FU&(defSpeed)<=(atkSpeed):E;
+
+; The defender strikes first (same as option 996)
+!!SN:X?(oldRet:y)/0;                                                          [disable standard action]
+
+!!UN:C(COMBAT_MANAGER)/(UNC_INT)/?(cmbMgr:y) C(cmbMgr)/78528/(UNC_INT)/?(currentActiveSide:y);
+!!VR(newSide:y):S(currentActiveSide) X1;
+!!UN:C(cmbMgr)/78528/(UNC_INT)/(newSide);                                     [change active side]
+
+!!UN:C(targetStack)/236/4/?(spellId:y);
+!!UN:C(targetStack)/236/4/(NO_SPELL);
+
+!!SN:E4461360/(CALLCONV_THISCALL)/(targetStack)/(actingStack)/(actingStackDir); [defender hits first] 441330
+
+!!UN:C(cmbMgr)/78528/(UNC_INT)/(currentActiveSide);                           [restore active side]
+
+!!FU(AS_CheckStackCanAct):P(actingStack)/?(atkCanAct:y);
+
+!!if&(atkCanAct);
+  !!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EBP)/(UNC_INT)/?(ebp:y) C(ebp)/8/(UNC_INT)/?(targetStackDir:y); [ebp+8 get target direction]
+
+  !!UN:C(targetStack)/236/4/(spellId:y);
+
+  !!SN:E4461360/(CALLCONV_THISCALL)/(actingStack)/(targetStack)/(targetStackDir); [then the attacker hits] 441330
+  !!UN:C(actingStack)/1168/(UNC_INT)/0;                                       [reset steps made (for chivalry)]
+!!en;
+
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_RET)/(UNC_INT)/4463480;                     [continue where the retaliation is decreased] 441B78
+
+!?FU(AS_CheckStackCanAct);
+!#VA(stackPtr:x) (result:x);
+
+!!VR(result):S(FALSE);
+!!UN:C(stackPtr)/656/(UNC_INT)/?(blindDur:y)
+     C(stackPtr)/688/(UNC_INT)/?(stoneDur:y)
+     C(stackPtr)/704/(UNC_INT)/?(paralyzDur:y)
+     C(stackPtr)/76/(UNC_INT)/?(monNum:y);
+!!if&(paralyzDur)=(NULL)/(blindDur)=(NULL)/(stoneDur)=(NULL)/(monNum)>0;
+  !!VR(result):S(TRUE);
+!!en;

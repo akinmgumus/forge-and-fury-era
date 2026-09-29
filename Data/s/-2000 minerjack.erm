@@ -1,0 +1,72 @@
+ZVSE2
+
+** MINERJACK - combination artifact (misc slot)
+**
+** Parts: Inexhaustible Cart of Ore (112) + Inexhaustible Cart of Lumber (114).
+** When combined, the parts no longer count as owned, so their daily resources (+2 Ore / +2 Wood
+** with Advanced Classes Mod) are replaced by this artifact:
+**   - +10 Wood and +10 Ore per day for the owner of the hero, equipped or in the backpack.
+** Price: the sum of its parts (5000 + 5000).
+**
+** Artifact 281, combination slot 24. Icon: artifact.def frame 281 and Emerald's artraits.txt row 281
+** (Data/EmeraldArtifacts.pac and Data/00 forge and fury.pac), png in Data/forge and fury.zip.
+** Enabled/disabled in WoG Options -> Custom Scripts, option 955 "Custom Artifacts" (shared by all new artifacts).
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(MJ_OPTION)             = 955;       [shared option "Custom Artifacts"]
+!#DC(MJ_ART)                = 281;
+!#DC(MJ_COMBO_SLOT)         = 24;       [ResOunD: 13-22, Pegasus Harness: 23]
+!#DC(MJ_COST)               = 10000;
+!#DC(MJ_ART_CLASS)          = 16;       [Relic]
+!#DC(MJ_ART_POSITION)       = 9;        [Misc slot (ERM Format P2)]
+
+!#DC(MJ_WOOD_PER_DAY)       = 10;
+!#DC(MJ_ORE_PER_DAY)        = 10;
+
+!#UN:P(MJ_OPTION)/?i^mj_enabled^;
+!#VRi^mj_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; Named globals are stored in savegames, so re-read the option after a game is started or loaded
+!?FU(OnStartOrLoad);
+!!UN:P(MJ_OPTION)/?i^mj_enabled^;
+!!VRi^mj_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; ============= ARTIFACT SETUP =====================================================================
+
+!?FU(MJ_SetUpArtifact);
+!!UN:A(MJ_ART)/1/(MJ_COST);
+!!UN:A(MJ_ART)/2/(MJ_ART_POSITION);
+!!UN:A(MJ_ART)/3/(MJ_ART_CLASS);
+!!UN:A(MJ_ART)/1;                        [never appears on the map: it is only made from its parts]
+
+!!SN:H^art^/(MJ_ART)/0/^Minerjack^;
+!!SN:H^art^/(MJ_ART)/1/^{Minerjack}
+
+Forged from the Inexhaustible Cart of Ore and the Inexhaustible Cart of Lumber, this wagon never runs empty.
+
+When equipped (or carried in the backpack), it provides your kingdom with an additional +10 Wood and +10 Ore per day.^;
+
+!!UN:A(MJ_COMBO_SLOT)/(MJ_ART)/(ART_INEXHAUSTIBLE_CART_OF_ORE)/(ART_INEXHAUSTIBLE_CART_OF_LUMBER);
+
+!#FU(MJ_SetUpArtifact)&i^mj_enabled^:P;
+
+!?FU(OnAfterLoadGame)&i^mj_enabled^;
+!!FU(MJ_SetUpArtifact):P;
+
+; ============= DAILY RESOURCES ====================================================================
+; Once per day (first player of the day), from day 2 on - like the game's own resource artifacts.
+
+!?FU(OnEveryDay)&i^mj_enabled^/i^timerOnce^=1/i^timerDay^>1;
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HEi:O?(owner:y);
+  !!co&(owner)<=(NO_OWNER);
+
+  !!HEi:A2/(MJ_ART)/?(count:y)/?(equipped:y);  [count = equipped + backpack]
+  !!co&(count)<=0;
+
+  !!VR(wood:y):S(count) *(MJ_WOOD_PER_DAY);
+  !!VR(ore:y):S(count) *(MJ_ORE_PER_DAY);
+  !!OW:R(owner)/(RES_WOOD)/d(wood);
+  !!OW:R(owner)/(RES_ORE)/d(ore);
+!!en;

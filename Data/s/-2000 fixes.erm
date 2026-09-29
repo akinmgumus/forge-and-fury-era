@@ -1,0 +1,95 @@
+ZVSE2
+
+** SMALL FIXES (Forge & Fury, always active)
+**
+** - Creature damage: if a creature's minimum damage is higher than its maximum damage
+**   (e.g. reported for Wolf Rider Killer), the two values are swapped.
+**   Runs after all other scripts have set creature stats.
+
+!?FU(OnAfterErmInstructions);
+!!FU(GetMaxMonsterId):P?(lastMon:y);
+
+!!re i/(MON_FIRST)/(lastMon);
+  !!MA:Mi/?(minDmg:y);
+  !!MA:Ei/?(maxDmg:y);
+  !!co&(minDmg)<=(maxDmg);
+  !!MA:Mi/(maxDmg);
+  !!MA:Ei/(minDmg);
+!!en;
+
+** - Stack experience damage: Stack Experience Rebalance gives the same % bonus to minimum and
+**   maximum damage, but through two different abilities (109 min, 77 max) that are rounded
+**   differently. For creatures with equal min/max damage (e.g. Wolf Rider Killer 4-4) this showed
+**   as "5-4". For those creatures both lines get the same whole-number bonus instead.
+**   Runs after Stack Experience Rebalance sets its lines on game enter.
+
+!?FU(OnGameEnter);
+!#VA(bonus[10]:y);
+
+!!SN:W^Stack_Exp_Rebalance_On^/?(rebalanceOn:y);
+!!FU&(rebalanceOn)<>(TRUE):E;
+
+!!SN:W^Exp_WoG_Stats^/?(wogStats:y);
+!!SN:W^Exp_TUM_Stats^/?(tumStats:y);
+
+; Same % table as Stack Experience Rebalance (setting 1..13)
+!!SN:W^Exp_MinMax_Damage_Set^/?(set:y);
+!!VR(pct:y):S100;
+!!VR(pct)&(set)>=1/(set)<=11:S(set) -1 *10;
+!!VR(pct)&(set)=12:S150;
+!!VR(pct)&(set)=13:S200;
+!!VR(stepPct:y):S(pct) :10;               [% per rank]
+
+!!FU(GetMaxMonsterId):P?(lastMon:y);
+
+!!re i/(MON_FIRST)/(lastMon);
+  !!VR(applied:y):S(wogStats);
+  !!VR(applied)&i>196:S(tumStats);
+  !!co&(applied)<>(TRUE);
+
+  !!MA:Mi/?(minDmg:y);
+  !!MA:Ei/?(maxDmg:y);
+  !!co&(minDmg)<>(maxDmg);
+  !!co&(minDmg)<=0;
+
+  !!re j/0/9;
+    !!VR(rank:y):Sj +1;
+    !!VR(bonus[j]):S(minDmg) *(stepPct) *(rank) :100; [base * stepPct% * rank, rounded down]
+  !!en;
+
+  !!EAi:B3/1/109/43/0/(bonus[0])/(bonus[1])/(bonus[2])/(bonus[3])/(bonus[4])/(bonus[5])/(bonus[6])/(bonus[7])/(bonus[8])/(bonus[9]);
+  !!EAi:B4/1/77/43/0/(bonus[0])/(bonus[1])/(bonus[2])/(bonus[3])/(bonus[4])/(bonus[5])/(bonus[6])/(bonus[7])/(bonus[8])/(bonus[9]);
+!!en;
+
+; ============= SAFE OBSTACLE REMOVAL ==============================================================
+; The game's "remove obstacle" function (466710, used by FU(Battle_RemoveObstacle)) releases the
+; obstacle's def. Obstacles made by one spell cast (e.g. Fire Wall) can share one def: releasing it
+; frees the graphics still used by the other obstacles, and the game crashes a few actions later while
+; redrawing the battlefield. Here the def's reference count (def + 0x18) is increased first, so the
+; release never frees it (the def just stays loaded).
+; Used by the Lava Sharpshooter fire walls and the henchmen "clear start hex".
+
+!?FU(CR_RemoveObstacleSafe);
+!#VA(hex:x);
+
+!!FU|(hex)<(BATTLE_HEX_FIRST)/(hex)>(BATTLE_HEX_LAST):E;
+!!UN:C(COMBAT_MANAGER)/(UNC_INT)/?(cmbMgr:y);
+!!FU&(cmbMgr)=0:E;
+
+!!VR(indexOffset:y):S112 *(hex) +20 +452;
+!!UN:C(cmbMgr)/(indexOffset)/(UNC_INT)/?(index:y);
+!!FU&(index)<0:E;
+
+!!UN:C(cmbMgr)/81244/(UNC_INT)/?(listStart:y) C(cmbMgr)/81248/(UNC_INT)/?(listEnd:y);  [obstacle list: 13D5C / 13D60]
+!!VR(count:y):S(listEnd) -(listStart) :24;
+!!FU&(index)>=(count):E;
+
+!!VR(entry:y):S(index) *24 +(listStart);
+!!UN:C(entry)/0/(UNC_INT)/?(def:y);
+!!FU&(def)=0:E;                          [already removed]
+
+!!UN:C(def)/24/(UNC_INT)/?(refCount:y);
+!!VR(refCount):+1;
+!!UN:C(def)/24/(UNC_INT)/(refCount);
+
+!!FU(Battle_RemoveObstacle):P(hex);

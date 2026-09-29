@@ -1,0 +1,125 @@
+ZVSE2
+
+** CREATURE TWEAKS (WoG option 950, together with "-2000 sharpshooter rework.erm")
+**
+** - Gold Golems give 10 gold and Diamond Golems 20 gold per creature per day (heroes' armies and
+**   town garrisons of the player).
+** - Commanders with the Poison ability (the former Death Stare ability, replaced by Advanced Classes Mod) keep the poison AND get the Death Stare back.
+
+!#DC(CT_OPTION)             = 950;
+!#DC(CT_GOLD_GOLEM_GOLD)    = 10;
+!#DC(CT_DIAMOND_GOLEM_GOLD) = 20;
+!#DC(CT_COM_DEATH_STARE)    = 12;       [commander ability number (CO:B1)]
+
+!#UN:P(CT_OPTION)/?i^ct_enabled^;
+
+!?FU(OnStartOrLoad);
+!!UN:P(CT_OPTION)/?i^ct_enabled^;
+
+; ============= GOLEM INCOME =======================================================================
+
+!?FU(OnAfterErmInstructions)&i^ct_enabled^;
+!!SN:H^monname^/(MON_GOLD_GOLEM)/2/?(desc:z);
+!!SN:H^monname^/(MON_GOLD_GOLEM)/2/^%(desc) +10 gold per creature daily.^;
+!!SN:H^monname^/(MON_DIAMOND_GOLEM)/2/?(desc);
+!!SN:H^monname^/(MON_DIAMOND_GOLEM)/2/^%(desc) +20 gold per creature daily.^;
+
+!?FU(CT_AddGolemGold);
+!#VA(owner:x) (type:x) (num:x);
+
+!!FU|(owner)<=(NO_OWNER)/(num)<=0:E;
+!!VR(gold:y):S0;
+!!VR(gold)&(type)=(MON_GOLD_GOLEM):S(num) *(CT_GOLD_GOLEM_GOLD);
+!!VR(gold)&(type)=(MON_DIAMOND_GOLEM):S(num) *(CT_DIAMOND_GOLEM_GOLD);
+!!FU&(gold)<=0:E;
+!!VRi^ct_golemGold_%(owner)^:+(gold);
+
+!?FU(OnEveryDay)&i^ct_enabled^/i^timerOnce^=1/i^timerDay^>1;
+!!re i/0/7;
+  !!VRi^ct_golemGold_%i^:S0;
+!!en;
+
+; Heroes' armies
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HEi:O?(owner:y);
+  !!co&(owner)<=(NO_OWNER);
+  !!re j/0/6;
+    !!HEi:C0/j/?(type:y)/?(num:y);
+    !!FU(CT_AddGolemGold):P(owner)/(type)/(num);
+  !!en;
+!!en;
+
+; Town garrisons
+!!VR(x:y):S-1;
+!!VR(y:y):S-1;
+!!VR(z:y):S-1;
+!!re i;
+  !!UN:U(OBJ_TOWN)/(ANY_OBJ)/-1/(x)/(y)/(z);
+  !!br&(x)<0;
+  !!CA(x)/(y)/(z):O?(owner:y);
+  !!co&(owner)<=(NO_OWNER);
+  !!re j/0/6;
+    !!CA(x)/(y)/(z):M2/j/?(type:y)/?(num:y);
+    !!FU(CT_AddGolemGold):P(owner)/(type)/(num);
+  !!en;
+!!en;
+
+!!re i/0/7;
+  !!co&i^ct_golemGold_%i^<=0;
+  !!OW:Ri/(RES_GOLD)/di^ct_golemGold_%i^;
+!!en;
+
+; ============= COMMANDERS: DEATH STARE BACK ======================================================
+; The Advanced Classes Mod removes the commander's Death Stare at the start of every battle (and gives
+; it back afterwards), remembering it in i^Att_Com_Poison_ability^ / i^Def_Com_Poison_ability^ for its
+; poison. This runs after ACM and switches the Death Stare on again; ACM's poison still works.
+
+!?FU(OnSetupBattlefield)&i^ct_enabled^/i^cr_hasACM^;   [Death Stare part needs Advanced Classes Mod]
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!VR(sideStr:z):S^Att^;
+  !!VR(sideStr)&i=(BATTLE_RIGHT):S^Def^;
+  !!co&i^%(sideStr)_Com_Poison_ability^<>(TRUE);
+
+  !!VR(commander:y):Si^battle_hero_%i^;
+  !!VR(commander)&i=(BATTLE_RIGHT)/i^battle_hero_1^=(NO_HERO)/i^battle_owner_1^=(NO_PLAYER):S-4;
+  !!co&(commander)<0/(commander)<>-4;
+
+  !!CO(commander):B1/(CT_COM_DEATH_STARE)/1;
+  !!CO(commander):B1/(CT_COM_DEATH_STARE)/?(check:y);
+!!en;
+
+
+; Commander ability text (znpc00 table, rows = lines of znpc00.txt): "Poison" -> "Poison + Death Stare".
+; The texts are overwritten in place (like WoG's "23 wog - enhanced war machines 2.erm"), only when the
+; new text is not longer than the old one.
+!#DC(CT_NPC_TEXT_TABLE)     = 42338084;
+!#DC(CT_NPC_GET_TEXT)       = 7827723;  [cdecl(row, column, table) -> v1 = string address]
+
+!?FU(CT_ReplaceNpcText);
+!#VA(row:x) (column:x) (patternPtr:x) (replacementPtr:x);
+
+!!VR(savedV1:y):Sv1;
+!!SN:E(CT_NPC_GET_TEXT)/(CALLCONV_CDECL)/(row)/(column)/(CT_NPC_TEXT_TABLE);
+!!VR(address:y):Sv1;
+!!VRv1:S(savedV1);
+!!FU&(address)=0:E;
+
+!!SN:B(address)/d/?(text:z);
+!!SN:K(text)/?(oldLength:y);
+!!FU(StrReplace):P(text)/z(patternPtr)/z(replacementPtr)/?(newText:z);
+!!FU&(newText)=(text):E;
+!!SN:K(newText)/?(newLength:y);
+!!FU&(newLength)>(oldLength):E;
+!!SN:B(address)/d/(newText);
+
+!?FU(OnGameEnter)&i^ct_enabled^/i^cr_hasACM^;
+!!FU(CT_ReplaceNpcText):P50/1/^Poison (Damage + Magic Power)^/^Poison, Death Stare (Dmg+MP)^;
+!!FU(CT_ReplaceNpcText):P50/2/^Poison (Damage + Magic Power)^/^Poison + Death Stare (Dmg+MP)^;
+!!FU(CT_ReplaceNpcText):P86/1/^
+Poison
+^/^
+Poison + Death Stare
+^;
+!!FU(CT_ReplaceNpcText):P86/1/^Every attack has a chance to poison the enemy.
+Poisoned enemies have reduced HP.^/^Attacks may poison the enemy (less HP)
+and have the Death Stare.^;

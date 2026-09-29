@@ -1,0 +1,22 @@
+ZVSE2
+
+** HENCHMEN GROWTH - PRE HANDLERS
+**
+** The "30" prefix makes this script load BEFORE "29 wog - henchmen.erm", so these
+** handlers run before the Enhanced Henchmen ones for the same function.
+** Enhanced Henchmen caps the henchman stack to 2 creatures after every action.
+** Here we remember the real quantity, and "-2000 henchmen growth.erm" restores it.
+
+!?FU(hench_ManageDeadOrAlive)&i^hg_growthEnabled^;   [option 951, read in "-2000 henchmen growth.erm"]
+!#VA(stack:x) (side:x);
+
+!!VRi^hg_preNum_%(side)^:S0;
+!!VRi^hg_preLost_%(side)^:S0;
+!!FU&(stack)<=(NO_STACK):E;
+
+!!BM(stack):N?i^hg_preNum_%(side)^ L?i^hg_preLost_%(side)^;
+
+; Henchman info dialog: mark that the dialog is being built, so "-2000 henchmen growth.erm"
+; adds the victories / quantity lines to it. Cleared again after the dialog.
+!?FU(hench_ShowHenchDlg)&i^hg_growthEnabled^;
+!!VRi^hg_inHenchDlg^:S(TRUE);

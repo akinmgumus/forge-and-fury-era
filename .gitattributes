@@ -1,0 +1,2 @@
+# Keep every file byte-exact: the game needs its own line endings (e.g. CRLF text tables)
+* -text

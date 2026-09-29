@@ -1,0 +1,113 @@
+# creature upgrade pairs (MA:U) from an in-game dump, used by make_tum_abilities.py
+1 197  # Halberdier -> Royal Halberdier
+3 198  # Marksman -> Crossbowman
+5 199  # Royal Griffin -> Cesar Griffin
+7 291  # Crusader -> Inquisitor
+9 320  # Zealot -> High Priest
+11 201  # Champion -> Holy Champion
+13 150  # Archangel -> Supreme Archangel
+15 293  # Centaur Captain -> Centaur General
+17 203  # Battle Dwarf -> Berserker Dwarf
+19 256  # Grand Elf -> Sharpshooter Elf
+21 204  # Silver Pegasus -> Golden Pegasus
+23 205  # Dendroid Soldier -> Elder Dendroid
+25 206  # War Unicorn -> Legendary Unicorn
+27 151  # Gold Dragon -> Diamond Dragon
+29 255  # Master Gremlin -> Grandmaster Gremlin
+31 208  # Obsidian Gargoyle -> Marble Gargoyle
+33 209  # Iron Golem -> Steel Golem
+35 257  # Arch Mage -> Supreme Arch Mage
+37 210  # Master Genie -> Arcane Genie
+39 211  # Naga Queen -> Naga Rakshasa
+41 152  # Titan -> Lord of Thunder
+43 213  # Familiar -> Vermin
+45 214  # Magog -> Winged Magog
+47 215  # Cerberus -> Astral Cerberi
+49 216  # Horned Demon -> Sharp-Horned Demon
+51 217  # Pit Lord -> Pit Master
+53 218  # Efreet Sultan -> Efreeti Rajah
+55 153  # Arch Devil -> Hell Baron
+57 220  # Skeleton Warrior -> Skeleton Knight
+59 329  # Flesheater -> Ghoul
+61 261  # Wraith -> Specter
+63 221  # Vampire Lord -> Nosferatu
+65 222  # Power Lich -> Lich King
+67 223  # Dread Knight -> Death Knight
+69 154  # Ghost Dragon -> Blood Dragon
+71 225  # Infernal Troglodyte -> Phosphorescent Troglodyte
+73 227  # Harpy Hag -> Harpy Sanguinary
+75 226  # Evil Eye -> Monstrous Eye
+77 228  # Medusa Queen -> Medusa Empress
+79 229  # Minotaur King -> Black Minotaur
+81 230  # Scorpicore -> Chimera
+83 155  # Black Dragon -> Darkness Dragon
+85 232  # Hobgoblin -> Hobgoblin Overlord
+87 233  # Wolf Raider -> Wolf Rider Killer
+89 234  # Orc Chieftain -> Orc Leader
+91 235  # Ogre Mage -> Elder Ogre
+93 236  # Thunderbird -> Lightningbird
+95 237  # Cyclops King -> Cyclops Emperor
+97 156  # Ancient Behemoth -> Ghost Behemoth
+99 321  # Gnoll Marauder -> Gnoll Shaman
+101 240  # Lizard Warrior -> Elite Lizard
+103 244  # Mighty Gorgon -> Catoblepas
+105 241  # Berserker Fly -> Chaotic Dragon Fly
+107 242  # Greater Basilisk -> Lava Basilisk
+109 243  # Wyvern Monarch -> Acid Wyvern
+111 157  # Chaos Hydra -> Hell Hydra
+116 117  # Gold Golem -> Diamond Golem
+119 246  # Sprite -> Fairy
+121 251  # Magic Elemental -> Void Elemental
+123 248  # Ice Elemental -> Life Elemental
+125 250  # Magma Elemental -> Lava Elemental
+127 247  # Storm Elemental -> Hurricane Elemental
+129 249  # Energy Elemental -> Plasma Elemental
+131 158  # Phoenix -> Sacred Phoenix
+133 267  # Crystal Dragon -> Emerald Crystal Dragon
+134 258  # Faerie Dragon -> Primal Faerie Dragon
+135 339  # Rust Dragon -> Sulfide Dragon
+136 259  # Enchanter -> Spelllweaver
+137 170  # Sharpshooter -> Arctic Sharpshooter
+138 348  # Halfling -> Halfling Grenadier
+139 300  # Peasant -> Conscript
+143 260  # Cutthroat -> Assassin
+150 202  # Supreme Archangel -> Seraph
+151 207  # Diamond Dragon -> Pure Diamond Dragon
+152 212  # Lord of Thunder -> Guardian of Zeus
+153 219  # Hell Baron -> Antichrist
+154 224  # Blood Dragon -> Red Bones Dragon
+155 231  # Darkness Dragon -> Chasm Dragon
+156 238  # Ghost Behemoth -> Spectral Behemoth
+157 245  # Hell Hydra -> Nightmare Hydra
+158 252  # Sacred Phoenix -> Divine Phoenix
+168 253  # Gorynych -> Tiamat
+170 171  # Arctic Sharpshooter -> Lava Sharpshooter
+171 170  # Lava Sharpshooter -> Arctic Sharpshooter
+195 172  # Hell Steed -> Nightmare
+196 254  # Dracolich -> Necross Dragon
+265 266  # Topaz Crystal Dragon -> Amethyst Crystal Dragon
+266 133  # Amethyst Crystal Dragon -> Crystal Dragon
+267 268  # Emerald Crystal Dragon -> Sapphire Crystal Dragon
+269 278  # Light Templar -> Light Paladin
+270 279  # Dryad -> Oak Dryad
+271 280  # Drake Golem -> Dragon Golem
+272 281  # Succubus -> Lilim
+273 194  # Werewolf -> Dire Werewolf
+274 282  # Illithid -> Alhoon
+275 283  # Coatl -> Quetzalcoatl
+276 284  # Troll Hag -> Troll Witch
+277 285  # Triton -> Abyssal Triton
+301 302  # Squire -> Man at Arms
+304 305  # Tortofroid -> Vile Tortofroid
+307 308  # Gigas -> Hill Gigas
+309 310  # Forest Dragon -> Swamp Dragon
+313 314  # Centamonth Hunter -> Centamonth Thrower
+322 323  # Mirage Dragon -> Mirror Dragon
+331 332  # Dark Templar -> Dark Paladin
+333 334  # Fallen Angel -> Angel of Death
+335 336  # Winged Drake -> Lesser Dragon
+337 338  # Fiend of Tartarus -> Lord of Tartarus
+349 350  # Forest Spirit -> Spring Spirit
+351 352  # Lady Spider -> Priestess Spider
+353 354  # Sea Serpent -> Leviathan
+355 356  # Planeswalker -> Elementalist

@@ -1,0 +1,333 @@
+GEMINI PROMPT - HEROES III ARTIFACT ICON
+========================================
+
+How to use:
+1. Attach "_style reference sheet.png" (and, for a combination artifact, the icons of its parts).
+2. Copy the TEMPLATE below and replace the [...] parts.
+3. Generate a few versions, pick the one that is easiest to read when you shrink it very small.
+4. Give the big image to Claude: it is cropped, the background is removed and it is scaled to 44x44.
+
+
+TEMPLATE
+--------
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: [ITEM NAME], a [ITEM TYPE: necklace / ring / cloak / helmet / sword / shield / boots ...].
+Description: [WHAT IT LOOKS LIKE: materials, colors, gems, symbols].
+[FOR COMBINATION ARTIFACTS: It is forged from [PART 1], [PART 2] and [PART 3] (attached), so it
+should clearly combine their shapes and colors into one new item.]
+
+Composition: one item only, centered, filling about 85% of a square canvas, seen from the front
+or at a slight angle, no hands, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+EXAMPLE - LIGHTFAST NECKLACE
+----------------------------
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Lightfast Necklace, a necklace.
+Description: a golden chain necklace with a winged pendant; a glowing red gem in the center,
+small feather-like wings of red cloth flowing behind the pendant as if moving fast, a thin
+golden ring woven into the chain, faint motion streaks suggesting great speed.
+It is forged from the Necklace of Swiftness, the Ring of the Wayfarer and the Cape of Velocity
+(attached), so it should clearly combine their shapes and colors into one new item.
+
+Composition: one item only, centered, filling about 85% of a square canvas, seen from the front
+or at a slight angle, no hands, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+TIPS
+----
+- If the result looks too modern / too detailed, add:
+  "make it look like a 1999 pre-rendered game icon, fewer details, chunkier shapes".
+- If Gemini adds a shadow or a colored glow on the background, ask again:
+  "the background must be one flat magenta color only".
+- Magenta is used because it never appears in the icon itself, so it can be removed cleanly.
+
+
+EXAMPLE - MINERJACK
+-------------------
+Attach: "_style reference sheet.png" and "_Minerjack parts sheet.png".
+
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Minerjack, a sturdy magical wagon.
+Description: one wide wooden wagon with big orange-brown spoked wheels and iron bands. Its load is
+split in two clearly visible halves: on the left a heap of shiny grey-blue ore rocks, on the right
+a stack of cut wooden logs with visible round log ends. A pickaxe and a woodcutter's axe are
+crossed and tied to the front of the wagon. A faint golden glow rises from the load, showing it
+never runs out.
+It is forged from the Inexhaustible Cart of Ore and the Inexhaustible Cart of Lumber (attached),
+so it should clearly combine their shapes and colors into one new item.
+
+Composition: one item only, centered, filling about 85% of a square canvas, seen from a slight
+three-quarter angle like the attached carts, no horses, no people, no road, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+EXAMPLE - WEALTH OF EREBUS
+--------------------------
+Attach: "_style reference sheet.png" and "_Wealth of Erebus parts sheet.png".
+
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Wealth of Erebus, a legendary treasure of the underworld.
+Description: a large golden horn of plenty (cornucopia) mounted on a short, dark iron-bound
+wooden wagon with orange-brown spoked wheels. The horn's wide mouth overflows with riches: grey
+ore rocks, a few cut logs, big shiny red, blue and green gems, a small glass vial of silvery
+mercury, a yellow sulfur crystal and one glowing silver-blue mithril ingot on top.
+Underworld flavor: the horn is made of dark obsidian with gold bands, and a faint purple ember
+glow rises from the treasure.
+It is forged from the Minerjack and the Cornucopia (attached), so it should clearly combine
+their shapes and colors into one new item.
+
+Composition: one item only, centered, filling about 85% of a square canvas, seen from a slight
+three-quarter angle like the attached items, no horses, no people, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+EXAMPLE - EYE OF PROVIDENCE (Speculum + Spyglass)
+-------------------------------------------------
+Attach: "_style reference sheet.png" and "_Spyglass-Speculum parts sheet.png".
+
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Eye of Providence, an all-seeing scouting relic.
+Description: a small golden-brass pyramid standing on a short three-legged brass tripod (like the
+attached Speculum). The top of the pyramid is a floating capstone with one large glowing
+all-seeing eye inside a triangle, surrounded by thin golden rays. Brass telescope rings and a
+round glass lens, like the attached Spyglass, are set into the front face of the pyramid.
+Colors: polished gold and warm copper-brass, a bright blue-white glowing eye.
+It is forged from the Speculum and the Spyglass (attached), so it should clearly combine their
+shapes and colors into one new item.
+
+Composition: one item only, centered, filling about 85% of a square canvas, seen from the front
+or at a slight angle, no hands, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+EXAMPLE - LIGHTNING BOOTS (Equestrian's Gloves + Boots of Speed)
+----------------------------------------------------------------
+Attach: "_style reference sheet.png" and "_Lightning Boots parts sheet.png".
+
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Lightning Boots, a pair of magical boots.
+Description: a pair of tall brown leather riding boots like the attached Boots of Speed, with
+leather cuffs and straps taken from the attached Equestrian's Gloves wrapped around the top.
+Small golden wings on the heels, and bright blue-white lightning bolts crackling around the
+boots and running down their sides like painted zigzag stripes. Colors: warm brown leather,
+gold buckles, glowing electric blue-white lightning.
+It is forged from the Equestrian's Gloves and the Boots of Speed (attached), so it should clearly
+combine their shapes and colors into one new item.
+
+Composition: one item only (the pair of boots), centered, filling about 85% of a square canvas,
+seen from a slight three-quarter angle like the attached boots, no legs, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+=====================================================================
+SVALINN SET (4 parts + Svalinn)
+Attach "_style reference sheet.png" to every prompt. For Svalinn, also attach the 4 finished part
+icons. Make the 4 parts first, so that Svalinn can be made from them.
+=====================================================================
+
+PART 1 - FROSTBITE AXE
+----------------------
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Frostbite Axe, a double-headed Norse battle axe of ice.
+Description: a symmetrical double-bladed axe, like the round double axe emblem of a huntress: two
+large crescent-shaped blades, one on each side of the shaft, made of pale blue translucent ice
+with frosted white edges and a few small icicles hanging from their lower tips. The shaft is dark
+wood wrapped with brown leather straps, with a silver pommel and a silver cap on top between the
+blades. Cold white mist drifts from the blades. Colors: icy blue and white blades, dark brown
+wood, silver metal.
+
+Composition: one item only, centered and standing upright (shaft vertical, blades at the top),
+filling about 85% of a square canvas, seen from the front, no hands, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+PART 2 - HELM OF THE JARL
+-------------------------
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Helm of the Jarl, a Norse chieftain's helmet.
+Description: a rounded dark iron helmet with a nose guard and riveted bands, a band of gold
+Norse knotwork around the brow, and a pair of big curved ivory-white horns rising from the sides.
+A short fringe of grey fur along the bottom edge. Colors: dark steel, gold trim, cream-white horns,
+grey fur.
+
+Composition: one item only, centered, filling about 85% of a square canvas, seen from the front
+or at a slight angle, no head, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+PART 3 - BERSERKER'S BYRNIE
+---------------------------
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Berserker's Byrnie, a Norse warrior's body armor.
+Description: a sleeveless chainmail shirt (byrnie) layered over a thick wool tunic: grey steel
+chainmail on the chest, brown leather shoulder pieces and a wide leather belt with an iron buckle,
+a thick cream and dark red wool hem showing below the mail, and a big collar of brown bear fur
+around the neck. Colors: steel grey, brown leather, dark red and cream wool, brown fur.
+
+Composition: one item only (the armor alone, standing as if on an invisible mannequin), centered,
+filling about 85% of a square canvas, seen from the front, no body, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+PART 4 - SHIELD OF JORMUNGANDR
+------------------------------
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Shield of Jormungandr, a round Norse shield.
+Description: a round wooden Viking shield made of planks, with a domed iron boss in the center and
+an iron rim. Painted on its face: a big green sea serpent coiled in a circle around the boss,
+biting its own tail, in Norse knotwork style. Two drops of glowing green venom drip from the
+serpent's fangs. Colors: dark wood, iron grey, emerald green serpent, poison green venom.
+
+Composition: one item only, centered, filling about 85% of a square canvas, seen from the front,
+no hands, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+COMBINATION - SVALINN
+---------------------
+Attach: "_style reference sheet.png" and "_Svalinn parts sheet.png" (the 4 finished parts).
+
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Svalinn, the legendary Norse shield that stands before the sun and shields the world from
+its fire.
+Description: a large round Norse shield of pale frosted steel and ice-blue metal. A blazing golden
+sun disk glows behind the shield, so golden sun rays shine out all around its rim. On its face, the
+green serpent of the attached Shield of Jormungandr coils around a silver central boss, and a small
+double-headed ice axe like the attached Frostbite Axe is set in the center of the boss. Frost
+crystals cover the edges of the shield, and a pair of small ivory horns like those of the attached
+Helm of the Jarl decorate the top of the rim. Colors: icy blue and silver shield, bright gold sun
+rays, emerald serpent.
+It is forged from the Frostbite Axe, the Helm of the Jarl, the Berserker's Byrnie and the Shield
+of Jormungandr (attached), so it should clearly combine their shapes and colors into one new item.
+
+Composition: one item only, centered, filling about 85% of a square canvas, seen from the front,
+no hands, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow and no glow on the background.
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.
+
+
+COMBINATION - SVALINN (version 2: dwarven tower shield style)
+-------------------------------------------------------------
+Attach: "_style reference sheet.png", "_Svalinn style reference (dwarven tower shield).png" and
+"_Svalinn parts sheet.png".
+
+Create a single fantasy item icon in the exact style of Heroes of Might and Magic III (1999)
+artifact icons, like the attached reference sheet: hand-painted / pre-rendered look, bold
+silhouette, rich saturated colors, strong highlights, a thin dark outline, lit from the upper left.
+
+Item: Svalinn, the legendary Norse shield that stands before the sun and protects the world from
+its fire.
+Shape and style: a large tower shield with the angular shape of the attached dwarven tower shield
+(wide notched top, straight sides, pointed bottom), but WIDER and shorter: about 3 units wide for
+every 4 units tall. Dark blackened steel with a fine diamond pattern, framed by thick polished
+GOLD borders with Norse knotwork, like the attached dwarven shield.
+Svalinn details (few, big, bold):
+- In the upper center, a large round emblem of a golden sun, covered by a sheet of pale blue ice,
+  so the sun seems frozen inside the shield. It glows softly with cold blue-white light.
+- The gold knotwork of the border forms a green serpent biting its own tail, like the attached
+  Shield of Jormungandr.
+- A small double-headed ice axe like the attached Frostbite Axe, set vertically below the sun.
+- Frost and small icicles on the top edge and corners.
+Colors: black steel, bright gold, icy blue-white, a touch of emerald green. Strong contrast: the
+gold and the frozen sun must stand out clearly against the dark steel.
+It is forged from the Frostbite Axe, the Helm of the Jarl, the Berserker's Byrnie and the Shield
+of Jormungandr (attached), so it should carry their spirit: ice, gold, Norse knotwork, the serpent.
+
+Composition: one item only, centered, filling about 90% of the height of a square canvas, seen
+from the front, no hands, no character, no scenery.
+Background: a completely flat, solid pure magenta (#FF00FF) background with no gradient, no
+shadow, no glow and no light rays on the background (all the light stays inside the shield).
+No text, no frame, no border, no watermark.
+
+Square image, high resolution (1024x1024). The item must stay clearly recognizable when
+downscaled to 44x44 pixels: simple strong shapes, high contrast, no tiny details.

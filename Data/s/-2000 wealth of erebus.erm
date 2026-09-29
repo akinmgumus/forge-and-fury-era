@@ -1,0 +1,202 @@
+ZVSE2
+
+** WEALTH OF EREBUS - combination artifact made of two combination artifacts (misc slot)
+**
+** Parts: Minerjack (281) + Cornucopia (140).
+** When combined, the parts no longer count as owned, so their resources are replaced by:
+**   - +10 Wood, Ore, Mercury, Sulfur, Crystal and Gems and +2 Mithril per day,
+**     equipped or in the backpack.
+**   - Loot: after defeating a hero of another player, 10% of one random resource of that player
+**     (Wood, Ore, Mercury, Sulfur, Crystal, Gems or Gold, only resources the player has at least
+**     10 of) is taken from them and given to you. No loot from neutral battles.
+** Price: the sum of its parts (Minerjack 10000 + Cornucopia's parts 4 x 5000).
+**
+** Artifact 282. The game's combination system can't use combination artifacts as parts, so this
+** script combines them: when a hero screen is closed with both equipped, the player is asked. Icon: artifact.def frame 282 and Emerald's artraits.txt row 282
+** (Data/EmeraldArtifacts.pac and Data/00 forge and fury.pac), png in Data/forge and fury.zip.
+** Enabled/disabled in WoG Options -> Custom Scripts, option 955 "Custom Artifacts" (shared by all new artifacts).
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(WOE_OPTION)            = 955;       [shared option "Custom Artifacts"]
+!#DC(WOE_ART)               = 282;
+!#DC(WOE_MINERJACK)         = 281;
+!#DC(WOE_COST)              = 30000;
+!#DC(WOE_ART_CLASS)         = 16;       [Relic]
+!#DC(WOE_ART_POSITION)      = 9;        [Misc slot (ERM Format P2)]
+
+!#DC(WOE_RES_PER_DAY)       = 10;       [Wood, Ore, Mercury, Sulfur, Crystal, Gems]
+!#DC(WOE_MITHRIL_PER_DAY)   = 2;
+!#DC(WOE_LOOT_PCT)          = 10;       [% of one enemy resource after defeating an enemy hero]
+!#DC(WOE_LOOT_TAKE_FROM_ENEMY) = 1;     [1 = the enemy loses what you get, 0 = you only gain]
+
+!#UN:P(WOE_OPTION)/?i^woe_enabled^;
+!#VRi^woe_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; Named globals are stored in savegames, so re-read the option after a game is started or loaded
+!?FU(OnStartOrLoad);
+!!UN:P(WOE_OPTION)/?i^woe_enabled^;
+!!VRi^woe_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; ============= ARTIFACT SETUP =====================================================================
+
+!?FU(WOE_SetUpArtifact);
+!!UN:A(WOE_ART)/1/(WOE_COST);
+!!UN:A(WOE_ART)/2/(WOE_ART_POSITION);
+!!UN:A(WOE_ART)/3/(WOE_ART_CLASS);
+!!UN:A(WOE_ART)/1;                       [never appears on the map: it is only made from its parts]
+
+!!SN:H^art^/(WOE_ART)/0/^Wealth of Erebus^;
+!!SN:H^art^/(WOE_ART)/1/^{Wealth of Erebus}
+
+The riches of the underworld, joined from the Minerjack and the Cornucopia. Whoever carries it never lacks anything.
+
+- Every day: +10 Wood, Ore, Mercury, Sulfur, Crystal and Gems and +2 Mithril (equipped or in the backpack).
+- After defeating the hero of another player, you seize 10%% of one of that player's resources.^;
+
+; Note: the game's combination system can't use combination artifacts as parts, so the Minerjack and
+; the Cornucopia are combined by this script (see COMBINING below), not with UN:A.
+
+!#FU(WOE_SetUpArtifact)&i^woe_enabled^:P;
+
+!?FU(OnAfterLoadGame)&i^woe_enabled^;
+!!FU(WOE_SetUpArtifact):P;
+
+; ============= COMBINING ==========================================================================
+; When the hero screen is closed and the hero has both the Minerjack and the Cornucopia equipped, ask
+; the player whether to combine them. If declined, don't ask again until one of them is re-equipped.
+; Computer players combine them automatically (daily check below).
+
+; Returns the equipped slots of both parts, or NO_ART_SLOT
+!?FU(WOE_FindParts);
+!#VA(hero:x) (slotMinerjack:x) (slotCornucopia:x);
+
+!!VR(slotMinerjack):S(NO_ART_SLOT);
+!!VR(slotCornucopia):S(NO_ART_SLOT);
+
+!!re i/(ART_SLOT_EQUIPPED_FIRST)/(ART_SLOT_EQUIPPED_LAST);
+  !!FU(GetArtAtSlot):P(hero)/i/?(art:y)/?(artMod:y);
+  !!VR(slotMinerjack)&(art)=(WOE_MINERJACK)/(slotMinerjack)=(NO_ART_SLOT):Si;
+  !!VR(slotCornucopia)&(art)=(ART_CORNUCOPIA)/(slotCornucopia)=(NO_ART_SLOT):Si;
+!!en;
+
+!?FU(WOE_Combine);
+!#VA(hero:x) (slotMinerjack:x) (slotCornucopia:x);
+
+!!FU(UnequipArtFromSlot):P(hero)/(slotMinerjack);
+!!FU(UnequipArtFromSlot):P(hero)/(slotCornucopia);
+!!FU(AddArtToHero):P(hero)/(WOE_ART)/(NO_ART_MOD)/?(ok:y);
+
+; Re-equipping one of the parts allows asking again
+!?AE1&i^woe_enabled^;
+!!FU&v998<>(WOE_MINERJACK)/v998<>(ART_CORNUCOPIA):E;
+!!HE-1:N?(hero:y);
+!!VRi^woe_declined_%(hero)^:S(FALSE);
+
+!?FU(OnCloseHeroScreen)&i^woe_enabled^;
+!!HE-1:N?(hero:y);
+!!FU&(hero)<=(NO_HERO):E;
+!!FU&i^woe_declined_%(hero)^:E;
+
+!!FU(WOE_FindParts):P(hero)/?(slotMinerjack:y)/?(slotCornucopia:y);
+!!FU|(slotMinerjack)=(NO_ART_SLOT)/(slotCornucopia)=(NO_ART_SLOT):E;
+
+!!HE(hero):O?(owner:y);
+!!OW:I(owner)/?(isAi:y);
+!!FU&(isAi):E;                           [computer players: see the daily check]
+
+!!IF:Q1/(PIC_TYPE_ART)/(WOE_ART)/(MSG_TYPE_QUESTION)^Combine the Minerjack and the Cornucopia into the {Wealth of Erebus}?^;
+
+!!if&1;
+  !!FU(WOE_Combine):P(hero)/(slotMinerjack)/(slotCornucopia);
+!!el;
+  !!VRi^woe_declined_%(hero)^:S(TRUE);
+!!en;
+
+; ============= DAILY RESOURCES ====================================================================
+; Once per day (first player of the day), from day 2 on - like the game's own resource artifacts.
+
+!?FU(OnEveryDay)&i^woe_enabled^/i^timerOnce^=1/i^timerDay^>1;
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HEi:O?(owner:y);
+  !!co&(owner)<=(NO_OWNER);
+
+  ; Computer players combine the parts automatically
+  !!OW:I(owner)/?(isAi:y);
+  !!if&(isAi);
+    !!FU(WOE_FindParts):Pi/?(slotMinerjack:y)/?(slotCornucopia:y);
+    !!FU(WOE_Combine)&(slotMinerjack)<>(NO_ART_SLOT)/(slotCornucopia)<>(NO_ART_SLOT):Pi/(slotMinerjack)/(slotCornucopia);
+  !!en;
+
+  !!HEi:A2/(WOE_ART)/?(count:y)/?(equipped:y);  [count = equipped + backpack]
+  !!co&(count)<=0;
+
+  !!VR(amount:y):S(count) *(WOE_RES_PER_DAY);
+  !!re j/(RES_WOOD)/(RES_GEMS);
+    !!OW:R(owner)/j/d(amount);
+  !!en;
+
+  !!VR(mithril:y):S(count) *(WOE_MITHRIL_PER_DAY);
+  !!OW:R(owner)/(RES_MITHRIL)/d(mithril);
+!!en;
+
+; ============= LOOT FROM DEFEATED ENEMY HEROES ====================================================
+
+; Remember the heroes' experience before the battle: a hero that gained experience won
+!?FU(OnBeforeBattleUniversal)&i^woe_enabled^;
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!VRi^woe_exp_%i^:S-1;
+  !!VR(hero:y):Si^battle_hero_%i^;
+  !!co&(hero)<=(NO_HERO);
+  !!HE(hero):E?i^woe_exp_%i^;
+!!en;
+
+!?FU(OnAfterBattleUniversal)&i^woe_enabled^/i^battle_hero_vs_hero^;
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!FU(WOE_TakeLoot):Pi;
+!!en;
+
+!?FU(WOE_TakeLoot);
+!#VA(side:x);
+!#VA(candidates[7]:y);
+
+!!VR(hero:y):Si^battle_hero_%(side)^;
+!!FU&(hero)<=(NO_HERO):E;
+
+!!HE(hero):A2/(WOE_ART)/?(count:y)/?(equipped:y);
+!!FU&(count)<=0:E;
+
+; Won the battle?
+!!HE(hero):E?(expAfter:y);
+!!FU&(expAfter)<=i^woe_exp_%(side)^:E;
+
+; The loser must be another player (not neutral, not an ally of the same colour)
+!!VR(enemySide:y):S(side) X(TRUE);
+!!VR(owner:y):Si^battle_owner_%(side)^;
+!!VR(enemy:y):Si^battle_owner_%(enemySide)^;
+!!FU|(enemy)<=(NO_OWNER)/(owner)<=(NO_OWNER)/(enemy)=(owner):E;
+
+; Pick a random resource the enemy has at least 10 of (so that 10% is at least 1)
+!!VR(numCandidates:y):S0;
+!!re j/(RES_WOOD)/(RES_GOLD);
+  !!OW:R(enemy)/j/?(have:y);
+  !!co&(have)<10;
+  !!VR(candidates[numCandidates]):Sj;
+  !!VR(numCandidates):+1;
+!!en;
+!!FU&(numCandidates)<=0:E;
+
+!!VR(pick:y):R0/0/(numCandidates) -1;
+!!VR(res:y):S(candidates[pick]);
+!!OW:R(enemy)/(res)/?(have);
+!!VR(loot:y):S(have) *(WOE_LOOT_PCT) :100;
+
+!!VR(takeFromEnemy:y):S(WOE_LOOT_TAKE_FROM_ENEMY);
+!!VR(negLoot:y):S(loot) *-1;
+!!OW&(takeFromEnemy)=1:R(enemy)/(res)/d(negLoot);
+!!OW:R(owner)/(res)/d(loot);
+
+!!OW:I(owner)/?(isAi:y);
+!!IF&(isAi)<>(TRUE):Q1/(res)/(loot)/(MSG_TYPE_MES)^{Wealth of Erebus}
+
+The riches of the defeated flow into your treasury.^;

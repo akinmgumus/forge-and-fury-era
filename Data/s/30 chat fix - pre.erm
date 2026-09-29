@@ -1,0 +1,41 @@
+ZVSE2
+
+** CHAT FIX - runs BEFORE "easy cheats.erm" (Easy Cheats mod)
+**
+** Easy Cheats treats every chat text that is not a cheat as an ERM command or an ERM variable to show
+** (a debug console). Normal text like "Death Stare" is read as a variable and gives an ERM error.
+** Here such text is cleared before Easy Cheats reads it. Kept: cheats (handled before this function),
+** ERM commands (contain ':'), and variables like v1, y-5, z12, i^name^, a(name).
+**
+** Also: the chat event sometimes comes with no text at all (address 0), and Easy Cheats reads it without
+** checking ("SN:B - cannot read/write to zero address"). The address is replaced by an empty string.
+
+!#DC(CHAT_FIX_EMPTY_STRING) = 6687262;  [660A1E: a zero byte in h3era.exe = empty string]
+
+!?FU(OnChat)&x1=(CHAT_EVENT_TYPE_INPUT)/i^cr_hasEasyCheats^;
+!#VA(action:x) (strAddr:x) (result:x);
+!!VR(strAddr)&(strAddr)=0:S(CHAT_FIX_EMPTY_STRING);
+
+!?FU(ech_ProcessCmd)&i^cr_hasEasyCheats^;
+!#VA(cmdPtr:x);
+
+!!VR(input:z):Sz(cmdPtr);
+!!FU&(input)=^^:E;
+
+!!FU(StrPos):P(input)/^:^/?(pos:y);
+!!FU&(pos)>=0:E;                         [ERM command]
+!!FU(StrPos):P(input)/^%\"^/?(pos);
+!!FU&(pos)>=0:E;                         [named variable like i^name^]
+!!FU(StrPos):P(input)/^(^/?(pos);
+!!FU&(pos)>=0:E;                         [array like a(name)]
+
+; Variables like v1, y-5, z12: a letter followed by a digit or '-'
+!!VR(input):M4/?(length:y);
+!!if&(length)>=2;
+  !!SN:K(input)/1/?(secondChar:y);
+  !!FU&(secondChar)>=48/(secondChar)<=57:E;   [0-9]
+  !!FU&(secondChar)=45:E;                     [-]
+!!en;
+
+; Normal chat text: ignore it
+!!VRz(cmdPtr):S^^;

@@ -1,0 +1,111 @@
+ZVSE2
+
+** HOLIKA - new Tower hero (replaces the extension hero Mutare, slot 151)
+**
+** - Name Holika, female Alchemist (Tower). Her commander is a Temple Guardian named Raktabija.
+**   Like Dracon/Gelu she can't be chosen at game start, but can appear in taverns when
+**   "Enable Extension Heroes" (WoG option 100) is on.
+** - Specialty: upgrade only. She can upgrade Naga Rakshasas (3rd Naga upgrade) in her army
+**   into Asuras from the creature info dialog, anywhere on the map - like Gelu does with
+**   Sharpshooters (done with the OnDetermineMonInfoDlgUpgrade event). The game charges the price difference per creature
+**   (Asura 5000 gold + 2 gems - Naga Rakshasa 2400 gold = 2600 gold + 2 gems).
+** - Naga specialists (Fafner) also boost Asuras.
+** - Portraits (HPL007Sh / HPS007Sh) and specialty icon (un44/un32 frame 151): Data/forge and fury.zip.
+**   Specialty texts: herospec.txt row 151 in Data/00 forge and fury.pac.
+**
+** Enabled/disabled in WoG Options -> Custom Scripts (option 953).
+** See also "30 holika - pre.erm" (specialty icon click text).
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(ASU_OPTION)        = 953;
+!#DC(ASU_HERO)          = (HERO_MUTARE); [151]
+!#DC(ASU_SOURCE_MON)    = 211;          [Naga Rakshasa - ResOunD 3rd Naga upgrade]
+!#DC(ASU_TARGET_MON)    = 319;          [Asura]
+!#DC(ASU_SPEC_PICTURE)  = 151;          [Specialty icon frame in UN44/UN32.def (Asura png in Data/forge and fury.zip)]
+!#DC(ASU_COMMANDER_TYPE) = 2;          [Commander type: 2 = Temple Guardian (Tower), see ERM help Format CC]
+
+!#UN:P(ASU_OPTION)/?i^asu_enabled^;
+!#VRi^asu_enabled^|i^cr_hasResound^<>(TRUE)/i^cr_hasACM^<>(TRUE):S(FALSE); [needs Resound + ACM, see "31 forge and fury - dependencies.erm"]
+
+; Named globals are stored in savegames, so re-read the option after a game is started or loaded
+; (this handler comes first in the file, so later OnStartOrLoad handlers already see the value).
+!?FU(OnStartOrLoad);
+!!UN:P(ASU_OPTION)/?i^asu_enabled^;
+!!VRi^asu_enabled^|i^cr_hasResound^<>(TRUE)/i^cr_hasACM^<>(TRUE):S(FALSE); [needs Resound + ACM, see "31 forge and fury - dependencies.erm"]
+
+
+; ============= HERO INFO TABLE ====================================================================
+; The game's hero info table (92 bytes per hero, pointer at 0x67DCE8) still describes Mutare:
+; Overlord class and Dungeon starting creatures. Screens and scripts that read this table
+; (e.g. TrainerX) then show Dungeon data. Patch Holika's entry to Tower.
+
+!?FU(ASU_PatchHeroInfo);
+!!UN:C6806760/4/?(table:y);
+!!VR(rec:y):S(ASU_HERO) *92 +(table);
+
+!!UN:C(rec)/8/4/(HERO_CLASS_ALCHEMIST);                   [class]
+!!UN:C(rec)/12/4/(SKILL_TACTICS) C(rec)/16/4/(SKILL_BASIC); [first secondary skill]
+!!UN:C(rec)/20/4/(SKILL_LEARNING) C(rec)/24/4/(SKILL_BASIC); [second secondary skill]
+!!UN:C(rec)/36/4/(MON_GREMLIN) C(rec)/40/4/(MON_STONE_GARGOYLE) C(rec)/44/4/(MON_STONE_GOLEM); [starting creatures]
+
+!#FU(ASU_PatchHeroInfo)&i^asu_enabled^:P;
+
+!?FU(OnAfterErmInstructions)&i^asu_enabled^;
+!!FU(ASU_PatchHeroInfo):P;
+
+; ============= HERO SETUP =========================================================================
+
+!?FU(OnStartOrLoad)&i^asu_enabled^;
+!!VR(hero:y):S(ASU_HERO);
+
+!!HE(hero):B0/^Holika^;
+!!HE(hero):B1/^Holika, sister of a tyrant king, was blessed with a veil that no fire can burn. Cast out of her homeland, she found refuge among the Naga of the ivory towers and learned the Alchemists' art of binding spirits. Deep beneath the Wizards' foundations she freed Raktabija, the Asura whose every drop of spilled blood rises again as a warrior, and bound her with an oath of service. Since then the greatest Naga Rakshasas kneel before Holika, hoping to be reborn as Asuras.^;
+!!HE(hero):B2/(HERO_CLASS_ALCHEMIST);
+
+; Specialty type: Mutare's original "master of dragons" with 0 Attack / 0 Defense, i.e. no bonus.
+; The native "master of upgrades" type (HE:X6) makes the hero screen show WoG's generic "Special"
+; icon for heroes other than Gelu/Dracon. The Asura upgrade itself is done by the
+; OnDetermineMonInfoDlgUpgrade handler below (Gelu-like, anywhere on the map).
+; The specialty icon (frame 151 of UN44/UN32.def) is the Asura png in Data/forge and fury.zip.
+!!HE(hero):X7/0/0;
+!!SN:H^spec^/(hero)/0/^Asuras^;
+!!SN:H^spec^/(hero)/1/^Creature Bonus: Asuras^;
+!!SN:H^spec^/(hero)/2/^Can upgrade Naga Rakshasas to Asuras.^;
+
+; Point both specialty icons to frame 151 (replaced by the Asura png).
+!!UN:G2/(hero)/1/(ASU_SPEC_PICTURE);        [small icon (UN32)]
+!!UN:G2/(hero)/3/(ASU_SPEC_PICTURE);        [standard icon (UN44)]
+
+; Commander: Tower commander (Temple Guardian) named Raktabija.
+; Its biography is in znpc01.txt (row 151) in Data/00 forge and fury.pac.
+!!CO(hero):T(ASU_COMMANDER_TYPE) H(HERO_CLASS_ALCHEMIST);
+!!VRz-1:S^Raktabija^;
+!!CO(hero):N-1;
+
+; Re-apply the specialty icons whenever the hero screen opens, in case another script resets them
+!?FU(OnOpenHeroScreen)&i^asu_enabled^;
+!!UN:G2/(ASU_HERO)/1/(ASU_SPEC_PICTURE);
+!!UN:G2/(ASU_HERO)/3/(ASU_SPEC_PICTURE);
+
+; ============= UPGRADE BUTTON (Naga Rakshasa -> Asura) ============================================
+
+!?FU(OnDetermineMonInfoDlgUpgrade)&i^asu_enabled^;
+!#VA(monType:x) (upgType:x) (town:x) (hero:x);
+
+!!FU&(monType)<>(ASU_SOURCE_MON):E;
+!!FU&(hero)<>(ASU_HERO):E;
+
+!!VR(upgType):S(ASU_TARGET_MON);
+
+; ============= NAGA SPECIALISTS BOOST ASURAS ======================================================
+; Runs after the ResOunD / Advanced Classes handlers of this hook: the game then checks the
+; returned monster against the hero's specialty creature, so Asura counts as a Naga.
+
+!?FU(tum_Hero_GetSpecMonster_BeforeMonIdCheck)&i^asu_enabled^;
+!#VA(hook:x);
+
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EBP)/4/?(ebp:y) C(ebp)/8/4/?(mon:y);
+!!FU&(mon)<>(ASU_TARGET_MON):E;
+
+!!UN:C(ebp)/8/4/(MON_NAGA);

@@ -1,0 +1,71 @@
+{
+    "wog_options": {
+        "950": {
+            "name": "Creature Tweaks",
+            "hint": "Sharpshooter Rework, gold from Gold/Diamond Golems, Death Stare back for commanders, third upgrade abilities.",
+            "text": "CREATURE TWEAKS\n\nOption 950 (Forge & Fury)\n\n{Sharpshooter Rework}\nUpgrades: Sharpshooter -> Arctic Sharpshooter <-> Lava Sharpshooter (Hill Fort, or in town with Universal Creature Upgrades). Arctic and Lava cost 800 gold (upgrade from Sharpshooter: 400 gold per creature). Switching between Arctic and Lava is free.\n\nArctic Sharpshooter: Sharpshooter Attack +2, Defense +5, damage 11-13, HP 20.\nLava Sharpshooter: Sharpshooter Attack +5, Defense +2, damage 14, HP 20.\nStack experience stat bonuses still apply.\n\nArctic: casts Slow on a surviving target after shooting.\nLava: after shooting, Fire Walls burn on the targeted hex and its 6 neighbours (not on obstacles).\nChance: 10% per experience rank, 100% at rank 10.\n\n{Golem income}\nEvery Gold Golem gives 10 gold and every Diamond Golem 20 gold per day (in heroes' armies and town garrisons).\n\n{Commander Death Stare}\nCommanders with the Poison ability (Advanced Classes Mod) also get the Death Stare back.\n\n{Third upgrade abilities}\nThird upgrades (ResOunD) get the stack experience abilities of their lower upgrade they were missing (e.g. Winged Magog: No Range Penalty, Seraph: Magic Resistance). Pit Master summons Sharp-Horned Demons, Spellweaver clones itself. Hatreds cover every upgrade of the hated creature (e.g. Fairy hates Skeleton Knights too)."
+        },
+        "951": {
+            "name": "Henchmen Tweaks",
+            "hint": "Enhanced Henchmen additions: obstacle-free start hex and henchman growth.",
+            "text": "HENCHMEN TWEAKS\n\nOption 951 (Forge & Fury, requires Enhanced Henchmen)\n\n{Clear start hex}\nIf a battlefield obstacle is on the hex (or hexes) where the henchman is placed at the start of battle, the obstacle is removed.\n\n{Growth}\nAfter every 5 battles won with a living henchman, its quantity grows by 5% (at least +1).\nWith Diplomacy: 5% + 5% per level (Basic 10%, Advanced 15%, Expert 20%, Master 25%, Grandmaster 30%).\nChanging or dismissing the henchman resets the quantity to 1."
+        },
+        "953": {
+            "name": "Holika (Tower Hero)",
+            "hint": "Mutare becomes Holika, a Tower Alchemist who can upgrade Naga Rakshasas into Asuras anywhere, like Gelu.",
+            "text": "HOLIKA\n\nOption 953 (Forge & Fury)\n\nThe extension hero Mutare is replaced by Holika, a female Tower Alchemist with a Temple Guardian commander named Raktabija. Like Dracon or Gelu she can't be chosen at game start, but can appear in taverns when Enable Extension Heroes is on.\n\nSpecialty: she can upgrade Naga Rakshasas (3rd Naga upgrade) in her army into Asuras from the creature info dialog, anywhere on the map - like Gelu does with Sharpshooters. Cost per creature: the price difference (2600 gold + 2 gems by default).\n\nNaga specialists (Fafner) also boost Asuras."
+        },
+        "955": {
+            "name": "Custom Artifacts",
+            "hint": "New artifacts and combinations: Pegasus Harness, Minerjack, Wealth of Erebus, Eye of Providence, Lightning Boots and the Svalinn set.",
+            "text": "CUSTOM ARTIFACTS\n\nOption 955 (Forge & Fury)\n\nCOMBINATIONS OF EXISTING ARTIFACTS\n\n{Pegasus Harness} (neck, 20000) = Necklace of Swiftness + Ring of the Wayfarer + Cape of Velocity. All troops: +4 speed, +1 min/max damage, 50 rounds of Expert Air Shield, 10% chance to avoid melee/ranged damage; the slowest stack gets +5 speed more.\n\n{Minerjack} (misc, 10000) = Inexhaustible Cart of Ore + Inexhaustible Cart of Lumber. +10 Wood and +10 Ore per day.\n\n{Wealth of Erebus} (misc, 30000) = Minerjack + Cornucopia. +10 Wood, Ore, Mercury, Sulfur, Crystal and Gems and +2 Mithril per day. After defeating another player's hero, you take 10% of one of their resources.\n\n{Eye of Providence} (misc, 10000) = Speculum + Spyglass. Scouting radius +5, reveals a radius of 30 at the start of every week, +1 to all primary skills, artillery damage multiplier +5, more scouting events (ACM), Prepare for Battle in every combat without the Scouting skill.\n\n{Lightning Boots} (feet, 9000) = Equestrian's Gloves + Boots of Speed. While worn: +1000 land movement points, +1 speed for all troops, Grandmaster Logistics.\n\nSVALINN SET (new artifacts, found on the map)\n\n{Frostbite Axe} (right hand, 15000): +3 Attack. An enemy that attacks your troops in melee gets Expert Slow for 3 rounds; your melee attacks have a 15% chance to prevent retaliation.\n{Helm of the Jarl} (head, 8000): +3 Defense, +3 Knowledge.\n{Berserker's Byrnie} (torso, 6000): +1 Attack, +1 Defense, +3 Knowledge.\n{Shield of Jormungandr} (left hand, 15000): +7 Defense, +4 Spell Power, +1 Knowledge; poisons all enemy troops for 50 rounds at the start of combat.\n{Svalinn} (left hand, 44000) = all four. All their bonuses (+4 Attack, +11 Defense, +4 Spell Power, +7 Knowledge), your troops are immune to the enemy's harmful Fire spells, and all enemy troops get -1 Attack Speed.\n\nCombinations made of combination artifacts or new artifacts (Wealth of Erebus, Svalinn) are offered when you close the hero screen with all parts equipped. With option 730 (Single-slot Composite Artifacts) no combination can be disassembled."
+        },
+        "730": {
+            "name": "Single-slot Composite Artifacts",
+            "hint": "Single-slot Composite Artifacts",
+            "text": "Single-slot Composite Artifacts\n\nOption 730 [Author - igrik]\n\nThe composite artifacts now require only one slot (without blocking others).\n\nNote: while this option is on, composite artifacts can no longer be disassembled."
+        },
+        "996": {
+            "name": "Attack Speed",
+            "hint": "Every creature has an Attack Speed: in melee, a faster defender strikes before the attacker.",
+            "text": "ATTACK SPEED\n\nOption 996 (Forge & Fury, replaces \"Gnolls Marauders Strike First\" by Berserker / daemon_n / Archer30)\n\nEvery creature has an Attack Speed (shown in the creature window, in the row above Speed; in battle, Health shows \"health(health left)\"). In a melee attack, if the defender's Attack Speed is higher than the attacker's, the defender retaliates BEFORE the attack. Equal or lower: normal order.\n\nNo first strike if the attacker has \"no enemy retaliation\", if the defender has no retaliation left or is blind, petrified or paralyzed. Creatures with unlimited retaliations can strike first against every attack.\n\nCavalier, Champion, Holy Champion: full Attack Speed when charging, half when attacking an adjacent enemy or when defending.\nSlow: -1 Attack Speed (Expert -2). Haste: +1 (Expert +2). Svalinn: -1 for all enemy troops. Never below 1."
+        }
+    },
+    "gem.heroesStartingParameters": {
+        "151": {
+            "hasSpellBook": "1",
+            "startingSpell": "15",
+            "skill0": {
+                "type": "19",
+                "level": "1"
+            },
+            "skill1": {
+                "type": "21",
+                "level": "1"
+            },
+            "army0": {
+                "type": "28",
+                "low": "30",
+                "high": "40"
+            },
+            "army1": {
+                "type": "30",
+                "low": "3",
+                "high": "5"
+            },
+            "army2": {
+                "type": "32",
+                "low": "2",
+                "high": "3"
+            }
+        }
+    },
+    "custom_rules": {
+        "naga_specialist": "{~r}Creature Specialist{~}\n\nIncreases the stats of any @mon1@, @mon2@, @mon3@ or @mon4@ for each level attained. Currently:\nAtt: {+@attack@}\nDef: {+@defense@}\nDamage: {+@damage@}\nHealth: {+@health@%}\nSpeed: +1"
+    },
+    "es": {
+        "996": {
+            "desc": ""
+        }
+    }
+}

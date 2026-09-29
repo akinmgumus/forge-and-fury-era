@@ -1,0 +1,217 @@
+ZVSE2
+
+** EYE OF PROVIDENCE - combination artifact (misc slot)
+**
+** Parts: Speculum (52) + Spyglass (53).
+** When combined, the parts no longer count as equipped, so their own bonuses and the Advanced Classes
+** Mod "Ancient Spyglass" set bonuses are given by this artifact instead (and stronger):
+**   - Scouting radius +5 (the parts gave +1 each)
+**   - +1 Attack, Defense, Spell Power and Knowledge (Emerald config ResOunD/Data/artifacts/283.cfg)
+**   - Artillery before combat: artillery damage multiplier +5 (the parts gave +1 each)
+**   - Scouting events (Advanced Classes Mod, heroes with Scouting): +150 event chance points and
+**     the "ACM Reward" event can always happen (with the parts it was cancelled 1/3 of the time)
+**   - Prepare for Battle at the start of every battle, no Scouting skill needed: one random bonus
+**     for all troops (Attack, Defense, Health or Speed, growing with hero level)
+**   - At the start of every week: reveals the map in a radius of 30 around the hero
+** Price: 10000.
+**
+** Artifact 283, combination slot 25. Icon: artifact.def frame 283 and Emerald's artraits.txt row 283
+** (Data/EmeraldArtifacts.pac and Data/00 forge and fury.pac), png in Data/forge and fury.zip.
+** Enabled/disabled in WoG Options -> Custom Scripts, option 955 "Custom Artifacts" (shared by all new artifacts).
+** See also "30 eye of providence - pre.erm" (scouting event chance).
+** +1 primary skills: Emerald config Data/artifacts/283.cfg (copy in src/emerald cfg).
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(EOP_OPTION)            = 955;       [shared option "Custom Artifacts"]
+!#DC(EOP_ART)               = 283;
+!#DC(EOP_COMBO_SLOT)        = 25;       [ResOunD: 13-22, Pegasus Harness: 23, Minerjack: 24]
+!#DC(EOP_COST)              = 10000;
+!#DC(EOP_ART_CLASS)         = 16;       [Relic]
+!#DC(EOP_ART_POSITION)      = 9;        [Misc slot (ERM Format P2)]
+
+!#DC(EOP_SCOUTING_BONUS)    = 5;        [extra scouting radius]
+!#DC(EOP_WEEKLY_RADIUS)     = 30;       [map reveal radius at the start of each week]
+!#DC(EOP_ARTILLERY_MULT)    = 5;        [extra artillery damage multiplier]
+; Extra ACM scouting event chance points: EOP_PRE_EVENT_CHANCE (150) in "30 eye of providence - pre.erm"
+!#DC(EOP_ACM_REWARD_EVENT)  = 18;       [ACM scouting event "Give ACM Reward"]
+
+!#UN:P(EOP_OPTION)/?i^eop_enabled^;
+!#VRi^eop_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; Named globals are stored in savegames, so re-read the option after a game is started or loaded
+!?FU(OnStartOrLoad);
+!!UN:P(EOP_OPTION)/?i^eop_enabled^;
+!!VRi^eop_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; ============= ARTIFACT SETUP =====================================================================
+
+!?FU(EOP_SetUpArtifact);
+!!UN:A(EOP_ART)/1/(EOP_COST);
+!!UN:A(EOP_ART)/2/(EOP_ART_POSITION);
+!!UN:A(EOP_ART)/3/(EOP_ART_CLASS);
+!!UN:A(EOP_ART)/1;                       [never appears on the map: it is only made from its parts]
+
+!!SN:H^art^/(EOP_ART)/0/^Eye of Providence^;
+!!SN:H^art^/(EOP_ART)/1/^{Eye of Providence}
+
+Forged from the Speculum and the Spyglass, this all-seeing eye watches over every road.
+
+- Scouting radius +5, and at the start of every week the land in a radius of 30 around the hero is revealed.
+- +1 to all primary skills.
+- Artillery before combat deals much more damage (multiplier +5).
+- Scouting events happen more often, and the ACM reward event is never lost.
+- {Prepare for Battle}: at the start of every battle all troops get a random bonus.^;
+
+!!UN:A(EOP_COMBO_SLOT)/(EOP_ART)/(ART_SPECULUM)/(ART_SPYGLASS);
+
+!#FU(EOP_SetUpArtifact)&i^eop_enabled^:P;
+
+!?FU(OnAfterLoadGame)&i^eop_enabled^;
+!!FU(EOP_SetUpArtifact):P;
+
+; ============= HELPERS ============================================================================
+
+!?FU(EOP_HeroHasEye);
+!#VA(hero:x) (result:x);
+
+!!VR(result):S(FALSE);
+!!FU&(hero)<=(NO_HERO):E;
+!!HE(hero):A2/(EOP_ART)/?(count:y)/?(equipped:y);
+!!VR(result)&(equipped)>0:S(TRUE);
+
+; ============= SCOUTING RADIUS +5 AND ACM SCOUTING EVENTS ==========================================
+; On every step (like ResOunD's Mysterious Cave): reveal the normal scouting radius + 5.
+; Runs after the Advanced Classes Mod movement handler.
+
+!?HM-1;
+!!HE-1:N?(hero:y) O?(owner:y);
+
+; Take back the extra event chance points given in "30 eye of providence - pre.erm"
+!!if&i^eop_addedPoints^<>0;
+  !!SN:W^ACM_Reward_Scouting_Chance_%(hero)^/?(points:y);
+  !!VR(points):-i^eop_addedPoints^;
+  !!SN:W^ACM_Reward_Scouting_Chance_%(hero)^/(points);
+  !!VRi^eop_addedPoints^:S0;
+!!en;
+
+!!FU&i^eop_enabled^<>1:E;
+!!FU(EOP_HeroHasEye):P(hero)/?(hasEye:y);
+!!FU&(hasEye)<>(TRUE):E;
+
+!!FU(WOG_Hero_GetScoutingRadius):P(hero)/?(radius:y);
+!!VR(radius):+(EOP_SCOUTING_BONUS);
+!!HE(hero):P?(posX:y)/?(posY:y)/?(posZ:y);
+!!UN:S(posX)/(posY)/(posZ)/(owner)/(radius);
+
+; ACM reward event: with the parts ACM adds it as event number 18 and cancels it 1/3 of the time.
+; ACM saved this step's event roll range; roll the extra event number here, never cancelled.
+!!SN:W^Scouting_Event_Chance_%(hero)^/?(range:y);
+!!FU&(range)<=0:E;                       [hero has no scouting events (no Scouting skill)]
+
+!!VR(roll:y):R0/0/(range);
+!!FU&(roll)<>(EOP_ACM_REWARD_EVENT):E;
+
+!!HE(hero):S(SKILL_SCOUTING)/?(scouting:y) X?(specType:y)/?(specSub:y)/?y99/?y99/?y99/?y99/?y99;
+!!VR(isSpecialist:y):S(FALSE);
+!!VR(isSpecialist)&(specType)=0/(specSub)=(SKILL_SCOUTING):S(TRUE);
+!!FU(Improved_Scouting_Bonus):P(hero)/(scouting)/(owner)/(EOP_ACM_REWARD_EVENT)/(isSpecialist);
+
+; ============= WEEKLY REVEAL ======================================================================
+
+!?FU(OnEveryDay)&i^eop_enabled^/i^timerOnce^=1/i^timerDay^>1;
+!!VR(weekDay:y):Si^timerDay^ -1 %7;
+!!FU&(weekDay)<>0:E;                     [only on the first day of a week]
+
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HEi:O?(owner:y);
+  !!co&(owner)<=(NO_OWNER);
+  !!FU(EOP_HeroHasEye):Pi/?(hasEye:y);
+  !!co&(hasEye)<>(TRUE);
+
+  !!HEi:P?(posX:y)/?(posY:y)/?(posZ:y);
+  !!UN:S(posX)/(posY)/(posZ)/(owner)/(EOP_WEEKLY_RADIUS);
+!!en;
+
+; ============= ARTILLERY BEFORE COMBAT ============================================================
+; Advanced Classes Mod: damage = (1..50 + hero level + 3 * Attack) * multiplier * efficiency.
+; Runs after the ACM function: add EOP_ARTILLERY_MULT more multiplier units.
+
+!?FU(acm_Hero_GetArtilleryMinMaxDamage)&i^eop_enabled^;
+!#VA(heroId:x) (minDamage:x) (maxDamage:x);
+
+!!FU(EOP_HeroHasEye):P(heroId)/?(hasEye:y);
+!!FU&(hasEye)<>(TRUE):E;
+
+!!HE(heroId):E?(exp:y)/?(level:y)/1 F?(attack:y)/?y99/?y99/?y99;
+!!FU(ACM_Warmachine_Efficiency):P(heroId)/?(efficiency:y);
+
+!!VR(minBase:y):S(attack) *3 +(level) +1;
+!!VR(maxBase:y):S(attack) *3 +(level) +50;
+!!VR(minBase):*(EOP_ARTILLERY_MULT) *(efficiency) :100;
+!!VR(maxBase):*(EOP_ARTILLERY_MULT) *(efficiency) :100;
+!!VR(minDamage):+(minBase);
+!!VR(maxDamage):+(maxBase);
+
+; ============= PREPARE FOR BATTLE =================================================================
+; Same bonuses as the Advanced Classes Mod "Prepare for Battle", but without the Scouting skill:
+; 1 Attack +1..4 + level/10, 2 Defense +1..4 + level/10, 3 Health +3..7% + level/7, 4 Speed +1..2 + level/20
+
+!?FU(OnBattleRound)&i^eop_enabled^/i^battle_round^=0;
+!!FU(EOP_PrepareForBattle):P(BATTLE_LEFT) P(BATTLE_RIGHT);
+
+!?FU(EOP_PrepareForBattle);
+!#VA(side:x);
+
+!!BA:H(side)/?(hero:y);
+!!FU(EOP_HeroHasEye):P(hero)/?(hasEye:y);
+!!FU&(hasEye)<>(TRUE):E;
+
+!!HE(hero):E?(exp:y)/?(level:y)/1;
+!!VR(type:y):R0/1/4;
+!!VR(bonus:y)&(type)=1:S1 R3;
+!!VR(bonus)&(type)=2:S1 R3;
+!!VR(bonus)&(type)=3:S3 R4;
+!!VR(bonus)&(type)=4:S1 R1;
+!!VR(levelBonus:y)&(type)<=2:S(level) :10;
+!!VR(levelBonus)&(type)=3:S(level) :7;
+!!VR(levelBonus)&(type)=4:S(level) :20;
+!!VR(bonus):+(levelBonus);
+
+!!VR(first:y):S(BATTLE_ATTACKER_STACK_FIRST);
+!!VR(last:y):S(BATTLE_ATTACKER_STACK_LAST);
+!!VR(first)&(side)=(BATTLE_RIGHT):S(BATTLE_DEFENDER_STACK_FIRST);
+!!VR(last)&(side)=(BATTLE_RIGHT):S(BATTLE_DEFENDER_STACK_LAST);
+
+!!re i/(first)/(last);
+  !!BMi:T?(mon:y) N?(num:y);
+  !!co&(num)<=0;
+  !!co&(mon)>=(MON_CATAPULT)/(mon)<=(MON_ARROW_TOWERS);  [war machines and towers]
+
+  !!BMi&(type)=1:Ad(bonus);
+  !!BMi&(type)=2:Dd(bonus);
+  !!BMi&(type)=4:Sd(bonus);
+
+  !!if&(type)=3;
+    !!BMi:H?(hp:y);
+    !!VR(newHp:y):S(bonus) +100 *(hp) :100;
+    !!VR(newHp)&(newHp)=(hp):+1;
+    !!BMi:H(newHp);
+  !!en;
+!!en;
+
+; Message for human players
+!!HE(hero):O?(owner:y);
+!!OW:I(owner)/?(isAi:y);
+!!FU&(isAi):E;
+
+!!VR(bonusName:z)&(type)=1:S^Attack^;
+!!VR(bonusName)&(type)=2:S^Defense^;
+!!VR(bonusName)&(type)=3:S^%% Health^;
+!!VR(bonusName)&(type)=4:S^Speed^;
+!!VR(msg:z):S^{Prepare for Battle}
+
+The Eye of Providence reveals every move of the enemy. In this battle all troops get:
+
++%(bonus) %(bonusName)^;
+!!IF:M^%(msg)^;

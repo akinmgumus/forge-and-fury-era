@@ -1,0 +1,361 @@
+ZVSE2
+
+** SVALINN SET - four new artifacts and their combination (left hand)
+**
+** Frostbite Axe (285, right hand, 15000):          +3 Attack; FROST (see below)
+** Helm of the Jarl (286, head, 8000):               +3 Defense, +3 Knowledge
+** Berserker's Byrnie (287, torso, 6000):            +1 Attack, +1 Defense, +3 Knowledge
+** Shield of Jormungandr (288, left hand, 15000):    +7 Defense, +4 Spell Power, +1 Knowledge; VENOM
+** Svalinn (289, left hand, 44000 = sum of parts):   +4 Attack, +11 Defense, +4 Spell Power, +7 Knowledge;
+**                                                   FROST, VENOM and FIRE WARD;
+**                                                   -1 Attack Speed for all enemy stacks (in "-2000 attack speed.erm")
+**
+** FROST:     an enemy stack that attacks one of our stacks in melee (not a retaliation) is struck by
+**            Expert Slow for 3 rounds (normal spell immunity / magic resistance apply).
+**            When one of our stacks attacks in melee, 15% chance that the target can't retaliate.
+** VENOM:     at the start of combat, every enemy stack is poisoned for 50 rounds (immunities apply).
+** FIRE WARD: our stacks are immune to the enemy's harmful Fire spells (Fireball, Inferno, Armageddon,
+**            Curse, Misfortune, Berserk, Blind...) and to Fire Wall / Land Mine damage. Friendly Fire
+**            spells (Bloodlust, Fire Shield, Frenzy, Slayer...) still work.
+**
+** Primary skills: Emerald configs ResOunD/Data/artifacts/285-289.cfg (copies in src/emerald cfg).
+** The parts appear on the map. Svalinn is only made from its parts: artifacts above 170 can't be
+** combination parts in the game's system, so this script combines them (like Wealth of Erebus):
+** when a hero screen is closed with all four parts equipped, the player is asked.
+** Icons: artifact.def frames 285-289 and Emerald's artraits.txt rows 285-289
+** (Data/EmeraldArtifacts.pac and Data/00 forge and fury.pac), pngs in Data/forge and fury.zip.
+** Enabled/disabled in WoG Options -> Custom Scripts, option 955 "Custom Artifacts" (shared by all new artifacts).
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(SV_OPTION)             = 955;       [shared option "Custom Artifacts"]
+!#DC(SV_AXE)                = 285;
+!#DC(SV_HELM)               = 286;
+!#DC(SV_BYRNIE)             = 287;
+!#DC(SV_SHIELD)             = 288;
+!#DC(SV_SVALINN)            = 289;
+!#DC(SV_ART_CLASS)          = 16;       [Relic]
+
+!#DC(SV_SLOW_ROUNDS)        = 3;
+!#DC(SV_SLOW_LEVEL)         = 3;        [Expert]
+!#DC(SV_NO_RETAL_CHANCE)    = 15;       [%]
+!#DC(SV_SPELL_POISON)       = 71;       [creature spell Poison]
+!#DC(SV_POISON_ROUNDS)      = 50;
+!#DC(SV_POISON_LEVEL)       = 3;
+
+!#UN:P(SV_OPTION)/?i^sv_enabled^;
+!#VRi^sv_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; Named globals are stored in savegames, so re-read the option after a game is started or loaded
+!?FU(OnStartOrLoad);
+!!UN:P(SV_OPTION)/?i^sv_enabled^;
+!!VRi^sv_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; ============= ARTIFACT SETUP =====================================================================
+
+!?FU(SV_SetUpArt);
+!#VA(art:x) (cost:x) (position:x) (onMap:x);
+
+!!UN:A(art)/1/(cost);
+!!UN:A(art)/2/(position);
+!!UN:A(art)/3/(SV_ART_CLASS);
+!!VR(disabled:y):S(onMap) X1;
+!!UN:A(art)/(disabled);
+
+!?FU(SV_SetUpArtifacts);
+; Positions (ERM Format P2): 1 head, 4 right hand, 5 left hand, 6 torso
+!!FU(SV_SetUpArt):P(SV_AXE)/15000/4/(TRUE);
+!!FU(SV_SetUpArt):P(SV_HELM)/8000/1/(TRUE);
+!!FU(SV_SetUpArt):P(SV_BYRNIE)/6000/6/(TRUE);
+!!FU(SV_SetUpArt):P(SV_SHIELD)/15000/5/(TRUE);
+!!FU(SV_SetUpArt):P(SV_SVALINN)/44000/5/(FALSE);
+
+!!SN:H^art^/(SV_AXE)/0/^Frostbite Axe^;
+!!SN:H^art^/(SV_AXE)/1/^{Frostbite Axe}
+
+A double-headed axe of never-melting ice.
+
++3 Attack.
+An enemy that attacks your troops in melee is struck by Expert Slow for 3 rounds.
+When your troops attack in melee, there is a 15%% chance that the enemy cannot retaliate.
+
+Part of {Svalinn}.^;
+
+!!SN:H^art^/(SV_HELM)/0/^Helm of the Jarl^;
+!!SN:H^art^/(SV_HELM)/1/^{Helm of the Jarl}
+
+The horned helmet of a Norse chieftain.
+
++3 Defense, +3 Knowledge.
+
+Part of {Svalinn}.^;
+
+!!SN:H^art^/(SV_BYRNIE)/0/^Berserker's Byrnie^;
+!!SN:H^art^/(SV_BYRNIE)/1/^{Berserker's Byrnie}
+
+Chainmail over thick wool, with a collar of bear fur.
+
++1 Attack, +1 Defense, +3 Knowledge.
+
+Part of {Svalinn}.^;
+
+!!SN:H^art^/(SV_SHIELD)/0/^Shield of Jormungandr^;
+!!SN:H^art^/(SV_SHIELD)/1/^{Shield of Jormungandr}
+
+The World Serpent coils around this Norse shield, its fangs dripping with venom.
+
++7 Defense, +4 Spell Power, +1 Knowledge.
+At the start of combat, all enemy troops are poisoned for 50 rounds.
+
+Part of {Svalinn}.^;
+
+!!SN:H^art^/(SV_SVALINN)/0/^Svalinn^;
+!!SN:H^art^/(SV_SVALINN)/1/^{Svalinn}
+
+The legendary shield that stands before the sun and protects the world from its fire. Forged from the Frostbite Axe, the Helm of the Jarl, the Berserker's Byrnie and the Shield of Jormungandr.
+
++4 Attack, +11 Defense, +4 Spell Power, +7 Knowledge.
+An enemy that attacks your troops in melee is struck by Expert Slow for 3 rounds.
+When your troops attack in melee, there is a 15%% chance that the enemy cannot retaliate.
+At the start of combat, all enemy troops are poisoned for 50 rounds.
+Your troops are immune to the harmful Fire spells of the enemy.
+All enemy troops get -1 Attack Speed.^;
+
+!#FU(SV_SetUpArtifacts)&i^sv_enabled^:P;
+
+!?FU(OnAfterLoadGame)&i^sv_enabled^;
+!!FU(SV_SetUpArtifacts):P;
+
+; ============= HELPERS ============================================================================
+
+; Does the hero of a battle side have one of two artifacts equipped?
+!?FU(SV_SideHasArt);
+!#VA(side:x) (art1:x) (art2:x) (result:x);
+
+!!VR(result):S(FALSE);
+!!FU&(side)<0:E;
+!!VR(hero:y):Si^battle_hero_%(side)^;
+!!FU&(hero)<=(NO_HERO):E;
+
+!!HE(hero):A2/(art1)/?(count:y)/?(equipped1:y) A2/(art2)/?(count)/?(equipped2:y);
+!!VR(result)|(equipped1)>0/(equipped2)>0:S(TRUE);
+
+; ============= COMBINING ==========================================================================
+
+; Returns the equipped slots of the four parts, or NO_ART_SLOT
+!?FU(SV_FindParts);
+!#VA(hero:x) (slotAxe:x) (slotHelm:x) (slotByrnie:x) (slotShield:x);
+
+!!VR(slotAxe):S(NO_ART_SLOT);
+!!VR(slotHelm):S(NO_ART_SLOT);
+!!VR(slotByrnie):S(NO_ART_SLOT);
+!!VR(slotShield):S(NO_ART_SLOT);
+
+!!re i/(ART_SLOT_EQUIPPED_FIRST)/(ART_SLOT_EQUIPPED_LAST);
+  !!FU(GetArtAtSlot):P(hero)/i/?(art:y)/?(artMod:y);
+  !!VR(slotAxe)&(art)=(SV_AXE):Si;
+  !!VR(slotHelm)&(art)=(SV_HELM):Si;
+  !!VR(slotByrnie)&(art)=(SV_BYRNIE):Si;
+  !!VR(slotShield)&(art)=(SV_SHIELD):Si;
+!!en;
+
+!?FU(SV_HasAllParts);
+!#VA(hero:x) (result:x);
+
+!!VR(result):S(FALSE);
+!!FU(SV_FindParts):P(hero)/?(slotAxe:y)/?(slotHelm:y)/?(slotByrnie:y)/?(slotShield:y);
+!!VR(result)&(slotAxe)<>(NO_ART_SLOT)/(slotHelm)<>(NO_ART_SLOT)/(slotByrnie)<>(NO_ART_SLOT)/(slotShield)<>(NO_ART_SLOT):S(TRUE);
+
+!?FU(SV_Combine);
+!#VA(hero:x);
+
+!!FU(SV_FindParts):P(hero)/?(slotAxe:y)/?(slotHelm:y)/?(slotByrnie:y)/?(slotShield:y);
+!!FU(UnequipArtFromSlot):P(hero)/(slotAxe);
+!!FU(UnequipArtFromSlot):P(hero)/(slotHelm);
+!!FU(UnequipArtFromSlot):P(hero)/(slotByrnie);
+!!FU(UnequipArtFromSlot):P(hero)/(slotShield);
+!!FU(AddArtToHero):P(hero)/(SV_SVALINN)/(NO_ART_MOD)/?(ok:y);
+
+; Re-equipping one of the parts allows asking again
+!?AE1&i^sv_enabled^;
+!!FU&v998<(SV_AXE):E;
+!!FU&v998>(SV_SHIELD):E;
+!!HE-1:N?(hero:y);
+!!VRi^sv_declined_%(hero)^:S(FALSE);
+
+!?FU(OnCloseHeroScreen)&i^sv_enabled^;
+!!HE-1:N?(hero:y);
+!!FU&(hero)<=(NO_HERO):E;
+!!FU&i^sv_declined_%(hero)^:E;
+
+!!FU(SV_HasAllParts):P(hero)/?(hasAll:y);
+!!FU&(hasAll)<>(TRUE):E;
+
+!!HE(hero):O?(owner:y);
+!!OW:I(owner)/?(isAi:y);
+!!FU&(isAi):E;                           [computer players: see the daily check]
+
+!!IF:Q1/(PIC_TYPE_ART)/(SV_SVALINN)/(MSG_TYPE_QUESTION)^Combine the Frostbite Axe, the Helm of the Jarl, the Berserker's Byrnie and the Shield of Jormungandr into {Svalinn}?^;
+
+!!if&1;
+  !!FU(SV_Combine):P(hero);
+!!el;
+  !!VRi^sv_declined_%(hero)^:S(TRUE);
+!!en;
+
+; Computer players combine the parts automatically
+!?FU(OnEveryDay)&i^sv_enabled^/i^timerOnce^=1;
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HEi:O?(owner:y);
+  !!co&(owner)<=(NO_OWNER);
+  !!OW:I(owner)/?(isAi:y);
+  !!co&(isAi)<>(TRUE);
+
+  !!FU(SV_HasAllParts):Pi/?(hasAll:y);
+  !!FU(SV_Combine)&(hasAll):Pi;
+!!en;
+
+; ============= FROST: SLOW ON ENEMY MELEE ATTACKERS / 15% NO RETALIATION ==========================
+; Slow: ERA Scripts calls ES_OnAfterMelee after each melee strike, before the retaliation.
+; No retaliation: SV_BeforeMeleeAttack, called before the attack by "-2000 attack speed.erm".
+
+!?FU(OnBeforeBattleUniversal)&i^sv_enabled^;
+!!re i/0/41;
+  !!VRi^sv_savedRetals_%i^:S-1;
+!!en;
+
+!?FU(ES_OnAfterMelee)&i^sv_enabled^;
+!#VA(atkStack:x) (defStack:x);
+
+!!FU|(atkStack)<0/(defStack)<0:E;
+
+; Only real attacks, not retaliations
+!!BG:N?(currStack:y);
+!!FU&(currStack)<>(atkStack):E;
+
+!!BM(atkStack):I?(atkSide:y) N?(atkNum:y);
+!!BM(defStack):I?(defSide:y) N?(defNum:y);
+!!FU&(atkSide)=(defSide):E;
+
+; Enemy attacked our stack: our stack casts Expert Slow on the attacker (with the spell's animation
+; and sound, like the Dragon Flies' Berserk), then the duration is set to SV_SLOW_ROUNDS
+!!FU(SV_SideHasArt):P(defSide)/(SV_AXE)/(SV_SVALINN)/?(defFrost:y);
+!!if&(defFrost)/(atkNum)>0/(defNum)>0;
+  !!FU(WOG_Battle_CanStackBeAffectedBySpell):P(atkStack)/(SPELL_SLOW)/(defSide)/?(canSlow:y);
+  !!if&(canSlow);
+    !!BM(atkStack):P?(atkPos:y);
+    ; Cast at Advanced level: Expert Slow is a mass spell and would hit every enemy stack.
+    ; Advanced and Expert Slow have the same effect (-50% speed); the level is set to Expert afterwards
+    ; (for the Attack Speed -2).
+    !!BM(defStack):C(SPELL_SLOW)/(atkPos)/(SKILL_ADVANCED)/(SV_SLOW_ROUNDS)/1;
+    !!BM(atkStack):G(SPELL_SLOW)/?(slowRounds:y)/?(slowPower:y);
+    !!BM(atkStack)&(slowRounds)>0:G(SPELL_SLOW)/(SV_SLOW_ROUNDS)/(SV_SLOW_LEVEL);
+  !!en;
+!!en;
+
+; Our stack attacks in melee: 15% chance the target can't retaliate.
+; Called by "-2000 attack speed.erm" right before a melee attack (not for retaliations), so that the
+; target can't strike first (Attack Speed) either.
+!?FU(SV_BeforeMeleeAttack);
+!#VA(atkStack:x) (defStack:x);
+
+!!FU|(atkStack)<0/(defStack)<0:E;
+!!BM(atkStack):I?(atkSide:y) N?(atkNum:y);
+!!BM(defStack):I?(defSide:y) N?(defNum:y);
+!!FU&(atkSide)=(defSide):E;
+!!FU|(defNum)<=0/(atkNum)<=0:E;
+
+!!FU(SV_SideHasArt):P(atkSide)/(SV_AXE)/(SV_SVALINN)/?(atkFrost:y);
+!!FU&(atkFrost)<>(TRUE):E;
+
+!!BM(defStack):R?(retals:y);
+!!FU&(retals)<=0:E;
+
+!!VR(roll:y):R0/0/99;
+!!FU&(roll)>=(SV_NO_RETAL_CHANCE):E;
+
+!!VRi^sv_savedRetals_%(defStack)^&i^sv_savedRetals_%(defStack)^<0:S(retals);
+!!BM(defStack):R0;
+
+!!if&i^battle_isVisible^;
+  !!BM(defStack):T?(type:y);
+  !!VR(isPlural:y):S(defNum) -1 B;
+  !!SN:H^monname^/(type)/(isPlural)/?(monName:z);
+  !!VR(logText:z):S^The frost of the Frostbite Axe stops the %(monName) from retaliating!^;
+  !!MM:S(logText);                      [MM:S only accepts a string variable]
+!!en;
+
+; Give the retaliations back after the action
+!?FU(OnAfterBattleAction)&i^sv_enabled^;
+!!re i/0/41;
+  !!co&i^sv_savedRetals_%i^<0;
+  !!BMi:Ri^sv_savedRetals_%i^;
+  !!VRi^sv_savedRetals_%i^:S-1;
+!!en;
+
+; ============= VENOM: POISON ALL ENEMY STACKS AT THE START OF COMBAT ==============================
+
+!?FU(OnBattleRound)&i^sv_enabled^/i^battle_round^=0;
+!!FU(SV_PoisonEnemies):P(BATTLE_LEFT) P(BATTLE_RIGHT);
+
+!?FU(SV_PoisonEnemies);
+!#VA(side:x);
+
+!!FU(SV_SideHasArt):P(side)/(SV_SHIELD)/(SV_SVALINN)/?(hasVenom:y);
+!!FU&(hasVenom)<>(TRUE):E;
+
+!!VR(first:y):S(BATTLE_DEFENDER_STACK_FIRST);
+!!VR(last:y):S(BATTLE_DEFENDER_STACK_LAST);
+!!VR(first)&(side)=(BATTLE_RIGHT):S(BATTLE_ATTACKER_STACK_FIRST);
+!!VR(last)&(side)=(BATTLE_RIGHT):S(BATTLE_ATTACKER_STACK_LAST);
+
+!!re i/(first)/(last);
+  !!BMi:T?(type:y) N?(num:y);
+  !!co&(num)<=0;
+  !!co&(type)>=(MON_CATAPULT)/(type)<=(MON_ARROW_TOWERS);  [war machines and towers]
+
+  !!FU(WOG_Battle_CanStackBeAffectedBySpell):Pi/(SV_SPELL_POISON)/(side)/?(canPoison:y);
+  !!co&(canPoison)<>(TRUE);
+
+  !!BMi:M(SV_SPELL_POISON)/(SV_POISON_ROUNDS)/(SV_POISON_LEVEL);
+  !!BMi&i^battle_isVisible^:V67;
+!!en;
+
+; ============= FIRE WARD: IMMUNITY TO THE ENEMY'S HARMFUL FIRE SPELLS =============================
+
+; Is this spell, hitting this stack, blocked by Svalinn?
+!?FU(SV_IsFireWarded);
+!#VA(stack:x) (spell:x) (result:x);
+
+!!VR(result):S(FALSE);
+!!FU|(stack)<0/(spell)<0:E;
+!!FU&(spell)=(SPELL_MAGIC_ARROW):E;        [Magic Arrow belongs to all schools]
+
+!!SS(spell):S?(schools:y) O?(spellType:y);
+!!VR(isFire:y):S(schools) &(SPELL_SCHOOL_FIRE);
+!!FU&(isFire)=0:E;
+
+!!BM(stack):I?(side:y);
+!!FU(SV_SideHasArt):P(side)/(SV_SVALINN)/(SV_SVALINN)/?(warded:y);
+!!FU&(warded)<>(TRUE):E;
+
+; Fire Wall and Land Mine always hurt; other spells only when cast by the enemy and not friendly
+!!if|(spell)=(SPELL_FIRE_WALL)/(spell)=(SPELL_LAND_MINE);
+  !!VR(result):S(TRUE);
+!!el;
+  !!FU&(spellType)=1:E;                  [friendly spell]
+  !!FU&i^battle_current_side^=(side):E;  [cast by our own side]
+  !!VR(result):S(TRUE);
+!!en;
+
+; Non-damage spells (Curse, Misfortune, Berserk, Blind...): resisted 100%
+!?FU(OnDwarfMagicResistance)&i^sv_enabled^;
+!!MR:S?(spell:y) N?(stack:y);
+!!FU(SV_IsFireWarded):P(stack)/(spell)/?(warded:y);
+!!MR&(warded):F100;
+
+; Damage spells (Fireball, Inferno, Armageddon, Fire Wall, Land Mine): no damage
+!?FU(OnMagicCorrectedResistance)&i^sv_enabled^;
+!!MR:S?(spell:y) N?(stack:y);
+!!FU(SV_IsFireWarded):P(stack)/(spell)/?(warded:y);
+!!MR&(warded):F0;

@@ -1,0 +1,5 @@
+# Original files of other mods (not ours to redistribute) and large reference images
+src/backup/
+src/artifact references/*.png
+src/artifact references/*.jpg
+__pycache__/

@@ -1,0 +1,25 @@
+{
+	"caption": {
+		"en_US": "Forge & Fury"
+	},
+	"description": {
+		"full": {
+			"en_US": "README.md"
+		},
+		"short": {
+			"en_US": "New artifacts, a new hero, Attack Speed, creature reworks and fixes for ResOunD, Advanced Classes Mod, Enhanced Henchmen and more. Toggle each in WoG Options -> Custom Scripts (options 950, 951, 953, 955, 996)."
+		}
+	},
+	"author": "akinm",
+	"homepage": "",
+	"mod_version": "1.0",
+	"priority": 0,
+	"compatibility": {
+		"class": "default",
+		"entries": {}
+	},
+	"platform": "era",
+	"info_version": "1.0",
+	"plugins": {},
+	"category": "gameplay"
+}

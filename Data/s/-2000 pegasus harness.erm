@@ -1,0 +1,138 @@
+ZVSE2
+
+** PEGASUS HARNESS - combination artifact (neck)
+**
+** Parts: Necklace of Swiftness (97) + Ring of the Wayfarer (69) + Cape of Velocity (99).
+** When combined, the parts no longer count as equipped, so the game's own speed bonuses and the
+** Advanced Classes Mod "Pegasus Harness" set bonuses of the parts are given by this artifact instead:
+**   - all creatures in the army: +4 combat speed
+**   - 10% chance to completely dodge a melee or ranged attack
+**   - the slowest creature in the army: +5 combat speed
+** Extra bonuses:
+**   - all creatures in the army: expert Air Shield for 50 rounds
+**   - all creatures in the army: +1 minimum and +1 maximum damage
+** War machines and arrow towers get no bonus.
+**
+** Artifact 280, combination slot 23. Icon: artifact.def frame 280 (Data/00 forge and fury.pac) and
+** Data/Defs/artifact.def/0_280.png (Data/forge and fury.zip).
+** Enabled/disabled in WoG Options -> Custom Scripts, option 955 "Custom Artifacts" (shared by all new artifacts).
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(PH_OPTION)             = 955;       [shared option "Custom Artifacts"]
+!#DC(PH_ART)                = 280;
+!#DC(PH_COMBO_SLOT)         = 23;       [ResOunD uses combination slots 13-22]
+!#DC(PH_COST)               = 20000;
+!#DC(PH_ART_CLASS)          = 16;       [Relic]
+!#DC(PH_ART_POSITION)       = 3;        [Neck (ERM Format P2)]
+
+!#DC(PH_SPEED_ALL)          = 4;
+!#DC(PH_SPEED_SLOWEST)      = 5;
+!#DC(PH_DODGE_CHANCE)       = 10;       [%]
+!#DC(PH_DAMAGE_BONUS)       = 1;
+!#DC(PH_AIR_SHIELD_ROUNDS)  = 50;
+!#DC(PH_AIR_SHIELD_LEVEL)   = 3;        [Expert]
+
+!#UN:P(PH_OPTION)/?i^ph_enabled^;
+!#VRi^ph_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; Named globals are stored in savegames, so re-read the option after a game is started or loaded
+!?FU(OnStartOrLoad);
+!!UN:P(PH_OPTION)/?i^ph_enabled^;
+!!VRi^ph_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; ============= ARTIFACT SETUP =====================================================================
+; Done at script start and after loading a game, like ResOunD does for its combination artifacts.
+
+!?FU(PH_SetUpArtifact);
+!!UN:A(PH_ART)/1/(PH_COST);
+!!UN:A(PH_ART)/2/(PH_ART_POSITION);
+!!UN:A(PH_ART)/3/(PH_ART_CLASS);
+!!UN:A(PH_ART)/1;                       [never appears on the map: it is only made from its parts]
+
+!!SN:H^art^/(PH_ART)/0/^Pegasus Harness^;
+!!SN:H^art^/(PH_ART)/1/^{Pegasus Harness}
+
+Forged from the Necklace of Swiftness, the Ring of the Wayfarer and the Cape of Velocity, this harness lends the speed of the pegasus to every creature in your army.
+
+- All your creatures: +4 combat speed, +1 minimum and maximum damage and expert Air Shield for 50 rounds.
+- Your slowest creature: an extra +5 combat speed.
+- 10%% chance to completely dodge any melee or ranged attack.^;
+
+!!UN:A(PH_COMBO_SLOT)/(PH_ART)/(ART_NECKLACE_OF_SWIFTNESS)/(ART_RING_OF_THE_WAYFARER)/(ART_CAPE_OF_VELOCITY);
+
+!#FU(PH_SetUpArtifact)&i^ph_enabled^:P;
+
+!?FU(OnAfterLoadGame)&i^ph_enabled^;
+!!FU(PH_SetUpArtifact):P;
+
+; ============= HELPERS ============================================================================
+
+; Returns TRUE if the hero of the given battle side wears the Pegasus Harness
+!?FU(PH_SideHasHarness);
+!#VA(side:x) (result:x);
+
+!!VR(result):S(FALSE);
+!!BA:H(side)/?(hero:y);
+!!FU&(hero)<=(NO_HERO):E;
+
+!!HE(hero):A2/(PH_ART)/?(count:y)/?(equipped:y);
+!!VR(result)&(equipped)>0:S(TRUE);
+
+; ============= BATTLE START BONUSES ===============================================================
+
+!?FU(OnBattleRound)&i^ph_enabled^/i^battle_round^=0;
+!!FU(PH_ApplyBattleBonuses):P(BATTLE_LEFT) P(BATTLE_RIGHT);
+
+!?FU(PH_ApplyBattleBonuses);
+!#VA(side:x);
+
+!!FU(PH_SideHasHarness):P(side)/?(hasHarness:y);
+!!FU&(hasHarness)<>(TRUE):E;
+
+!!VR(first:y):S(BATTLE_ATTACKER_STACK_FIRST);
+!!VR(last:y):S(BATTLE_ATTACKER_STACK_LAST);
+!!VR(first)&(side)=(BATTLE_RIGHT):S(BATTLE_DEFENDER_STACK_FIRST);
+!!VR(last)&(side)=(BATTLE_RIGHT):S(BATTLE_DEFENDER_STACK_LAST);
+
+!!VR(slowest:y):S(NO_STACK);
+!!VR(slowestSpeed:y):S(INT_MAX);
+
+!!re i/(first)/(last);
+  !!BMi:T?(type:y) N?(num:y);
+  !!co&(num)<=0;
+  !!co&(type)>=(MON_CATAPULT)/(type)<=(MON_ARROW_TOWERS);  [war machines and towers]
+
+  !!BMi:Sd(PH_SPEED_ALL);
+  !!BMi:U1/d(PH_DAMAGE_BONUS) U2/d(PH_DAMAGE_BONUS);
+  !!BMi:M(SPELL_AIR_SHIELD)/(PH_AIR_SHIELD_ROUNDS)/(PH_AIR_SHIELD_LEVEL);
+
+  !!BMi:S?(speed:y);
+  !!if&(speed)<(slowestSpeed);
+    !!VR(slowestSpeed):S(speed);
+    !!VR(slowest):Si;
+  !!en;
+!!en;
+
+!!BM(slowest)&(slowest)<>(NO_STACK):Sd(PH_SPEED_SLOWEST);
+
+; ============= DODGE ==============================================================================
+; Same effect as the Advanced Classes Mod "Air Dodge" of the Pegasus Harness set.
+
+!?FU(OnMonsterPhysicalDamage)&i^ph_enabled^;
+!!BG:A?(action:y);
+!!FU&(action)<>(BATTLE_ACTION_WALK_AND_ATTACK)/(action)<>(BATTLE_ACTION_SHOOT):E;
+
+!!MF:N?(stack:y);
+!!BM(stack):I?(side:y);
+!!FU(PH_SideHasHarness):P(side)/?(hasHarness:y);
+!!FU&(hasHarness)<>(TRUE):E;
+
+!!VR(roll:y):R0/0/99;
+!!FU&(roll)>=(PH_DODGE_CHANCE):E;
+
+!!MF:E0 F0;
+!!VRz-1:S^AIRSHELD^;
+!!SN&i^battle_isVisible^:Pz-1;
+!!SN:T^AC_Misc.Air Dodge^/?(msg:z);
+!!BU&i^battle_isVisible^:M(msg);

@@ -1,0 +1,160 @@
+Bonus	Bonus	
+(short)	(long)	Right Click Text
+Archery	Secondary Skill Bonus: Archery	Receives a 3% per level bonus to Archery skill percentage.
+Archers	Creature Bonus: Archers	Increases the Attack, Defense, Health and Speed skills of any Archers or Marksmen for each level attained after 2nd level.
+Griffins	Creature Bonus: Griffins	Increases the Attack, Defense, Health and Speed skills of any Griffins or Royal Griffins or each level attained after 3rd level.
+Nobility	Secondary Skill Bonus: Nobility	Receives a 3% per level bonus to Nobility skill percentage.
+Commander	Creature Bonus: Commander	Increases the power of commanders!
+Swordsmen	Creature Bonus: Swordsmen	Increases the Attack, Defense, Health and Speed skills of any Swordsmen or Crusaders for each level attained after 4th level.
+Ballista	Artillery Bonus: Ballista	Increases the Attack and Defense skill of any Ballista for each level attained after 4th level.
+Cavaliers	Creature Bonus: Cavaliers	Increases the Attack, Defense, Health and Speed skills of any Cavaliers or Champions for each level attained after 6th level.
+First Aid	Secondary Skill Bonus: First Aid	Has stronger healing and increases the HP of his creatures with every hero level.
+Bless	Spell Bonus: Bless	"Casts Bless with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Weakness	Spell Bonus: Weakness	"Casts Weakness with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Frost Ring	Spell Bonus: Frost Ring	"Casts Frost Ring with increased effect and gets additional casts per combat."
+Monks	Creature Bonus: Monks	Increases the Attack, Defense, Health and Speed skills of any Monks or Zealots for each level attained after 5th level.
+Water Magic	Secondary Skill Bonus: Water Magic	Water Spells deal +15% damage and has a chance to cast more water spells per combat.
+Prayer	Spell Bonus: Prayer	"Casts Prayer with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
++350 Gold	+350 Gold each day	Increases kingdom's income by 350 gold per day and produces extra ressources daily.
+Armorer	Secondary Skill Bonus: Armorer	Receives a 3% per level bonus to Armorer skill percentage.
+Dwarves	Creature Bonus: Dwarves	Increases the Attack, Defense, Health and Speed skills of any Dwarves of Battle Dwarves for each level attained after 2nd level.
++350 Gold	+350 Gold each day	Increases kingdom's income by 350 gold per day and produces extra ressources daily.
+Dendroids	Creature Bonus: Dendroids	Increases the Attack, Defense, Health and Speed skills of any Dendroid Guards or Soldiers for each level attained after 5th level.
+Resistance	Secondary Skill Bonus: Resistance	Receives a 3% per level bonus to Resistance skill percentage.
+Elves	Creature Bonus: Elves	Increases the Attack, Defense, Health and Speed skills of any Wood Elves or Grand Elves for each level attained after 3rd level.
+Unicorns	Creature Bonus: Unicorns	Increases the Attack, Defense, Health and Speed skills of any Unicorns or War Unicorns for each level attained after 6th level.
+Logistics	Secondary Skill Bonus: Logistics	Receives a 3% per level bonus to Logistics skill percentage.
+Wisdom	Secondary Skill Bonus: Wisdom	Starts with expert Wisdom and spells have increased crit chance.
+Cure	Spell Bonus: Cure	"Has a stronger Cure spell, Master bonus is doubled and starts with +2 Spell Power."
+Intelligence	Secondary Skill Bonus: Intelligence	Receives a 3% per level bonus to Intelligence skill percentage and can spent additional spell points during combat to improve spells.
+First Aid	Secondary Skill Bonus: First Aid	Has stronger healing and increases the HP of his creatures with every hero level.
+Water Magic	Secondary Skill Bonus: Water Magic	Water Spells deal +15% damage and has a chance to cast more water spells per combat.
+Diplomacy	Secondary Skill Bonus: Diplomacy	Further improves the Diplomacy skill with every hero level.
+Ice Bolt	Spell Bonus: Ice Bolt	"Casts Ice Bolt with increased effect and gets additional casts per combat."
+Pegasi	Creature Bonus: Pegasi	Increases the Attack, Defense, Health and Speed skills of any Pegasi or Silver Pegasi for each level attained after 4th level.
+Gargoyles	Creature Bonus: Gargoyles	Increases the Attack, Defense, Health and Speed skills of any Stone or Obsidian Gargoyles for each level attained after 2nd level.
+Scholar	Secondary Skill Bonus: Scholar	Regenerates additional spell points when meeting allied heroes and has increased crit chance and damage with spells.
+Golems	Creature Bonus: Golems	Increases the Attack, Defense, Health and Speed skills of any Stone or Iron Golems for each level attained after 3rd level.
+Armorer	Secondary Skill Bonus: Armorer	Receives a 3% per level bonus to Armorer skill percentage.
+Commander	Creature Bonus: Commander	Increases the power of commanders!
+Nagas	Creature Bonus: Nagas	Increases the Attack, Defense, Health and Speed skills of any Nagas or Naga Queens for each level attained after 6th level.
+M. Gremlins	Creature Bonus: M. Gremlins	Increases the Attack, Defense, Health and Speed skills of any Gremlin or Master Gremlin for each level attained after 2th level.
+Genies	Creature Bonus: Genies	Increases the Attack, Defense, Health and Speed skills of any Genies or Master Genies for each level attained after 5th level.
+Hypnotize	Spell Bonus: Hypnotize	"Casts Hypnotize with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Mysticism	Secondary Skill Bonus: Mysticism	Receives a 3% per level bonus to Mysticism skill and can spent additional spell points during combat to improve spells.
+Air Magic	Secondary Skill Bonus: Air Magic	Air Spells deal +15% damage and has a chance to cast more air spells per combat.
+Diplomacy	Secondary Skill Bonus: Diplomacy	Further improves the Diplomacy skill with every hero level.
+Magi	Creature Bonus: Magi	Increases the Attack, Defense, Health and Speed skills of any Magi or Arch Magi for each level attained after 4th level.
+Ch. Lightning	Spell Bonus: Chain Lightning	"Casts Chain Lightning with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+
+Haste	Spell Bonus: Haste	"Casts Haste with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
++350 Gold	+350 Gold each day	Increases kingdom's income by 350 gold per day and produces extra ressources daily.
+Scouting	Secondary Skill Bonus: Scouting	Further improves his Scouting ability.
+Efreet	Creature Bonus: Efreet	Increases the Attack, Defense, Health and Speed skills of any Efreet or Efreet Sultans for each level attained after 6th level.
+Demons	Creature Bonus: Demons	Increases the Attack, Defense, Health and Speed skills of any Demons or Horned Demons for each level attained after 4th level.
+Imps	Creature Bonus: Imps	Increases the Attack, Defense, Health and Speed skills of any Imps or Familiars for each level attained after 1st level.
++350 Gold	+350 Gold each day	Increases kingdom's income by 350 gold per day and produces extra ressources daily.
+Gogs	Creature Bonus: Gogs	Increases the Attack, Defense, Health and Speed skills of any Gogs or Magogs for each level attained after 2nd level.
+Ballista	Artillery Bonus: Ballista	Increases the Attack and Defense skill of any Ballista for each level attained after 4th level.
+Pit Fiends	Creature Bonus: Pit Fiends	Increases the Attack, Defense, Health and Speed skills of any Pit Fiends or Lords for each level attained after 5th level.
+Intelligence	Secondary Skill Bonus: Intelligence	Receives a 3% per level bonus to Intelligence skill percentage and can spent additional spell points during combat to improve spells.
+Inferno	Spell Bonus: Inferno	"Casts Inferno with increased effect and gets additional casts per combat."
+Mysticism	Secondary Skill Bonus: Mysticism	Receives a 3% per level bonus to Mysticism skill and can spent additional spell points during combat to improve spells.
+Weakness	Spell Bonus: Weakness	"Casts Weakness with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Pathfinding	Secondary Skill Bonus: Pathfinding	Further improves her Pathfinding ability!
+Bloodlust	Spell Bonus: Bloodlust	"Casts Bloodlust with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Sorcery	Secondary Skill Bonus: Sorcery	Receives a 3% per level bonus to Sorcery skill percentage and has a chance to cast additional damage spells during combat.
+Crit Damage	Spell Bonus: Crit Damage	Has increased crit damage for all spells with every hero level.
+Walking Dead	Creature Bonus: Walking Dead	Increases the Attack, Defense, Health and Speed skills of any Walking Dead or Zombies for each level attained after 2nd level.
+Vampires	Creature Bonus: Vampires	Increases the Attack, Defense, Health and Speed skills of any Vampires or Vampire Lords for each level attained after 4th level.
+Liches	Creature Bonus: Liches	Increases the Attack, Defense, Health and Speed skills of any Liches or Power Liches for each level attained after 5th level.
+Wights	Creature Bonus: Wights	Increases the Attack, Defense, Health and Speed skills of any Wights or Wraiths for each level attained after 3rd level.
+Black Knights	Creature Bonus: Black Knights	Increases the Attack, Defense, Health and Speed skills of any Black Knights or Dread Knights for each level attained after 6th level.
+Necromancy	Secondary Skill Bonus: Necromancy	Receives a 3% per level bonus to Necromancy skill percentage.
+Offense	Secondary Skill Bonus: Offense	Receives a 3% per level bonus to Offense skill percentage.
+Skeletons	Creature Bonus: Skeletons	Increases the Attack, Defense, Health and Speed skills of any Skeletons or Skeleton Warriors for each level attained after 1st level.
+Death Ripple	Spell Bonus: Death Ripple	"Casts Death Ripple with increased effect and gets additional casts per combat."
+Meteor Shower	Spell Bonus: Meteor Shower	"Casts Meteor Shower with increased effect and gets additional casts per combat."
+Sorcery	Secondary Skill Bonus: Sorcery	Receives a 3% per level bonus to Sorcery skill percentage and has a chance to cast additional damage spells during combat.
+Earth Magic	Secondary Skill Bonus: Earth Magic	Earth Spells deal +15% damage and has a chance to cast more earth spells per combat.
+Animate Dead	Spell Bonus: Animate Dead	"Casts Animate Dead with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Stone Skin	Spell Bonus: Stone Skin	"When cast, Stone Skin is increased +3, bonus increases with higher hero level"
+Learning	Secondary Skill Bonus: Learning	Receives a 3% per level bonus to Learning skill percentage and has additional chance for primary skill point each level up.
++350 Gold	+350 Gold each day	Increases kingdom's income by 350 gold per day and produces extra ressources daily.
+Harpies	Creature Bonus: Harpies	Increases the Attack, Defense, Health and Speed skills of any Harpies or Harpy Hags for each level attained after 2nd level.
+Ballista	Artillery Bonus: Ballista	Warmachine specialists gain Warmachine efficiency per hero level.
+Minotaurs	Creature Bonus: Minotaurs	Increases the Attack, Defense, Health and Speed skills of any Minotaurs or Minotaur Kings for each level attained after 5th level.
+Beholders	Creature Bonus: Beholders	Increases the Attack, Defense, Health and Speed skills of any Beholders or Evil Eyes for each level attained after 3rd level.
+Medusas	Creature Bonus: Medusas	Increases the Attack, Defense, Health and Speed skills of any Medusas or Medusa Queens for each level attained after 4rd level.
+Logistics	Secondary Skill Bonus: Logistics	Receives a 3% per level bonus to Logistics skill percentage.
+Manticores	Creature Bonus: Manticores	Increases the Attack, Defense, Health and Speed skills of any Manticores or Scorpicores for each level attained after 6th level.
+Troglodytes	Creature Bonus: Troglodytes	Increases the Attack, Defense, Health and Speed skills of any Troglodytes or Infernal Troglodytes for each level attained after 1st level.
+Summoner	Spell Bonus: Resurrection	All summoning spells are cast with increased effect. Receives a 3% per level bonus to all summoning spells.
+Mysticism	Secondary Skill Bonus: Mysticism	Receives a 3% per level bonus to Mysticism skill and can spent additional spell points during combat to improve spells.
+Sorcery	Secondary Skill Bonus: Sorcery	Receives a 3% per level bonus to Sorcery skill percentage and has a chance to cast additional damage spells during combat.
+Resurrection	Spell Bonus: Resurrection	"Casts Resurrection with increased effect, based on his level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Earth Magic	Secondary Skill Bonus: Earth Magic	Earth Spells deal +15% damage and has a chance to cast more earth spells per combat.
+Meteor Shower	Spell Bonus: Meteor Shower	"Casts Meteor Shower with increased effect and gets additional casts per combat."
+Estates	Secondary Skill Bonus: Estates	Receives a 3% per level bonus to Estates skill and produces extra ressources daily.
+Stone Skin	Spell Bonus: Stone Skin	"When cast, Stone Skin is increased +3, bonus increases with higher hero level"
+Cyclopes	Creature Bonus: Cyclopses	Increases the Attack, Defense, Health and Speed skills of any Cyclopses or Cyclops Lords for each level attained after 6th level.
+Ballista	Artillery Bonus: Ballista	Increases the Attack and Defense skill of any Ballista for each level attained after 4th level.
+Orcs	Creature Bonus: Orcs	Increases the Attack, Defense, Health and Speed skills of any Orcs or Orc Chieftains for each level attained after 3rd level.
+Rocs	Creature Bonus: Rocs	Increases the Attack, Defense, Health and Speed skills of any Rocs or Thunderbirds for each level attained after 5th level.
+Goblins	Creature Bonus: Goblins	Increases the Attack, Defense, Health and Speed skills of any Goblins or Hobgoblins for each level attained after 1st level.
+Ogres	Creature Bonus: Ogres	Increases the Attack, Defense, Health and Speed skills of any Ogres or Ogre Magi for each level attained after 4th level.
+Offense	Secondary Skill Bonus: Offense	Receives a 3% per level bonus to Offense skill percentage.
+Wolf Riders	Creature Bonus: Wolf Riders	Increases the Attack, Defense, Health and Speed skills of any Wolf Riders or Raiders for each level attained after 2nd level.
+Sorcery	Secondary Skill Bonus: Sorcery	Receives a 3% per level bonus to Sorcery skill percentage and has a chance to cast additional damage spells during combat.
+Commander	Creature Bonus: Commander	Increases the power of commanders!
+Logistics	Secondary Skill Bonus: Logistics	Receives a 3% per level bonus to Logistics skill percentage.
+Haste	Spell Bonus: Haste	"Casts Haste with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Precision	Spell Bonus: Precision	"Casts Precision with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Scouting	Secondary Skill Bonus: Scouting	Further improves his Scouting ability.
+Fire Magic	Secondary Skill Bonus: Fire Magic	Fire Spells deal +15% damage and has a chance to cast more earth spells per combat.
+Lightning Bolt	Spell Bonus: Lightning Bolt	"Casts Lightning Bolt with increased effect and gets additional casts per combat."
+Basilisks	Creature Bonus: Basilisks	Increases the Attack, Defense, Health and Speed skills of any Basilisks or Greater Basilisks for each level attained after 4th level.
+Gnolls	Creature Bonus: Gnolls	Increases the Attack, Defense, Health and Speed skills of any Gnolls or Gnoll Marauders for each level attained after 1st level.
+Lizardmen	Creature Bonus: Lizardmen	Increases the Attack, Defense, Health and Speed skills of any Lizardmen or Lizard Warriors for each level attained after 2nd level.
+Armorer	Secondary Skill Bonus: Armorer	Receives a 3% per level bonus to his Armorer skill percentage.
+Gorgons	Creature Bonus: Gorgons	Increases the Attack, Defense, Health and Speed skills of any Gorgons or Mighty Gorgons for each level attained after 5th level.
+Serpent Flies	Creature Bonus: Serpent Flies	Increases the Attack, Defense, Health and Speed skills of any Serpent or Dragon Flies for each level attained after 3rd level.
+Warfare	Secondary Skill Bonus: Warfare	Further improves the Warfare skill!
+Wyverns	Creature Bonus: Wyverns	Increases the Attack, Defense, Health and Speed skills of any Wyverns or Wyvern Monarchs for each level attained after 6th level.
+Weakness	Spell Bonus: Weakness	"Casts Weakness with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Mysticism	Secondary Skill Bonus: Mysticism	Receives a 3% per level bonus to Mysticism skill and can spent additional spell points during combat to improve spells.
+Nobility	Secondary Skill Bonus: Nobility	Receives a 3% per level bonus to Nobility skill percentage.
+First Aid	Secondary Skill Bonus: First Aid	Has stronger healing and increases the HP of his creatures with every hero level.
+Pathfinding	Secondary Skill Bonus: Pathfinding	Further improves her Pathfinding ability!
+Sorcery	Secondary Skill Bonus: Sorcery	Receives a 3% per level bonus to Sorcery skill percentage and has a chance to cast additional damage spells during combat.
+Intelligence	Secondary Skill Bonus: Intelligence	Receives a 3% per level bonus to Intelligence skill percentage and can spent additional spell points during combat to improve spells.
+Luck	Secondary Skill Bonus: Luck	Receives a 10%+1% per level bonus damage to Luck Strikes in combat.
+Commander	Creature Bonus: Commander	Increases the power of commanders!
+Summoner	Spell Bonus: Earth Elementals	All summoning spells are cast with increased effect. Receives a 3% per level bonus to all summoning spells.
+Firebird	Creature Bonus: Firebird	Increases the HP of all Firebirds and gets 1 Firebird each week for free.
+Warfare	Secondary Skill Bonus: Warfare	Further improves the Warfare skill!
+Psychic Ele.	Creature Bonus: Psychic Elementals	Increases the Attack, Defense, Health and Speed skills of any Psychic Elementals or Magic Elementals for each level attained after 6nd level.
+Earth Ele.	Creature Bonus: Earth Elementals	Increases the Attack, Defense, Health and Speed skills of any Earth Elementals or Magma Elementals for each level attained after 5nd level.
+Fire Ele.	Creature Bonus: Fire Elementals	Increases the Attack, Defense, Health and Speed skills of any Fire Elementals or Energy Elementals for each level attained after 4nd level.
+Water Ele.	Creature Bonus: Water Elementals	Increases the Attack, Defense, Health and Speed skills of any Water Elementals or Ice Elementals for each level attained after 3nd level.
+Fire Wall	Spell Bonus: Fire Wall	Damage from Fire Walls is doubled.
+Haste	Spell Bonus: Haste	"Casts Haste with increased effect, based on hero level compared to the level of the target unit (the bonus is greater when used on weaker units)."
+Magic Arrow	Spell Bonus: Magic Arrow	"When cast, Magic Arrow damage is increased 50% and can cast additional Magic Arrows during combat."
+Stone Skin	Spell Bonus: Stone Skin	"When cast, Stone Skin is increased +3, bonus increases with higher hero level"
+Fireball	Spell Bonus: Fireball	"Casts Fireball with increased effect and gets additional casts per combat."
+Air Elementals	Creature Bonus: Air Elementals	"Air/Storm elementals receive +1 Att, +2 Def, and +2 Dmg."
+Learning	Secondary Skill Bonus: Learning	Receives a 3% per level bonus to Learning skill percentage and has additional chance for primary skill point each level up.
++350 Gold	+350 Gold each day	Increases kingdom's income by 350 gold per day and produces extra ressources daily.
+Speed	Creature Bonus: Speed	All creatures receive +2 speed.
+Fire Magic	Secondary Skill Bonus: Grandmaster Fire Magic	Starts with Grandmaster Fire Magic.
+Swordsmen	Creature Bonus: Swordsmen	Increases the Attack, Defense, Health and Speed skills of any Swordsmen or Crusaders for each level attained after 4th level.
+Enchanters	Creature Bonus: Enchanters	Can upgrade Monks or Zealots and Magi or Arch Magi to Enchanters.
+Sharpshooters	Creature Bonus: Sharpshooters	Can upgrade Archers or Marksmen and Wood Elves or Grand Elves to Sharpshooters.
+Behemoths	Creature Bonus: Behemoths	"Behemoths or Ancient Behemoths receive +5 Att, +5 Def, +10 Dmg."
+Black Knights	Creature Bonus: Black Knights	"Black Knights or Dread Knights receive +5 Att, +5 Def, and +10 Dmg."
+Asuras	Creature Bonus: Asuras	Can upgrade Naga Rakshasas to Asuras.
+Swordsmen	Creature Bonus: Swordsmen	Increases the Attack, Defense, Health and Speed skills of any Swordsmen or Crusaders for each level attained after 4th level.
+Dragons	Creature Bonus: Dragons	"All dragons receive +5 Att, +5 Def."
+Ogres	Creature Bonus: Ogres	Increases the Attack, Defense, Health and Speed skills of any Ogre or Ogre Mage for each level attained after 4th level.
+Devils	Creature Bonus: Devils	"Devils and Arch Devils receive +4 Attack, +2 Defense, and +1 Speed."
+		 

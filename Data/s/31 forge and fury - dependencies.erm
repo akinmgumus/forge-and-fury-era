@@ -1,0 +1,30 @@
+ZVSE2
+
+** FORGE & FURY - DEPENDENCY CHECK
+**
+** Forge & Fury is an add-on for several mods. Every feature that needs another mod checks one of
+** these flags and switches itself off when that mod is not enabled, so the rest still works:
+**
+**   i^cr_hasResound^    ResOunD (Emerald artifacts, Third Upgrade Mod creatures)
+**   i^cr_hasACM^        Advanced Classes Mod
+**   i^cr_hasHenchmen^   Enhanced Henchmen
+**   i^cr_hasEraScripts^ ERA Scripts (option 996, replaced by Attack Speed)
+**   i^cr_hasEasyCheats^ Easy Cheats
+**
+** A mod counts as enabled when one of its script files is visible in the game's virtual file
+** system (only enabled mods are mapped there). The "31" prefix makes this script load before
+** all other Forge & Fury scripts.
+
+!?FU(CR_CheckDependencies);
+!!FU(FileExists):P^Data/s/Third Upgrade Mod.erm^/?i^cr_hasResound^;
+!!FU(FileExists):P^Data/s/advanced classes skills.erm^/?i^cr_hasACM^;
+!!FU(FileExists):P^Data/s/1000 wog - henchmen consts.erm^/?i^cr_hasHenchmen^;
+!!FU(FileExists):P^Data/s/option 996 - gnolls-marauders strike first.erm^/?i^cr_hasEraScripts^;
+!!FU(FileExists):P^Data/s/easy cheats.erm^/?i^cr_hasEasyCheats^;
+
+!#FU(CR_CheckDependencies):P;
+
+; Named globals are stored in savegames: check again after a game is started or loaded
+; (this handler runs before the OnStartOrLoad handlers of the other Forge & Fury scripts).
+!?FU(OnStartOrLoad);
+!!FU(CR_CheckDependencies):P;

@@ -1,0 +1,183 @@
+ZVSE2
+
+** HENCHMEN GROWTH (add-on for Enhanced Henchmen)
+**
+** 1. No obstacle on the henchman's starting hex(es): an obstacle there is removed
+**    before the henchman is placed.
+** 2. Henchman quantity grows: after every 5 battles won with a living henchman,
+**    quantity increases by 5% (minimum +1). With Diplomacy the rate is
+**    5% + 5% per Diplomacy level (Basic 10%, Advanced 15%, Expert 20%,
+**    Master 25%, Grandmaster 30% - Master/Grandmaster from Advanced Classes Mod).
+**    Changing or dismissing the henchman resets the quantity to 1.
+**
+** The "-2000" prefix makes this script load after Enhanced Henchmen, so its handlers
+** run after the original ones for the same function/event.
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(HG_WINS_PER_GROWTH)      = 5;   [Battles to win for one growth step]
+!#DC(HG_BASE_PCT)             = 5;   [Growth % without Diplomacy]
+!#DC(HG_PCT_PER_DIPLOMACY)    = 5;   [Extra growth % per Diplomacy level]
+!#DC(HG_BATTLE_CAP_MULTIPLIER) = 2;  [Max quantity inside battle = quantity * this (original mod: 1 -> 2)]
+
+; Enabled/disabled in WoG Options -> Custom Scripts
+!#DC(HG_OPTION_CLEAR_HEX) = 951;
+!#DC(HG_OPTION_GROWTH)    = 951;       [both parts share option 951 "Henchmen Tweaks"]
+!#UN:P(HG_OPTION_CLEAR_HEX)/?i^hg_clearHexEnabled^;
+!#VRi^hg_clearHexEnabled^|i^cr_hasHenchmen^<>(TRUE):S(FALSE); [needs Henchmen, see "31 forge and fury - dependencies.erm"]
+!#UN:P(HG_OPTION_GROWTH)/?i^hg_growthEnabled^;
+!#VRi^hg_growthEnabled^|i^cr_hasHenchmen^<>(TRUE):S(FALSE); [needs Henchmen, see "31 forge and fury - dependencies.erm"]
+
+; Named globals are stored in savegames, so re-read the option after a game is started or loaded
+; (this handler comes first in the file, so later OnStartOrLoad handlers already see the value).
+!?FU(OnStartOrLoad);
+!!UN:P(HG_OPTION_CLEAR_HEX)/?i^hg_clearHexEnabled^;
+!!VRi^hg_clearHexEnabled^|i^cr_hasHenchmen^<>(TRUE):S(FALSE); [needs Henchmen, see "31 forge and fury - dependencies.erm"]
+!!UN:P(HG_OPTION_GROWTH)/?i^hg_growthEnabled^;
+!!VRi^hg_growthEnabled^|i^cr_hasHenchmen^<>(TRUE):S(FALSE); [needs Henchmen, see "31 forge and fury - dependencies.erm"]
+
+; ============= HELPERS ============================================================================
+
+; Returns the current henchman quantity of a hero (at least 1).
+; Resets the progress if the henchman type has changed.
+!?FU(hg_GetHenchCount);
+!#VA(hero:x) (count:x);
+
+!!IF:W(hero);
+!!VR(mon:y):Sw118;
+
+; hg_mon stores (monster id + 1), so 0 means "never set" and Pikeman (id 0) still works
+!!VR(storedMon:y):Si^hg_mon_%(hero)^ -1;
+
+!!if|(mon)<=(NO_MON)/(mon)<>(storedMon);
+  !!VRi^hg_mon_%(hero)^:S(mon) +1;
+  !!VRi^hg_count_%(hero)^:S1;
+  !!VRi^hg_wins_%(hero)^:S0;
+  !!VRi^hg_totalWins_%(hero)^:S0;
+!!en;
+
+!!VR(count):Si^hg_count_%(hero)^;
+!!VR(count)&(count)<1:S1;
+
+; Diplomacy level 0-5 (4-5 only with Advanced Classes Mod)
+!?FU(hg_GetDiplomacyLevel);
+!#VA(hero:x) (level:x);
+
+!!HE(hero):S(SKILL_DIPLOMACY)/?(level);
+!!FU(acm_GetSecSkillLevel)&(level)>=(SKILL_EXPERT):P(hero)/(SKILL_DIPLOMACY)/?(level);
+
+; ============= 1. NO OBSTACLE ON HENCHMAN HEX =====================================================
+; Runs after the original hench_GetHenchPosition, which has already set (position).
+
+!?FU(hench_GetHenchPosition)&i^hg_clearHexEnabled^;
+!#VA(side:x) (mon:x) (position:x);
+
+!!FU(hg_ClearHex):P(position);
+
+!!MA:X(mon)/?(monFlags:y);
+!!VR(isWide:y):S(monFlags) &(MON_FLAG_WIDE);
+
+!!if&(isWide)<>0;
+  !!VR(tailHex:y)&(side)=(BATTLE_LEFT):S(position) -1;
+  !!VR(tailHex)&(side)=(BATTLE_RIGHT):S(position) +1;
+  !!FU(hg_ClearHex):P(tailHex);
+!!en;
+
+!?FU(hg_ClearHex);
+!#VA(hex:x);
+
+!!FU|(hex)<=(BATTLE_HEX_FIRST)/(hex)>=(BATTLE_HEX_LAST):E;
+!!BU:O(hex)/?(obstacleFlags:y);
+!!FU(CR_RemoveObstacleSafe)&(obstacleFlags)<>0:P(hex);  [see "-2000 fixes.erm"]
+
+; ============= 2. HENCHMAN QUANTITY ===============================================================
+; Runs after the original hench_ManageHenchStats, which sets the quantity to 1.
+
+!?FU(hench_ManageHenchStats)&i^hg_growthEnabled^;
+!#VA(stack:x) (side:x) (hero:x);
+
+!!FU(hg_GetHenchCount):P(hero)/?(count:y);
+!!BM(stack):N(count) B(count);
+!!VRi^hg_battleCount_%(side)^:S(count);
+
+; Runs after the original hench_ManageDeadOrAlive, which caps the quantity to 2.
+; Restore the quantity stored by "30 henchmen growth - pre.erm".
+!?FU(hench_ManageDeadOrAlive)&i^hg_growthEnabled^;
+!#VA(stack:x) (side:x);
+
+!!FU&(stack)<=(NO_STACK):E;
+!!VR(preNum:y):Si^hg_preNum_%(side)^;
+!!FU&(preNum)<=2:E;                     [original code did not change anything]
+
+!!VR(cap:y):Si^hg_battleCount_%(side)^ *(HG_BATTLE_CAP_MULTIPLIER);
+!!VR(cap)&(cap)<2:S2;
+
+!!if&(preNum)<=(cap);
+  !!BM(stack):N(preNum) Li^hg_preLost_%(side)^;
+!!el;
+  !!BM(stack):N(cap) L0;
+!!en;
+
+; ============= 3. GROWTH AFTER WON BATTLES ========================================================
+; Runs after the Enhanced Henchmen OnAfterBattleUniversal handler.
+; A side counts as winner if its hero gained experience in this battle
+; (the same signal Enhanced Henchmen uses; losing or fleeing heroes get no experience).
+
+!?FU(OnAfterBattleUniversal)&i^hench_enabled^/i^hg_growthEnabled^;
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!FU(hg_ProcessBattleResult):Pi;
+!!en;
+
+; Reset per-battle data (set again by hench_ManageHenchStats in the next battle)
+!!VRi^hg_battleCount_0^:S0;
+!!VRi^hg_battleCount_1^:S0;
+
+!?FU(hg_ProcessBattleResult);
+!#VA(side:x);
+
+!!VR(hero:y):Si^battle_hero_%(side)^;
+!!FU&(hero)<=(NO_HERO):E;
+!!FU&i^hg_battleCount_%(side)^<=0:E;   [henchman was not on the battlefield]
+
+!!IF:W(hero);
+!!FU|w118<=(NO_MON)/w119<>(TRUE):E;     [no henchman or it died]
+
+!!HE(hero):E?(expAfter:y);
+!!FU&(expAfter)<=i^hench_heroExp_%(side)^:E;
+
+!!FU(hg_GetHenchCount):P(hero)/?(count:y);
+!!VRi^hg_wins_%(hero)^:+1;
+!!VRi^hg_totalWins_%(hero)^:+1;
+!!FU&i^hg_wins_%(hero)^<(HG_WINS_PER_GROWTH):E;
+
+!!VRi^hg_wins_%(hero)^:S0;
+
+!!FU(hg_GetDiplomacyLevel):P(hero)/?(diplomacy:y);
+!!VR(pct:y):S(diplomacy) *(HG_PCT_PER_DIPLOMACY) +(HG_BASE_PCT);
+!!VR(gain:y):S(count) *(pct) :100;
+!!VR(gain)&(gain)<1:S1;
+!!VR(newCount:y):S(count) +(gain);
+!!VRi^hg_count_%(hero)^:S(newCount);
+
+!!HE(hero):O?(owner:y);
+!!OW:I(owner)/?(isAi:y);
+!!VR(winsNeeded:y):S(HG_WINS_PER_GROWTH);
+!!IF&(isAi)<>(TRUE):M^Your henchman grows stronger: %(count) -> %(newCount) (+%(pct)%% every %(winsNeeded) victories).^;
+
+; ============= 4. HENCHMAN INFO DIALOG (banner click in hero screen) ==============================
+; The Enhanced Henchmen dialog ends with %Z1. While the dialog is being built
+; ("30 henchmen growth - pre.erm" sets i^hg_inHenchDlg^), extra lines are appended to z1
+; right after hench_GetHenchLevelDetails is called, before the dialog is shown.
+
+!?FU(hench_GetHenchLevelDetails)&i^hg_inHenchDlg^;
+!#VA(hero:x);
+
+!!FU(hg_GetHenchCount):P(hero)/?(count:y);
+!!VR(totalWins:y):Si^hg_totalWins_%(hero)^;
+!!VR(winsLeft:y):S(HG_WINS_PER_GROWTH) -i^hg_wins_%(hero)^;
+
+!!VRz1:+^{Victories with henchman} : %(totalWins)  {Next growth in} : %(winsLeft)
+{Henchman quantity} : %(count)^;
+
+!?FU(hench_ShowHenchDlg);
+!!VRi^hg_inHenchDlg^:S(FALSE);

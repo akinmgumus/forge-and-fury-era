@@ -1,0 +1,26 @@
+ZVSE2
+
+** EYE OF PROVIDENCE - part that must run BEFORE the Advanced Classes Mod scripts
+**
+** Scouting events: on every step, the Advanced Classes Mod subtracts the hero's
+** "ACM_Reward_Scouting_Chance" points from its event roll range (fewer points = rarer events).
+** For a hero with the Eye of Providence, add EOP_PRE_EVENT_CHANCE points here, just before ACM reads
+** them; "-2000 eye of providence.erm" takes them back after ACM's movement handler.
+
+!#DC(EOP_PRE_OPTION)        = 955;       [shared option "Custom Artifacts"]
+!#DC(EOP_PRE_ART)           = 283;
+!#DC(EOP_PRE_EVENT_CHANCE)  = 150;
+
+!?HM-1;
+!!VRi^eop_addedPoints^:S0;
+!!UN:P(EOP_PRE_OPTION)/?(enabled:y);
+!!FU|(enabled)<>1/i^cr_hasResound^<>(TRUE)/i^cr_hasACM^<>(TRUE):E;
+
+!!HE-1:N?(hero:y);
+!!HE(hero):A2/(EOP_PRE_ART)/?(count:y)/?(equipped:y);
+!!FU&(equipped)<=0:E;
+
+!!SN:W^ACM_Reward_Scouting_Chance_%(hero)^/?(points:y);
+!!VR(points):+(EOP_PRE_EVENT_CHANCE);
+!!SN:W^ACM_Reward_Scouting_Chance_%(hero)^/(points);
+!!VRi^eop_addedPoints^:S(EOP_PRE_EVENT_CHANCE);

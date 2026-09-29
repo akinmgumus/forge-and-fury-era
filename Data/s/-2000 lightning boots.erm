@@ -1,0 +1,187 @@
+ZVSE2
+
+** LIGHTNING BOOTS - combination artifact (feet slot)
+**
+** Parts: Equestrian's Gloves (70) + Boots of Speed (98).
+** When combined, the parts no longer count as equipped: their movement bonus (+300 / +600) and the
+** Advanced Classes Mod "Priest of the Light" set piece (Boots of Speed) are gone. Instead, only while
+** the boots are equipped (not in the backpack):
+**   - +1000 land movement points
+**   - all creatures of the hero's army: +1 combat speed (not war machines)
+**   - the hero has Grandmaster Logistics (Advanced Classes Mod): a hero without Logistics or with a
+**     lower level gets Expert Logistics + the Master and Grandmaster upgrades; when the boots are
+**     taken off, the hero's own Logistics level comes back.
+** Price: the sum of its parts (3000 + 6000).
+**
+** Artifact 284, combination slot 26. Icon: artifact.def frame 284 and Emerald's artraits.txt row 284
+** (Data/EmeraldArtifacts.pac and Data/00 forge and fury.pac), png in Data/forge and fury.zip.
+** Enabled/disabled in WoG Options -> Custom Scripts, option 955 "Custom Artifacts" (shared by all new artifacts).
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(LB_OPTION)             = 955;       [shared option "Custom Artifacts"]
+!#DC(LB_ART)                = 284;
+!#DC(LB_COMBO_SLOT)         = 26;       [ResOunD: 13-22, Pegasus Harness: 23, Minerjack: 24, Eye of Providence: 25]
+!#DC(LB_COST)               = 9000;
+!#DC(LB_ART_CLASS)          = 16;       [Relic]
+!#DC(LB_ART_POSITION)       = 8;        [Feet (ERM Format P2)]
+
+!#DC(LB_MOVEMENT_BONUS)     = 1000;     [land movement points]
+!#DC(LB_SPEED_BONUS)        = 1;        [combat speed of all creatures]
+!#DC(LB_MAX_SKILLS)         = 10;       [secondary skill slots (10SSkills)]
+
+!#UN:P(LB_OPTION)/?i^lb_enabled^;
+!#VRi^lb_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; Named globals are stored in savegames, so re-read the option after a game is started or loaded
+!?FU(OnStartOrLoad);
+!!UN:P(LB_OPTION)/?i^lb_enabled^;
+!!VRi^lb_enabled^|i^cr_hasResound^<>(TRUE):S(FALSE); [needs Resound, see "31 forge and fury - dependencies.erm"]
+
+; ============= ARTIFACT SETUP =====================================================================
+
+!?FU(LB_SetUpArtifact);
+!!UN:A(LB_ART)/1/(LB_COST);
+!!UN:A(LB_ART)/2/(LB_ART_POSITION);
+!!UN:A(LB_ART)/3/(LB_ART_CLASS);
+!!UN:A(LB_ART)/1;                        [never appears on the map: it is only made from its parts]
+
+!!SN:H^art^/(LB_ART)/0/^Lightning Boots^;
+!!SN:H^art^/(LB_ART)/1/^{Lightning Boots}
+
+Forged from the Equestrian's Gloves and the Boots of Speed, these boots carry their wearer like a bolt of lightning.
+
+While worn:
+- +1000 land movement points.
+- All creatures in the army get +1 Speed in combat.
+- The hero has Grandmaster Logistics.^;
+
+!!UN:A(LB_COMBO_SLOT)/(LB_ART)/(ART_EQUESTRIANS_GLOVES)/(ART_BOOTS_OF_SPEED);
+
+!#FU(LB_SetUpArtifact)&i^lb_enabled^:P;
+
+!?FU(OnAfterLoadGame)&i^lb_enabled^;
+!!FU(LB_SetUpArtifact):P;
+
+; ============= HELPERS ============================================================================
+
+; Is the artifact equipped? (change = +1 / -1 when called from OnEquipArt / OnUnequipArt, because
+; there the artifact is not yet / still in its slot)
+!?FU(LB_IsEquipped);
+!#VA(hero:x) (change:x) (result:x);
+
+!!VR(result):S(FALSE);
+!!FU&(hero)<=(NO_HERO):E;
+!!HE(hero):A2/(LB_ART)/?(count:y)/?(equipped:y);
+!!VR(equipped):+(change);
+!!VR(result)&(equipped)>0:S(TRUE);
+
+; ============= GRANDMASTER LOGISTICS ==============================================================
+; Hero variables (kept in savegames on purpose, they belong to the hero):
+;   i^lb_granted_<hero>^  TRUE while the boots give the skill
+;   i^lb_level_<hero>^, i^lb_master_<hero>^, i^lb_grandmaster_<hero>^  the hero's own values
+
+!?FU(LB_SyncLogistics);
+!#VA(hero:x) (change:x);
+
+!!FU&(hero)<=(NO_HERO):E;
+!!FU(LB_IsEquipped):P(hero)/(change)/?(wearing:y);
+!!VR(wearing)&i^lb_enabled^<>1:S(FALSE);  [option switched off: give the hero's own Logistics back]
+!!VR(granted:y):Si^lb_granted_%(hero)^;
+
+!!if&(wearing)/(granted)<>(TRUE);
+  !!HE(hero):S(SKILL_LOGISTICS)/?(level:y);
+  !!SN:W^H3_Logistics_0_Hero%(hero)^/?(master:y);
+  !!SN:W^H3_Logistics_1_Hero%(hero)^/?(grandmaster:y);
+  !!FU&(level)>=(SKILL_EXPERT)/(master)=1/(grandmaster)=1:E;   [already Grandmaster]
+
+  ; A new skill needs a free secondary skill slot
+  !!if&(level)=0;
+    !!VR(numSkills:y):S0;
+    !!re i/0/27;
+      !!HE(hero):Si/?(skillLevel:y);
+      !!VR(numSkills)&(skillLevel)>0:+1;
+    !!en;
+    !!FU&(numSkills)>=(LB_MAX_SKILLS):E;
+  !!en;
+
+  !!VRi^lb_level_%(hero)^:S(level);
+  !!VRi^lb_master_%(hero)^:S(master);
+  !!VRi^lb_grandmaster_%(hero)^:S(grandmaster);
+  !!VRi^lb_granted_%(hero)^:S(TRUE);
+
+  !!HE(hero):S(SKILL_LOGISTICS)/(SKILL_EXPERT);
+  !!SN:W^H3_Logistics_0_Hero%(hero)^/1;
+  !!SN:W^H3_Logistics_1_Hero%(hero)^/1;
+!!el&(wearing)<>(TRUE)/(granted);
+  !!HE(hero):S(SKILL_LOGISTICS)/i^lb_level_%(hero)^;
+  !!SN:W^H3_Logistics_0_Hero%(hero)^/i^lb_master_%(hero)^;
+  !!SN:W^H3_Logistics_1_Hero%(hero)^/i^lb_grandmaster_%(hero)^;
+  !!VRi^lb_granted_%(hero)^:S(FALSE);
+!!en;
+
+!?FU(OnEquipArt)&i^lb_enabled^/v998=(LB_ART);
+!!HE-1:N?(hero:y);
+!!FU(LB_SyncLogistics):P(hero)/1;
+
+!?FU(OnUnequipArt)&i^lb_enabled^/v998=(LB_ART);
+!!HE-1:N?(hero:y);
+!!FU(LB_SyncLogistics):P(hero)/-1;
+
+; Safety checks (combining the parts, trading between heroes, option switched off)
+!?FU(OnCloseHeroScreen);
+!!HE-1:N?(hero:y);
+!!FU(LB_SyncLogistics):P(hero)/0;
+
+!?FU(OnEveryDay)&i^timerOnce^=1;
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!FU(LB_SyncLogistics):Pi/0;
+!!en;
+
+!?FU(OnBeforeBattleUniversal)&i^lb_enabled^;
+!!re i/(BATTLE_LEFT)/(BATTLE_RIGHT);
+  !!FU(LB_SyncLogistics):Pi^battle_hero_%i^/0;
+!!en;
+
+; ============= +1000 LAND MOVEMENT POINTS =========================================================
+; ERA Scripts calls this function when a hero's movement points for the day are set (final result).
+
+!?FU(ES_OnSetHeroMovementPoints)&i^lb_enabled^;
+!#VA(hook:x);
+
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EBX)/(UNC_INT)/?(heroStruct:y);
+!!UN:C(heroStruct)/26/(UNC_INT)/?(hero:y);
+
+!!FU(LB_IsEquipped):P(hero)/0/?(wearing:y);
+!!FU&(wearing)<>(TRUE):E;
+
+!!HE(hero):P?(posX:y)/?(posY:y)/?(posZ:y);
+!!TR(posX)/(posY)/(posZ):T?(terrain:y)/?i/?i/?i/?i/?i/?i/?i;
+!!FU&(terrain)=8:E;                      [on water: no bonus]
+
+!!VR(extraMp:y):S(LB_MOVEMENT_BONUS);
+!!VR(extraMp)&i^wog_101_map_rule_10_isEnabled^:*2;   [WoG map rule: double movement]
+!!UN:C(hook)/(STRUCT_HOOK_CONTEXT_EAX)/(UNC_INT)/d(extraMp);
+
+; ============= +1 COMBAT SPEED ====================================================================
+
+!?FU(OnBattleRound)&i^lb_enabled^/i^battle_round^=0;
+!!FU(LB_ApplySpeed):P(BATTLE_LEFT) P(BATTLE_RIGHT);
+
+!?FU(LB_ApplySpeed);
+!#VA(side:x);
+
+!!FU(LB_IsEquipped):Pi^battle_hero_%(side)^/0/?(wearing:y);
+!!FU&(wearing)<>(TRUE):E;
+
+!!VR(first:y):S(BATTLE_ATTACKER_STACK_FIRST);
+!!VR(last:y):S(BATTLE_ATTACKER_STACK_LAST);
+!!VR(first)&(side)=(BATTLE_RIGHT):S(BATTLE_DEFENDER_STACK_FIRST);
+!!VR(last)&(side)=(BATTLE_RIGHT):S(BATTLE_DEFENDER_STACK_LAST);
+
+!!re i/(first)/(last);
+  !!BMi:T?(type:y) N?(num:y);
+  !!co&(num)<=0;
+  !!co&(type)>=(MON_CATAPULT)/(type)<=(MON_ARROW_TOWERS);  [war machines and towers]
+  !!BMi:Sd(LB_SPEED_BONUS);
+!!en;

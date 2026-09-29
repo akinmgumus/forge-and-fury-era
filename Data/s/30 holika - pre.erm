@@ -1,0 +1,59 @@
+ZVSE2
+
+** HOLIKA - SPECIALTY ICON CLICK (option 953)
+**
+** Advanced Classes Mod shows its own "Dragon Specialist" text when the specialty icon of
+** Mutare (151) is clicked. The "30" prefix makes this handler run before the Advanced Classes
+** one: it shows Holika's text and changes the click type, so the Advanced Classes handlers
+** exit without showing theirs.
+
+!?CM2&i^asu_enabled^;
+!!CM:F?(flags:y) I?(item:y) S?(subtype:y) T?(type:y);
+!!FU|(item)<>118/(type)<>512/(subtype)=13:E;   [not a click on the specialty icon]
+!!FU&(flags)<>0/(flags)<>512:E;                [not a left or right click]
+
+!!HE(CURRENT_HERO):N?(hero:y);
+!!FU&(hero)<>(HERO_MUTARE):E;          [Holika (Mutare slot)]
+
+!!CM:R0 T0;                                    [disable standard reaction, hide click from later handlers]
+
+!!VR(text:z):S^{Asura Upgrade}
+
+Holika can upgrade Naga Rakshasas in her army into Asuras, anywhere on the map. The cost is the price difference between the two creatures.^;
+
+!!VR(msgType:y):S(MSG_TYPE_MES);
+!!VR(msgType)&(flags)=512:S(MSG_TYPE_POPUP);
+!!IF:M1/(msgType)/(text);
+
+** NAGA SPECIALISTS (FAFNER) - SPECIALTY ICON CLICK (option 953)
+**
+** Naga specialists also boost Asuras (see "-2000 asura upgrade.erm"). Advanced Classes Mod
+** lists only Nagas, Naga Queens and Naga Rakshasas in its "Creature Specialist" text, so the
+** same dialog is shown here with Asuras added, and the Advanced Classes handlers are skipped.
+
+!?CM2&i^asu_enabled^;
+!!CM:F?(flags:y) I?(item:y) S?(subtype:y) T?(type:y);
+!!FU|(item)<>118/(type)<>512/(subtype)=13:E;   [not a click on the specialty icon]
+!!FU&(flags)<>0/(flags)<>512:E;                [not a left or right click]
+
+!!HE(CURRENT_HERO):N?(hero:y);
+!!HE(hero):X?(specType:y)/?(specMon:y);
+!!FU&(specType)<>1:E;                          [not a creature specialist]
+!!FU&(specMon)<>(MON_NAGA)/(specMon)<>(MON_NAGA_QUEEN)/(specMon)<>211:E; [not a Naga specialist]
+
+!!CM:R0 T0;                                    [disable standard reaction, hide click from later handlers]
+
+; Same values as the Advanced Classes Mod dialog
+!!FU(ACM_GetSpecMonsterStats):P(hero)/(MON_NAGA)/?(attack:y)/?(defense:y)/?(damage:y)/?(health:y);
+
+!!SN:H^monname^/(MON_NAGA)/1/?(mon1:z);
+!!SN:H^monname^/(MON_NAGA_QUEEN)/1/?(mon2:z);
+!!SN:H^monname^/211/1/?(mon3:z);
+!!SN:H^monname^/319/1/?(mon4:z);
+
+!!SN:T^custom_rules.naga_specialist^/?(text:z)/^mon1^/(mon1)/^mon2^/(mon2)/^mon3^/(mon3)/^mon4^/(mon4)/
+  ^attack^/(attack)/^defense^/(defense)/^damage^/(damage)/^health^/(health);
+
+!!VR(msgType:y):S(MSG_TYPE_MES);
+!!VR(msgType)&(flags)=512:S(MSG_TYPE_POPUP);
+!!IF:M1/(msgType)/(text);

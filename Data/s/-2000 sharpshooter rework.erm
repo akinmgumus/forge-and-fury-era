@@ -1,0 +1,215 @@
+ZVSE2
+
+** SHARPSHOOTER REWORK
+**
+** - Upgrade chain: Sharpshooter -> Arctic Sharpshooter <-> Lava Sharpshooter
+**   (Hill Fort, or in town when Universal Creature Upgrades is enabled).
+**   Arctic and Lava cost 800 gold each: Sharpshooter (400) -> Arctic costs 400 per creature,
+**   switching between Arctic and Lava is free.
+** - Arctic Sharpshooter: Sharpshooter Att +2 / Def +5, damage 11-13, HP 20.
+** - Lava Sharpshooter:   Sharpshooter Att +5 / Def +2, damage 14-14, HP 20.
+**   Stack experience stat bonuses (HP/Att/Def/damage/speed per rank) still apply on top.
+** - Arctic Sharpshooter: casts Slow on a surviving target after shooting.
+**   Chance: 10% per experience rank (rank 10 = 100%), via stack experience.
+** - Lava Sharpshooter: after shooting, Fire Walls burn on the targeted hex and its 6 neighbours
+**   (7 hexes, obstacles skipped). Chance: 10% per experience rank (rank 10 = 100%).
+**
+** The "-2000" prefix makes this script load after all other mods, so these
+** settings override ResOunD / WoG defaults.
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(SSR_CHANCE_PER_RANK)        = 10;  [Lava Fire Wall: % chance per experience rank]
+!#DC(SSR_FIREWALL_POWER_DIVISOR) = 10;  [Fire Wall spell power = Lava stack size / this (min 1)]
+!#DC(SSR_STACK_EXP_SLOT)         = 7;   [First stack experience ability slot searched for Arctic Slow]
+!#DC(SSR_UPGRADE_HP)             = 20;  [Hit points of Arctic and Lava Sharpshooters]
+!#DC(SSR_UPGRADE_GOLD)           = 800; [Gold cost of Arctic and Lava Sharpshooters (upgrade = difference)]
+
+; Enabled/disabled in WoG Options -> Custom Scripts (option 950)
+!#DC(SSR_OPTION) = 950;
+!#UN:P(SSR_OPTION)/?i^ssr_enabled^;
+
+; Named globals are stored in savegames, so re-read the option after a game is started or loaded
+; (this handler comes first in the file, so later OnStartOrLoad handlers already see the value).
+!?FU(OnStartOrLoad);
+!!UN:P(SSR_OPTION)/?i^ssr_enabled^;
+
+; ============= UPGRADES AND STATS =================================================================
+
+!?FU(OnAfterErmInstructions)&i^ssr_enabled^;
+!!MA:U(MON_SHARPSHOOTER)/(MON_ARCTIC_SHARPSHOOTER);
+!!MA:U(MON_ARCTIC_SHARPSHOOTER)/(MON_LAVA_SHARPSHOOTER);
+!!MA:U(MON_LAVA_SHARPSHOOTER)/(MON_ARCTIC_SHARPSHOOTER);
+
+!!MA:A(MON_SHARPSHOOTER)/?(att:y);
+!!MA:D(MON_SHARPSHOOTER)/?(def:y);
+
+!!VR(arcticAtt:y):S(att) +2;
+!!VR(arcticDef:y):S(def) +5;
+!!MA:A(MON_ARCTIC_SHARPSHOOTER)/(arcticAtt);
+!!MA:D(MON_ARCTIC_SHARPSHOOTER)/(arcticDef);
+!!MA:M(MON_ARCTIC_SHARPSHOOTER)/11;
+!!MA:E(MON_ARCTIC_SHARPSHOOTER)/13;
+!!MA:P(MON_ARCTIC_SHARPSHOOTER)/(SSR_UPGRADE_HP);
+!!MA:C(MON_ARCTIC_SHARPSHOOTER)/(RES_GOLD)/(SSR_UPGRADE_GOLD);
+
+!!VR(lavaAtt:y):S(att) +5;
+!!VR(lavaDef:y):S(def) +2;
+!!MA:A(MON_LAVA_SHARPSHOOTER)/(lavaAtt);
+!!MA:D(MON_LAVA_SHARPSHOOTER)/(lavaDef);
+!!MA:M(MON_LAVA_SHARPSHOOTER)/14;
+!!MA:E(MON_LAVA_SHARPSHOOTER)/14;
+!!MA:P(MON_LAVA_SHARPSHOOTER)/(SSR_UPGRADE_HP);
+!!MA:C(MON_LAVA_SHARPSHOOTER)/(RES_GOLD)/(SSR_UPGRADE_GOLD);
+
+; ============= DESCRIPTIONS =======================================================================
+
+!?FU(OnAfterErmInited)&i^ssr_enabled^;
+!!SN:H^monname^/(MON_ARCTIC_SHARPSHOOTER)/2/?(desc:z);
+!!SN:H^monname^/(MON_ARCTIC_SHARPSHOOTER)/2/^%(desc) Slow after shot: 10%% per exp rank.^;
+
+!!SN:H^monname^/(MON_LAVA_SHARPSHOOTER)/2/?(desc);
+!!SN:H^monname^/(MON_LAVA_SHARPSHOOTER)/2/^%(desc) Fire Walls around target after shot: 10%% per exp rank.^;
+
+; ============= ARCTIC: SLOW AFTER SHOT (stack experience) =========================================
+; Ability 99 = "Cast non-direct spell after attack" (used by WoG for shooters, e.g. Beholder,
+; Lizardman). The game handles resistance/immunity and only casts on a surviving target.
+; Uses the first free ability slot (6-19), so the original WoG abilities of the creature are kept.
+; Runs after Stack Experience Rebalance (which may clear slots 6-19 on game enter).
+
+!?FU(OnGameEnter)&i^ssr_enabled^;
+!!VR(slot:y):S-1;
+
+!!re k/(SSR_STACK_EXP_SLOT)/19;
+  !!EA170:Bk/?(active:y)/?(ability:y)/?(modifier:y)/d/d/d/d/d/d/d/d/d/d/d;
+  !!if|(active)=0/(ability)=0/(ability)=99;
+    !!co&(ability)=99/(modifier)<>(SPELL_SLOW);  [another spell-after-attack ability: keep it]
+    !!VR(slot):Sk;
+    !!br;
+  !!en;
+!!en;
+
+!!EA170&(slot)>=0:B(slot)/1/99/(SPELL_SLOW)/0/10/20/30/40/50/60/70/80/90/100;
+
+; ============= LAVA: FIRE WALLS AROUND TARGET =====================================================
+; Chance: 10% per stack experience rank (rank 10 = 100%), rolled by this script after each shot.
+; (Stack experience abilities 97/99/107 with Fire Wall can't be shown in the stack experience window.)
+; The game's Fire Wall covers 2 hexes in a line, so the result is shaped: the targeted hex (the hex
+; under the cursor, also for 2-hex targets) and its 6 neighbours burn, any other hex set on fire by
+; this shot is cleared. Hexes with obstacles are skipped.
+
+!?FU(OnGameEnter)&i^ssr_enabled^;
+; Clear the line used by earlier versions of this mod (ability 97 Fire Wall), e.g. in older saves.
+; Only that line is cleared, the original WoG abilities of the creature are kept.
+!!re k/(SSR_STACK_EXP_SLOT)/19;
+  !!EA171:Bk/d/?(ability:y)/?(modifier:y)/d/d/d/d/d/d/d/d/d/d/d;
+  !!EA171&(ability)=97/(modifier)=(SPELL_FIRE_WALL):Bk/0/0/0/0/0/0/0/0/0/0/0/0/0/0;
+!!en;
+
+!?FU(OnBeforeBattleAction)&i^ssr_enabled^;
+!!VRi^ssr_lavaStack^:S(NO_STACK);
+
+!!BG:A?(action:y) N?(stack:y);
+!!FU&(action)<>(BATTLE_ACTION_SHOOT):E;
+
+!!BM(stack):T?(type:y);
+!!FU&(type)<>(MON_LAVA_SHARPSHOOTER):E;
+
+; Targeted hex: the hex under the cursor; fall back to the target stack position
+!!BG:D?(targetHex:y) E?(target:y);
+!!if|(targetHex)<(BATTLE_HEX_FIRST)/(targetHex)>(BATTLE_HEX_LAST);
+  !!FU&(target)=(NO_STACK):E;
+  !!BM(target):P?(targetHex);
+!!en;
+
+!!VRi^ssr_targetHex^:S(targetHex);
+!!VRi^ssr_lavaStack^:S(stack);
+
+; Remember which hexes had obstacles (magic or not) before the shot
+!!re i/(BATTLE_HEX_FIRST)/(BATTLE_HEX_LAST);
+  !!BU:Oi/?i^ssr_pre_%i^;
+!!en;
+
+!?FU(OnAfterBattleAction)&i^ssr_enabled^/i^ssr_lavaStack^<>(NO_STACK);
+!!VR(stack:y):Si^ssr_lavaStack^;
+!!VRi^ssr_lavaStack^:S(NO_STACK);
+
+; Chance: 10% per stack experience rank (0-10)
+!!VR(eaStack:y):S(stack) +1 *-1;
+!!EA(eaStack):E?(rank:y)/12/d/d;
+!!VR(chance:y):S(rank) *(SSR_CHANCE_PER_RANK);
+!!VR(roll:y):R0/0/99;
+!!FU&(roll)>=(chance):E;
+
+!!BM(stack):N?(num:y);
+!!VR(power:y):S(num) :(SSR_FIREWALL_POWER_DIVISOR);
+!!VR(power)&(power)<1:S1;
+
+; Mark the wanted hexes: the targeted hex and its neighbours
+!!VRi^ssr_castId^:+1;
+!!VR(castId:y):Si^ssr_castId^;
+!!VR(center:y):Si^ssr_targetHex^;
+!!VRi^ssr_want_%(center)^:S(castId);
+
+!!re i/0/5;
+  !!FU(SSR_GetAdjacentHex):P(center)/i/?(adjHex:y);
+  !!VRi^ssr_want_%(adjHex)^&(adjHex)>=0:S(castId);
+!!en;
+
+; Two passes: fill missing wanted hexes, then clear every other hex set on fire by this shot
+!!re j/1/2;
+  !!re i/(BATTLE_HEX_FIRST)/(BATTLE_HEX_LAST);
+    !!co&i^ssr_want_%i^<>(castId);
+    !!co&i^ssr_pre_%i^<>0;              [had an obstacle before the shot]
+    !!BU:Oi/?(flags:y);
+    !!BM(stack)&(flags)=0:C(SPELL_FIRE_WALL)/i/(SKILL_BASIC)/(power)/0;
+  !!en;
+
+  !!re i/(BATTLE_HEX_FIRST)/(BATTLE_HEX_LAST);
+    !!co&i^ssr_want_%i^=(castId);
+    !!co&i^ssr_pre_%i^<>0;
+    !!BU:Oi/?(flags:y);
+    !!FU(CR_RemoveObstacleSafe)&(flags)<>0:Pi;       [see "-2000 fixes.erm"]
+  !!en;
+!!en;
+
+!!BU:R;
+
+; Adjacent hex of a battlefield hex. index: 0-5 clockwise. Returns -1 if invalid.
+; Same logic as tum_GetAdjacentHex from ResOunD.
+!?FU(SSR_GetAdjacentHex);
+!#VA(hex:x) (index:x) (adjacentHex:x);
+
+!!VR(adjacentHex):S-1;
+!!FU|(hex)<=(BATTLE_HEX_FIRST)/(hex)>=(BATTLE_HEX_LAST):E;
+
+!#VA(invalidHexes[20]:y):C16/17/33/34/50/51/67/68/84/85/101/102/118/119/135/136/152/153/169/170;
+
+!!re i/0/19;
+  !!FU&(hex)=(invalidHexes[i]):E;
+!!en;
+
+!!VR(isEvenRow:y):S(hex) :(BATTLE_HEXES_PER_ROW) %2 X(TRUE);
+!!VR(firstAdjacentHex:y):S(hex) -(BATTLE_HEXES_PER_ROW) +(isEvenRow);
+
+!!if&(index)=0;
+  !!VR(adjacentHex):S(firstAdjacentHex);
+!!el&(index)=1;
+  !!VR(adjacentHex):S(hex) +1;
+!!el&(index)=2;
+  !!VR(adjacentHex):S(firstAdjacentHex) +34;
+!!el&(index)=3;
+  !!VR(adjacentHex):S(firstAdjacentHex) +33;
+!!el&(index)=4;
+  !!VR(adjacentHex):S(hex) -1;
+!!el;
+  !!VR(adjacentHex):S(firstAdjacentHex) -1;
+!!en;
+
+!!if|(adjacentHex)<=(BATTLE_HEX_FIRST)/(adjacentHex)>=(BATTLE_HEX_LAST);
+  !!VR(adjacentHex):S-1;
+!!el;
+  !!re i/0/19;
+    !!VR(adjacentHex)&(adjacentHex)=(invalidHexes[i]):S-1;
+  !!en;
+!!en;
