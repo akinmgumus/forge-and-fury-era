@@ -1,0 +1,14 @@
+ZVSE2
+
+** ADVANCED CLASSES MOD FIXES - runs BEFORE "advanced classes skills.erm"
+**
+** First Aid Tent: on every regenerate phase ACM checks all stacks with !!BM commands
+** (AC_Function_26). It only exits for the Quick Combat OPTION (BA:Q). A battle that is resolved
+** without the battle screen for another reason (a quick battle chosen for one fight, a battle
+** replayed when a savegame is loaded) still runs the code, and WoG refuses !!BM there:
+** "Attempt to use !!BM in non-human battle" - two error windows per stack, for every tent turn.
+** Flag 1000 is only set in a real, visible battle; without it the ACM function is skipped.
+** The "30" prefix makes this handler run before the Advanced Classes Mod one.
+
+!?FU(AC_Function_26)&i^cr_hasACM^/-1000;
+!!SN:Q;

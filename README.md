@@ -247,6 +247,7 @@ The minimum is 1, and there is no upper limit.
 ## Always-on fixes
 - **Obstacle removal crash:** removing a battlefield obstacle freed its graphic even when other obstacles still used it, which crashed the game a few moves later. Forge & Fury' own obstacle removal (Lava Sharpshooter, henchman start hex) keeps the graphic alive. See `CR_RemoveObstacleSafe` in `-2000 fixes.erm`.
 - **Savegame load crash (WoG Mithril bug):** WoG adds Mithril to `Mithril[owner of the hero]` without checking that the owner is a valid player (0-7). With a wrong owner the amount is written far behind that array, into WoG's custom hero portrait table. When it lands on the "used" field of an entry, every savegame made afterwards crashes while loading (`Hd_wog`, inside `LoadPcx8`). `EraPlugins/AfterWoG/forge and fury - wog fixes.bin` adds the missing owner check in both places and makes the loader skip portraits with an empty name, so already damaged saves load again. `-2000 fixes.erm` also clears damaged entries on game enter.
+- **First Aid Tent errors (Advanced Classes Mod):** in a battle that is resolved without the battle screen (a quick battle chosen for one fight, or a battle replayed while a savegame loads), ACM's First Aid Tent code caused a series of "Attempt to use !!BM in non-human battle" error windows. `30 acm fixes - pre.erm` skips that code outside real, visible battles.
 - **Damage:** creatures whose minimum damage is higher than their maximum get the two values swapped.
 - **Stack experience damage bonus:** creatures with equal minimum and maximum damage get the same bonus on both, so "5-4" rounding errors no longer appear.
 - **Spellweaver animation fix:** `cr259.def`.
@@ -265,6 +266,7 @@ The minimum is 1, and there is no upper limit.
     ```
     The stat growth settings still work.
 - **JS - map generation fixes:** in our tests it crashed during random map generation together with ResOunD.
+- **JS - main module:** its `JS_BugFixes.era` (together with an empty `artefact merchant fix.dll` that switches off WoG's own fix) shifted the artifacts in the Artifact Merchants "sell" screen in our setup with Game Enhancement Mod. Renaming both files in `JS - main module/EraPlugins` (e.g. adding `.off`) brings WoG's fix back.
 
 ## Known issues
 - Holika's texts (specialty, commander biography) replace Mutare's texts even when option 953 is off. The tavern weights (`hctraits.txt`) are also always active.
