@@ -99,7 +99,8 @@ ZVSE2
 **   byte the amount is written far behind that array, into this table. When it lands on the
 **   "used" field of an entry, every savegame made afterwards crashes on loading (WoG loads a
 **   portrait with an empty name). "EraPlugins/AfterWoG/forge and fury - wog fixes.bin" adds the
-**   missing checks; here entries that are marked as used but have no picture names are cleared.
+**   missing checks; here damaged picture names and entries that are marked as used but have no picture names
+**   are cleared.
 
 !#DC(CR_HERO_PORTRAIT_TABLE)      = 41917024; [27F9A60]
 !#DC(CR_HERO_PORTRAIT_ENTRY_SIZE) = 60;
@@ -107,8 +108,19 @@ ZVSE2
 !?FU(OnGameEnter);
 !!re i/(HERO_FIRST)/(HERO_LAST_WOG);
   !!VR(entry:y):Si *(CR_HERO_PORTRAIT_ENTRY_SIZE) +(CR_HERO_PORTRAIT_TABLE);
-  !!UN:C(entry)/0/(UNC_INT)/?(used:y);
-  !!co&(used)=0;
-  !!UN:C(entry)/4/(UNC_INT8)/?(smallName:y) C(entry)/28/(UNC_INT8)/?(largeName:y);
-  !!UN&(smallName)=0/(largeName)=0:C(entry)/0/(UNC_INT)/0;
+  !!UN:C(entry)/0/(UNC_INT)/?(used:y) C(entry)/4/(UNC_INT8)/?(smallName:y) C(entry)/28/(UNC_INT8)/?(largeName:y);
+
+  ; A picture name starts with a letter or a digit. A stray number written over its start
+  ; (first byte 1..32) makes it a wrong file name: empty it, the patched loader skips empty names.
+  !!if&(smallName)<>0/(smallName)<33;
+    !!UN:C(entry)/4/(UNC_INT)/0;
+    !!VR(smallName):S0;
+  !!en;
+
+  !!if&(largeName)<>0/(largeName)<33;
+    !!UN:C(entry)/28/(UNC_INT)/0;
+    !!VR(largeName):S0;
+  !!en;
+
+  !!UN&(used)<>0/(smallName)=0/(largeName)=0:C(entry)/0/(UNC_INT)/0;
 !!en;
