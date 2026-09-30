@@ -246,6 +246,7 @@ The minimum is 1, and there is no upper limit.
 
 ## Always-on fixes
 - **Obstacle removal crash:** removing a battlefield obstacle freed its graphic even when other obstacles still used it, which crashed the game a few moves later. Forge & Fury' own obstacle removal (Lava Sharpshooter, henchman start hex) keeps the graphic alive. See `CR_RemoveObstacleSafe` in `-2000 fixes.erm`.
+- **Savegame load crash (WoG Mithril bug):** WoG adds Mithril to `Mithril[owner of the hero]` without checking that the owner is a valid player (0-7). With a wrong owner the amount is written far behind that array, into WoG's custom hero portrait table. When it lands on the "used" field of an entry, every savegame made afterwards crashes while loading (`Hd_wog`, inside `LoadPcx8`). `EraPlugins/AfterWoG/forge and fury - wog fixes.bin` adds the missing owner check in both places and makes the loader skip portraits with an empty name, so already damaged saves load again. `-2000 fixes.erm` also clears damaged entries on game enter.
 - **Damage:** creatures whose minimum damage is higher than their maximum get the two values swapped.
 - **Stack experience damage bonus:** creatures with equal minimum and maximum damage get the same bonus on both, so "5-4" rounding errors no longer appear.
 - **Spellweaver animation fix:** `cr259.def`.

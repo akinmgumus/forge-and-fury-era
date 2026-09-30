@@ -93,3 +93,22 @@ ZVSE2
 !!UN:C(def)/24/(UNC_INT)/(refCount);
 
 !!FU(Battle_RemoveObstacle):P(hex);
+
+** - Custom hero portraits (HE:L table of WoG, 156 entries of 60 bytes at 27F9A60): WoG adds
+**   Mithril to "Mithril[owner of the hero]" without checking the owner (0-7). With a wrong owner
+**   byte the amount is written far behind that array, into this table. When it lands on the
+**   "used" field of an entry, every savegame made afterwards crashes on loading (WoG loads a
+**   portrait with an empty name). "EraPlugins/AfterWoG/forge and fury - wog fixes.bin" adds the
+**   missing checks; here entries that are marked as used but have no picture names are cleared.
+
+!#DC(CR_HERO_PORTRAIT_TABLE)      = 41917024; [27F9A60]
+!#DC(CR_HERO_PORTRAIT_ENTRY_SIZE) = 60;
+
+!?FU(OnGameEnter);
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!VR(entry:y):Si *(CR_HERO_PORTRAIT_ENTRY_SIZE) +(CR_HERO_PORTRAIT_TABLE);
+  !!UN:C(entry)/0/(UNC_INT)/?(used:y);
+  !!co&(used)=0;
+  !!UN:C(entry)/4/(UNC_INT8)/?(smallName:y) C(entry)/28/(UNC_INT8)/?(largeName:y);
+  !!UN&(smallName)=0/(largeName)=0:C(entry)/0/(UNC_INT)/0;
+!!en;
