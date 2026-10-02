@@ -1,0 +1,172 @@
+ZVSE2
+
+** DARK PHOENIX - new creature in the unused creature slot 122 (needs ResOunD)
+**
+** Graphics, sounds, portraits and the Amethyst config are built by "src/make_dark_phoenix.py".
+** Slot 122 is one of the game's "NOT USED" slots; its def and sound names are "bad1" in the game's
+** creature table, so the files only needed those names. Names and stats are set here, because
+** the creature tables of the base creature range are not read from ResOunD's archive.
+**
+** An evolution of the Divine Phoenix (Roland's specialty, later). It keeps the Divine Phoenix's
+** abilities (fire immunity, Rebirth, Regeneration, Fire Shield, Slayer) and adds:
+** - Fear and Death Stare (native, Amethyst config: Fear=1, Attack effect=2). The Death Stare is
+**   stronger than the Gorgon's: +3% per stack experience rank (10% at rank 0, 40% at rank 10).
+** - Attack Speed 10 (src/attack speed values.md).
+** - Black Flame: a stack hit by a Dark Phoenix can't be healed or resurrected in this battle.
+** - Stack experience: the Divine Phoenix's rows plus Strike and Return (R5), No Retaliation (R7),
+**   reduced spell damage 5% per rank (golem-like, 50% at R10) and extra Rebirths (+1 R5, +2 R10).
+
+!#DC(DPHX_MON)        = 122;
+!#DC(DPHX_EXP_SOURCE) = 252;      [Divine Phoenix]
+
+; ============= STATS AND TEXTS ====================================================================
+
+!?FU(OnAfterErmInstructions)&i^cr_hasResound^;
+!!MA:L(DPHX_MON)/6 O(DPHX_MON)/(TOWN_CONFLUX);
+!!MA:C(DPHX_MON)/(RES_GOLD)/12000 C(DPHX_MON)/(RES_MERCURY)/7;
+!!MA:P(DPHX_MON)/700 S(DPHX_MON)/24 A(DPHX_MON)/40 D(DPHX_MON)/38;
+!!MA:M(DPHX_MON)/60 E(DPHX_MON)/75;
+!!MA:F(DPHX_MON)/38500 I(DPHX_MON)/50000 G(DPHX_MON)/1;
+!!MA:B(DPHX_MON)/2;                 [casts per battle, as the Divine Phoenix]
+
+!?FU(OnAfterErmInited)&i^cr_hasResound^;
+!!SN:H^monname^/(DPHX_MON)/0/^Dark Phoenix^;
+!!SN:H^monname^/(DPHX_MON)/1/^Dark Phoenixes^;
+!!SN:H^monname^/(DPHX_MON)/2/^Fire spell immunity. Fear. Death Stare (10%, +3% per rank). Black Flame: stacks it hits can't be healed or resurrected. Rebirth. Fire Shield. Regeneration.^;
+
+; ============= STACK EXPERIENCE ===================================================================
+; Slot 122 has no rows in WoG's experience table ("NOT USED"): copy all 20 rows and the experience
+; settings of the Divine Phoenix, then add the Dark Phoenix's own rows to free slots.
+; Runs after Stack Experience Rebalance sets its stat rows.
+
+!?FU(OnGameEnter)&i^cr_hasResound^;
+!!re k/0/19;
+  !!EA(DPHX_EXP_SOURCE):Bk/?(a:y)/?(b:y)/?(c:y)/?(r0:y)/?(r1:y)/?(r2:y)/?(r3:y)/?(r4:y)/?(r5:y)/?(r6:y)/?(r7:y)/?(r8:y)/?(r9:y)/?(r10:y);
+  !!EA(DPHX_MON):Bk/(a)/(b)/(c)/(r0)/(r1)/(r2)/(r3)/(r4)/(r5)/(r6)/(r7)/(r8)/(r9)/(r10);
+!!en;
+!!EA(DPHX_EXP_SOURCE):L?(limit:y) P?(top:y) M?(mult:y);
+!!EA(DPHX_MON):L(limit) P(top) M(mult);
+
+; FU(TUMA_AddRow) is in "-2000 tum abilities.erm": mon/ability/modifier/rank 0..10
+!!FU(TUMA_AddRow):P(DPHX_MON)/102/98/0/0/0/0/0/1/1/1/1/1/1;          [Strike and Return from R5]
+!!FU(TUMA_AddRow):P(DPHX_MON)/102/82/0/0/0/0/0/0/0/1/1/1/1;          [No Retaliation from R7]
+!!FU(TUMA_AddRow):P(DPHX_MON)/103/37/0/5/10/15/20/25/30/35/40/45/50; [reduced spell damage 5%/rank]
+!!FU(TUMA_AddRow):P(DPHX_MON)/80/43/0/0/0/0/0/1/1/1/1/1/2;           [extra Rebirths +1 R5, +2 R10]
+
+; ============= BLACK FLAME ========================================================================
+; A stack hit by a Dark Phoenix keeps its lowest number and health for the rest of the battle:
+; after every action and at the start of every round, any gain (healing spells, First Aid Tent,
+; regeneration, life drain, resurrection, rebirth) is taken back.
+; i^dphx_bf_<stack>^ = 1 marked, i^dphx_n_<stack>^ / i^dphx_l_<stack>^ = number / lost hp of the top creature.
+
+!?FU(OnSetupBattlefield)&i^cr_hasResound^;
+!!re i/(BATTLE_STACK_FIRST)/(BATTLE_STACK_LAST);
+  !!VRi^dphx_bf_%i^:S0;
+!!en;
+
+!?FU(ES_OnAfterMelee)&i^cr_hasResound^;
+!#VA(atkStack:x) (defStack:x);
+
+!!FU|(atkStack)<0/(defStack)<0:E;
+!!BM(atkStack):T?(type:y);
+!!FU&(type)<>(DPHX_MON):E;
+
+!!BM(defStack):N?(num:y) L?(lost:y);
+!!FU&(num)<=0:E;
+
+!!if&i^dphx_bf_%(defStack)^<>1;
+  !!VRi^dphx_bf_%(defStack)^:S1;
+  !!VRi^dphx_n_%(defStack)^:S(num);
+  !!VRi^dphx_l_%(defStack)^:S(lost);
+!!en;
+
+!!FU(DPHX_ExtraDeathStare):P(atkStack)/(defStack);
+!!FU(DPHX_EnforceBlackFlame):P;
+
+; ============= DEATH STARE (stronger than the Gorgon's) ===========================================
+; The native Death Stare (Amethyst) is the Mighty Gorgon's: 10% per creature. The Dark Phoenix adds
+; DPHX_STARE_PER_RANK % per stack experience rank: 10% at rank 0, 40% at rank 10.
+; Only living creatures are affected, as with the native ability.
+
+!#DC(DPHX_STARE_PER_RANK) = 3;
+
+!?FU(DPHX_ExtraDeathStare);
+!#VA(atkStack:x) (defStack:x);
+
+!!BM(defStack):N?(num:y) T?(defType:y);
+!!FU&(num)<=0:E;
+!!MA:X(defType)/?(flags:y);
+!!VR(flags):&(MON_FLAG_ALIVE);
+!!FU&(flags)=0:E;
+
+!!VR(eaStack:y):S(atkStack) +1 *-1;
+!!EA(eaStack):E?(rank:y)/12/d/d;
+!!VR(chance:y):S(rank) *(DPHX_STARE_PER_RANK);
+!!FU&(chance)<=0:E;
+
+; kills = attackers * chance%, the fraction is a random roll
+!!BM(atkStack):N?(attackers:y);
+!!VR(total:y):S(attackers) *(chance);
+!!VR(kills:y):S(total) :100;
+!!VR(rest:y):S(total) %100;
+!!VR(roll:y):R0/0/99;
+!!VR(kills)&(roll)<(rest):+1;
+!!FU&(kills)<=0:E;
+!!VR(kills)&(kills)>(num):S(num);
+
+; damage that kills exactly that many creatures (the top one is already wounded)
+!!BM(defStack):H?(hp:y) L?(lost:y);
+!!VR(damage:y):S(kills) *(hp) -(lost);
+!!BM(defStack):K(damage);
+
+!!VR(logText:z):S^Dark Phoenix Death Stare kills %(kills).^;
+!!MM:S(logText);
+
+!?FU(DPHX_EnforceBlackFlame);
+!!re i/(BATTLE_STACK_FIRST)/(BATTLE_STACK_LAST);
+  !!co&i^dphx_bf_%i^<>1;
+  !!BMi:N?(num:y) L?(lost:y);
+  !!VR(keptNum:y):Si^dphx_n_%i^;
+  !!VR(keptLost:y):Si^dphx_l_%i^;
+
+  !!if|(num)>(keptNum);
+    !!BMi:N(keptNum) L(keptLost);        [more creatures than allowed: resurrected]
+  !!el&(num)=(keptNum)/(lost)<(keptLost);
+    !!BMi:L(keptLost);                    [same number but healed]
+  !!el;
+    !!VRi^dphx_n_%i^:S(num);              [took more damage: remember the new state]
+    !!VRi^dphx_l_%i^:S(lost);
+  !!en;
+!!en;
+
+!?FU(OnBeforeBattleAction)&i^cr_hasResound^;
+!!FU(DPHX_EnforceBlackFlame):P;
+
+!?FU(OnAfterBattleAction)&i^cr_hasResound^;
+!!FU(DPHX_EnforceBlackFlame):P;
+
+!?FU(OnBattleRound)&i^cr_hasResound^;
+!!FU(DPHX_EnforceBlackFlame):P;
+
+; ============= TRAINERX ===========================================================================
+; TrainerX lists the creatures by town pages (all 16 cells of the Conflux page are used) and then
+; the creatures above 196, so slot 122 never appears. Add one more page after the last one with
+; the Dark Phoenix in the first cell. These handlers run after TrainerX's own ones.
+
+!?FU(trainer_GetTablePages)&i^cr_hasResound^;
+!!VRi^trainer_monTableMaxPage^:+1;
+!!VRi^dphx_trainerPage^:Si^trainer_monTableMaxPage^;
+
+!?FU(trainer_GetMonsterFromTable)&i^cr_hasResound^;
+!#VA(page:x) (item:x) (mon:x);
+
+; TrainerX clears the cells above the last creature only on its last page, which is now ours
+!!if&(page)>10/(page)<>i^dphx_trainerPage^;
+  !!FU(GetMaxMonsterId):P?(lastMon:y);
+  !!VR(mon)&(mon)>(lastMon):S(NO_MON);
+!!en;
+
+!!FU&(page)<>i^dphx_trainerPage^:E;
+!!VR(mon):S(NO_MON);
+; first cell: dialog item 83, or 0 if TrainerX's handler already made it relative
+!!VR(mon)|(item)=83/(item)=0:S(DPHX_MON);

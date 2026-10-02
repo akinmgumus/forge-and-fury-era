@@ -153,7 +153,7 @@ Sharpshooters	Creature Bonus: Sharpshooters	Can upgrade Archers or Marksmen and 
 Behemoths	Creature Bonus: Behemoths	"Behemoths or Ancient Behemoths receive +5 Att, +5 Def, +10 Dmg."
 Black Knights	Creature Bonus: Black Knights	"Black Knights or Dread Knights receive +5 Att, +5 Def, and +10 Dmg."
 Asuras	Creature Bonus: Asuras	Can upgrade Naga Rakshasas to Asuras.
-Swordsmen	Creature Bonus: Swordsmen	Increases the Attack, Defense, Health and Speed skills of any Swordsmen or Crusaders for each level attained after 4th level.
+Dark Phoenixes	Creature Bonus: Dark Phoenixes	Can evolve Divine Phoenixes into Dark Phoenixes.
 Dragons	Creature Bonus: Dragons	"All dragons receive +5 Att, +5 Def."
 Ogres	Creature Bonus: Ogres	Increases the Attack, Defense, Health and Speed skills of any Ogre or Ogre Mage for each level attained after 4th level.
 Devils	Creature Bonus: Devils	"Devils and Arch Devils receive +4 Attack, +2 Defense, and +1 Speed."

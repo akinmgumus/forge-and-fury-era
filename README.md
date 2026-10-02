@@ -4,7 +4,7 @@
 
 An add-on for **Heroes of Might and Magic III: HoMM 3 ERA** (WoG). It adds:
 - new artifacts and combination artifacts,
-- a new hero,
+- two new heroes and a new creature (Dark Phoenix),
 - an Attack Speed mechanic,
 - creature reworks,
 - fixes for several popular ERA mods (ResOunD / Third Upgrade Mod, Advanced Classes Mod, Enhanced Henchmen, Stack Experience Rebalance, Easy Cheats).
@@ -19,7 +19,8 @@ Every feature can be switched on or off in **WoG Options → Custom Scripts**. F
 - [Options](#options)
 - [Creature Tweaks (950)](#creature-tweaks-950)
 - [Henchmen Tweaks (951)](#henchmen-tweaks-951)
-- [Holika, a new Tower hero (953)](#holika-a-new-tower-hero-953)
+- [New Heroes (953)](#new-heroes-953)
+- [Dark Phoenix, a new creature](#dark-phoenix-a-new-creature)
 - [Custom Artifacts (955)](#custom-artifacts-955)
 - [Attack Speed (996)](#attack-speed-996)
 - [Always-on fixes](#always-on-fixes)
@@ -44,7 +45,8 @@ Every feature can be switched on or off in **WoG Options → Custom Scripts**. F
 | Commander Death Stare | Advanced Classes Mod |
 | Third-upgrade abilities and hatreds | ResOunD (Third Upgrade Mod), WoG Stack Experience |
 | Henchmen Tweaks | Enhanced Henchmen |
-| Holika | ResOunD and Advanced Classes Mod |
+| Holika, Aurelius | ResOunD and Advanced Classes Mod |
+| Dark Phoenix | ResOunD |
 | All new artifacts | ResOunD (the Emerald artifact plugin) |
 | Eye of Providence: scouting events and artillery | Advanced Classes Mod (optional; the other bonuses work without it) |
 | Attack Speed | ERA Scripts (it replaces that mod's option 996). Game Enhancement Mod is needed for the creature window row |
@@ -65,7 +67,7 @@ The check is automatic. A feature whose mod is missing is switched off, even if 
 |---|---|---|
 | 950 | Creature Tweaks | Sharpshooter Rework, golem income, commander Death Stare, third-upgrade abilities and hatreds |
 | 951 | Henchmen Tweaks | Obstacle-free start hex, henchman growth |
-| 953 | Holika | New Tower hero |
+| 953 | New Heroes | Holika (Tower) and Aurelius (Conflux) |
 | 955 | Custom Artifacts | Pegasus Harness, Minerjack, Wealth of Erebus, Eye of Providence, Lightning Boots, Svalinn set |
 | 996 | Attack Speed | Replaces ERA Scripts' "Gnolls Marauders Strike First" |
 
@@ -93,6 +95,9 @@ The check is automatic. A feature whose mod is missing is switched off, even if 
 
 ### Golem income
 Each Gold Golem gives 10 gold per day and each Diamond Golem 20 gold per day. This counts heroes' armies and town garrisons.
+
+### Stat changes (needs ResOunD)
+- **Antichrist** deals a fixed 75 damage (ResOunD: 55-65).
 
 ### Commander Death Stare (needs Advanced Classes Mod)
 Advanced Classes Mod replaces the commanders' Death Stare with Poison. With this option they have both:
@@ -136,14 +141,16 @@ The Third Upgrade Mod creatures in ResOunD sometimes miss stack experience abili
 ## Henchmen Tweaks (951)
 Needs Enhanced Henchmen.
 - **Clear start hex:** an obstacle on a henchman's starting hex(es) is removed before the henchman is placed.
-- **Growth:** after every 5 battles won with a living henchman, its quantity grows by 5% (at least +1).
+- **Growth:** after every 10 battles won with a living henchman, its quantity grows by 5% (at least +1).
   - With Diplomacy the growth is 5% + 5% per level: Basic 10%, Advanced 15%, Expert 20%, Master 25%, Grandmaster 30%.
   - The quantity returns to 1 if the henchman is replaced or dismissed.
   - In battle the quantity is capped at double the base.
 - Settings are at the top of `Data/s/-2000 henchmen growth.erm`.
 
-## Holika, a new Tower hero (953)
-Needs ResOunD and Advanced Classes Mod.
+## New Heroes (953)
+Needs ResOunD and Advanced Classes Mod. Each new hero gives an upgrade that no town building can give.
+
+### Holika (Tower)
 - The campaign hero Mutare (slot 151) becomes **Holika**, a female Alchemist (Tower).
 - **Commander:** a Temple Guardian named Raktabija.
 - **Availability:** like Dracon and Gelu, she can't be chosen at game start, but she can appear in taverns when "Enable Extension Heroes" (WoG option 100) is on.
@@ -151,6 +158,28 @@ Needs ResOunD and Advanced Classes Mod.
 - Naga specialists (Fafner) also improve Asuras.
 - **Start:** Tactics and Learning, a spell book with Magic Arrow, and Gremlins, Gargoyles and Golems.
 - New portraits and a new specialty icon.
+
+### Aurelius (Conflux)
+- The campaign hero Roland (slot 152) becomes **Aurelius**, a male Planeswalker (Conflux): a knight burned in phoenix fire and reborn in the Conflux in a black flame.
+- **Commander:** an Astral Spirit named Vesper.
+- **Availability:** as Holika.
+- **Specialty:** he evolves the Divine Phoenixes in his army into **Dark Phoenixes** anywhere. The cost is the price difference.
+- **Start:** Offense and Leadership, Sprites and two of Air, Water and Fire Elementals (chosen at random).
+- New portraits and a new specialty icon.
+
+## Dark Phoenix, a new creature
+Needs ResOunD. A level 6 Conflux creature in the unused creature slot 122, the evolution of the Divine Phoenix (only through Aurelius; it is never generated on the map).
+
+| Attack | Defense | Damage | HP | Speed | Attack Speed | Cost |
+|---|---|---|---|---|---|---|
+| 40 | 38 | 60-75 | 700 | 24 | 10 | 12 000 gold + 7 mercury |
+
+- Keeps the Divine Phoenix's abilities: fire immunity, Rebirth, Regeneration, Fire Shield and its stack experience.
+- **Fear** and **Death Stare**: 10% per creature at rank 0, +3% per stack experience rank (40% at rank 10). Living creatures only.
+- **Black Flame:** a stack hit by a Dark Phoenix can't be healed, resurrected or reborn for the rest of the battle.
+- **Stack experience:** Strike and Return (rank 5), No Retaliation (rank 7), 5% less spell damage per rank (50% at rank 10), one more Rebirth at rank 5 and two at rank 10.
+- Black-and-white Phoenix animation and portraits, built by `src/make_dark_phoenix.py`.
+- TrainerX: shown on an extra page after the last creature page.
 
 ## Custom Artifacts (955)
 Needs ResOunD (Emerald). All new artifacts are Relics.
@@ -269,7 +298,8 @@ The minimum is 1, and there is no upper limit.
 - **JS - main module:** its `JS_BugFixes.era` (together with an empty `artefact merchant fix.dll` that switches off WoG's own fix) shifted the artifacts in the Artifact Merchants "sell" screen in our setup with Game Enhancement Mod. Renaming both files in `JS - main module/EraPlugins` (e.g. adding `.off`) brings WoG's fix back.
 
 ## Known issues
-- Holika's texts (specialty, commander biography) replace Mutare's texts even when option 953 is off. The tavern weights (`hctraits.txt`) are also always active.
+- Holika's and Aurelius' texts (specialty, commander biography) replace Mutare's and Roland's texts even when option 953 is off.
+- `Data/AmeCre.pac` (the Dark Phoenix graphics) is a 57 MB copy of ResOunD's creature archive and is not in the repository: build it with `python src/make_dark_phoenix.py`. The tavern weights (`hctraits.txt`) are also always active.
 - Native hatreds (`Data/Creatures/*.cfg`) are always active, because the game reads creature files before options exist.
 - The Emerald artifact archive (`Data/EmeraldArtifacts.pac`) is a copy of ResOunD's archive with the new artifacts added. If ResOunD updates that archive, Forge & Fury has to be updated too.
 

@@ -23,6 +23,8 @@ ZVSE2
 !#DC(ASU_SOURCE_MON)    = 211;          [Naga Rakshasa - ResOunD 3rd Naga upgrade]
 !#DC(ASU_TARGET_MON)    = 319;          [Asura]
 !#DC(ASU_SPEC_PICTURE)  = 151;          [Specialty icon frame in UN44/UN32.def (Asura png in Data/forge and fury.zip)]
+!#DC(ASU_MUTARE_DRAKE)   = (HERO_MUTARE_DRAKE); [153]
+!#DC(ASU_MUTARE_DRAKE_PICTURE) = 153;   [her own specialty icon frame (dragon, like Mutare's original)]
 !#DC(ASU_COMMANDER_TYPE) = 2;          [Commander type: 2 = Temple Guardian (Tower), see ERM help Format CC]
 
 !#UN:P(ASU_OPTION)/?i^asu_enabled^;
@@ -67,13 +69,16 @@ ZVSE2
 ; The native "master of upgrades" type (HE:X6) makes the hero screen show WoG's generic "Special"
 ; icon for heroes other than Gelu/Dracon. The Asura upgrade itself is done by the
 ; OnDetermineMonInfoDlgUpgrade handler below (Gelu-like, anywhere on the map).
-; The specialty icon (frame 151 of UN44/UN32.def) is the Asura png in Data/forge and fury.zip.
+; The specialty icon is frame 151 of UN44/UN32.def, replaced by the Asura png in Data/forge and fury.zip.
+; Mutare Drake (153) uses the same frame by default, so she is pointed to her own frame 153 below.
+; "Data/00 forge and fury.pac" also has copies of UN44/UN32.def (src/UN44_holika.def, UN32_holika.def)
+; in which frames 151 and 153 have their own names and pictures (the originals share one picture).
 !!HE(hero):X7/0/0;
 !!SN:H^spec^/(hero)/0/^Asuras^;
 !!SN:H^spec^/(hero)/1/^Creature Bonus: Asuras^;
 !!SN:H^spec^/(hero)/2/^Can upgrade Naga Rakshasas to Asuras.^;
 
-; Point both specialty icons to frame 151 (replaced by the Asura png).
+; Point both specialty icons to that frame.
 !!UN:G2/(hero)/1/(ASU_SPEC_PICTURE);        [small icon (UN32)]
 !!UN:G2/(hero)/3/(ASU_SPEC_PICTURE);        [standard icon (UN44)]
 
@@ -87,6 +92,16 @@ ZVSE2
 !?FU(OnOpenHeroScreen)&i^asu_enabled^;
 !!UN:G2/(ASU_HERO)/1/(ASU_SPEC_PICTURE);
 !!UN:G2/(ASU_HERO)/3/(ASU_SPEC_PICTURE);
+
+; Mutare Drake keeps the dragon icon: by default she uses the same frame as Mutare (151), which
+; shows the Asura png now. Point her to her own frame 153 (same dragon picture).
+!?FU(OnStartOrLoad)&i^asu_enabled^;
+!!UN:G2/(ASU_MUTARE_DRAKE)/1/(ASU_MUTARE_DRAKE_PICTURE);
+!!UN:G2/(ASU_MUTARE_DRAKE)/3/(ASU_MUTARE_DRAKE_PICTURE);
+
+!?FU(OnOpenHeroScreen)&i^asu_enabled^;
+!!UN:G2/(ASU_MUTARE_DRAKE)/1/(ASU_MUTARE_DRAKE_PICTURE);
+!!UN:G2/(ASU_MUTARE_DRAKE)/3/(ASU_MUTARE_DRAKE_PICTURE);
 
 ; ============= UPGRADE BUTTON (Naga Rakshasa -> Asura) ============================================
 

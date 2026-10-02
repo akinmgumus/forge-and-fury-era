@@ -285,6 +285,7 @@ Hız = yaratığın normal savaş hızı (karşılaştırma için). Savaş makin
 | 130 | Firebird | 7 | 15 | **8** | ateş kuşu |
 | 131 | Phoenix | 7 | 21 | **9** | anka kuşu, çok hızlı |
 | 252 | Divine Phoenix | 7 | 25 | **9** | anka kuşu, çok hızlı |
+| 122 | Dark Phoenix | 7 | 24 | **10** | kara alevli anka kuşu, ailenin en hızlısı (Forge & Fury, boş yuva 122) |
 | 355 | Planeswalker | 7 | 12 | **5** | büyücü |
 | 356 | Elementalist | 7 | 15 | **5** | büyücü |
 | 158 | Sacred Phoenix | 8 | 21 | **9** | anka kuşu, çok hızlı |

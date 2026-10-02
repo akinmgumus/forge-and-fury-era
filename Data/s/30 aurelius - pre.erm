@@ -1,0 +1,26 @@
+ZVSE2
+
+** AURELIUS - SPECIALTY ICON CLICK (option 953)
+**
+** Advanced Classes Mod shows its own specialty text when the specialty icon of Roland (152) is
+** clicked. The "30" prefix makes this handler run before the Advanced Classes one: it shows
+** Aurelius' text and changes the click type, so the Advanced Classes handlers exit without
+** showing theirs.
+
+!?CM2&i^aur_enabled^;
+!!CM:F?(flags:y) I?(item:y) S?(subtype:y) T?(type:y);
+!!FU|(item)<>118/(type)<>512/(subtype)=13:E;   [not a click on the specialty icon]
+!!FU&(flags)<>0/(flags)<>512:E;                [not a left or right click]
+
+!!HE(CURRENT_HERO):N?(hero:y);
+!!FU&(hero)<>(HERO_ROLAND):E;          [Aurelius (Roland slot)]
+
+!!CM:R0 T0;                                    [disable standard reaction, hide click from later handlers]
+
+!!VR(text:z):S^{Dark Phoenix Evolution}
+
+Aurelius can evolve Divine Phoenixes in his army into Dark Phoenixes, anywhere on the map. The cost is the price difference between the two creatures.^;
+
+!!VR(msgType:y):S(MSG_TYPE_MES);
+!!VR(msgType)&(flags)=512:S(MSG_TYPE_POPUP);
+!!IF:M1/(msgType)/(text);

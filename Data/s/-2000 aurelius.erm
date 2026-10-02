@@ -1,0 +1,98 @@
+ZVSE2
+
+** AURELIUS - new Conflux hero (replaces the extension hero Roland, slot 152)
+**
+** - Name Aurelius, male Planeswalker (Conflux). His commander is an Astral Spirit named Vesper.
+**   Like Holika he can't be chosen at game start, but can appear in taverns when
+**   "Enable Extension Heroes" (WoG option 100) is on.
+** - Starting army: Sprites and two of Air / Water / Fire Elementals (chosen at random each session).
+** - Specialty: evolution only. He can evolve Divine Phoenixes (ResOunD) in his army into
+**   Dark Phoenixes (slot 122, see "-2000 dark phoenix.erm") from the creature info dialog,
+**   anywhere on the map. The game charges the price difference per creature.
+** - Portraits (HPL009Sh / HPS009Sh) and specialty icon (un44/un32 frame 152): Data/forge and fury.zip.
+**   Specialty texts: herospec.txt row 152, commander biography: znpc01.txt row 152,
+**   both in Data/00 forge and fury.pac.
+**
+** Enabled/disabled with Holika in WoG Options -> Custom Scripts (option 953, "New Heroes").
+** See also "30 aurelius - pre.erm" (specialty icon click text).
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(AUR_OPTION)         = 953;
+!#DC(AUR_HERO)           = (HERO_ROLAND); [152]
+!#DC(AUR_SOURCE_MON)     = 252;           [Divine Phoenix - ResOunD]
+!#DC(AUR_TARGET_MON)     = 122;           [Dark Phoenix]
+!#DC(AUR_SPEC_PICTURE)   = 152;           [Specialty icon frame in UN44/UN32.def (own name in our copies)]
+!#DC(AUR_COMMANDER_TYPE) = 8;             [Commander type: 8 = Astral Spirit (Conflux)]
+
+!#UN:P(AUR_OPTION)/?i^aur_enabled^;
+!#VRi^aur_enabled^|i^cr_hasResound^<>(TRUE)/i^cr_hasACM^<>(TRUE):S(FALSE); [needs Resound + ACM, see "31 forge and fury - dependencies.erm"]
+
+!?FU(OnStartOrLoad);
+!!UN:P(AUR_OPTION)/?i^aur_enabled^;
+!!VRi^aur_enabled^|i^cr_hasResound^<>(TRUE)/i^cr_hasACM^<>(TRUE):S(FALSE);
+
+
+; ============= HERO INFO TABLE ====================================================================
+; Roland's entry (92 bytes per hero, pointer at 0x67DCE8) becomes a Conflux Planeswalker.
+
+!?FU(AUR_PatchHeroInfo);
+!!UN:C6806760/4/?(table:y);
+!!VR(rec:y):S(AUR_HERO) *92 +(table);
+
+!!UN:C(rec)/8/4/(HERO_CLASS_PLANESWALKER);                    [class]
+!!UN:C(rec)/12/4/(SKILL_OFFENCE) C(rec)/16/4/(SKILL_BASIC);    [first secondary skill]
+!!UN:C(rec)/20/4/(SKILL_LEADERSHIP) C(rec)/24/4/(SKILL_BASIC); [second secondary skill]
+
+; Sprites, then two of the three elementals (one of them is left out at random)
+!!VR(skip:y):R0/0/2;
+!!VR(mon2:y):S(MON_AIR_ELEMENTAL);
+!!VR(mon3:y):S(MON_WATER_ELEMENTAL);
+!!VR(mon2)&(skip)=0:S(MON_FIRE_ELEMENTAL);
+!!VR(mon3)&(skip)=1:S(MON_FIRE_ELEMENTAL);
+!!UN:C(rec)/36/4/(MON_SPRITE) C(rec)/40/4/(mon2) C(rec)/44/4/(mon3); [starting creatures]
+
+!#FU(AUR_PatchHeroInfo)&i^aur_enabled^:P;
+
+!?FU(OnAfterErmInstructions)&i^aur_enabled^;
+!!FU(AUR_PatchHeroInfo):P;
+
+; ============= HERO SETUP =========================================================================
+
+!?FU(OnStartOrLoad)&i^aur_enabled^;
+!!VR(hero:y):S(AUR_HERO);
+
+!!HE(hero):B0/^Aurelius^;
+!!HE(hero):B1/^Aurelius was once a knight of Erathia who rode into the Elemental Planes to bring back a phoenix flame for his dying king. The fire consumed him, and for a hundred days his ashes drifted between the planes until the Conflux gathered them and the flame rekindled. But the fire that remade him was black. Now his armor smolders like coal, the elementals answer him as one of their own, and Divine Phoenixes that follow him are reborn in his black flame as Dark Phoenixes.^;
+!!HE(hero):B2/(HERO_CLASS_PLANESWALKER);
+
+; Specialty type with no bonus (as Holika's); the evolution is the OnDetermineMonInfoDlgUpgrade
+; handler below. Texts are also in herospec.txt (row 152).
+!!HE(hero):X7/0/0;
+!!SN:H^spec^/(hero)/0/^Dark Phoenixes^;
+!!SN:H^spec^/(hero)/1/^Creature Bonus: Dark Phoenixes^;
+!!SN:H^spec^/(hero)/2/^Can evolve Divine Phoenixes into Dark Phoenixes.^;
+
+; Frame 152 shares Roland's picture with Sorsha and Catherine in the original defs: our copies
+; give it its own name, and the png in Data/forge and fury.zip replaces it.
+!!UN:G2/(hero)/1/(AUR_SPEC_PICTURE);        [small icon (UN32)]
+!!UN:G2/(hero)/3/(AUR_SPEC_PICTURE);        [standard icon (UN44)]
+
+; Commander: Conflux commander (Astral Spirit) named Vesper (biography: znpc01.txt row 152).
+!!CO(hero):T(AUR_COMMANDER_TYPE) H(HERO_CLASS_PLANESWALKER);
+!!VRz-1:S^Vesper^;
+!!CO(hero):N-1;
+
+!?FU(OnOpenHeroScreen)&i^aur_enabled^;
+!!UN:G2/(AUR_HERO)/1/(AUR_SPEC_PICTURE);
+!!UN:G2/(AUR_HERO)/3/(AUR_SPEC_PICTURE);
+
+; ============= EVOLUTION BUTTON (Divine Phoenix -> Dark Phoenix) ==================================
+
+!?FU(OnDetermineMonInfoDlgUpgrade)&i^aur_enabled^;
+!#VA(monType:x) (upgType:x) (town:x) (hero:x);
+
+!!FU&(monType)<>(AUR_SOURCE_MON):E;
+!!FU&(hero)<>(AUR_HERO):E;
+
+!!VR(upgType):S(AUR_TARGET_MON);

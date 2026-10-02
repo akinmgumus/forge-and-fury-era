@@ -4,7 +4,7 @@ ZVSE2
 **
 ** 1. No obstacle on the henchman's starting hex(es): an obstacle there is removed
 **    before the henchman is placed.
-** 2. Henchman quantity grows: after every 5 battles won with a living henchman,
+** 2. Henchman quantity grows: after every 10 battles won with a living henchman,
 **    quantity increases by 5% (minimum +1). With Diplomacy the rate is
 **    5% + 5% per Diplomacy level (Basic 10%, Advanced 15%, Expert 20%,
 **    Master 25%, Grandmaster 30% - Master/Grandmaster from Advanced Classes Mod).
@@ -15,7 +15,7 @@ ZVSE2
 
 ; ============= SETTINGS ===========================================================================
 
-!#DC(HG_WINS_PER_GROWTH)      = 5;   [Battles to win for one growth step]
+!#DC(HG_WINS_PER_GROWTH)      = 10;   [Battles to win for one growth step]
 !#DC(HG_BASE_PCT)             = 5;   [Growth % without Diplomacy]
 !#DC(HG_PCT_PER_DIPLOMACY)    = 5;   [Extra growth % per Diplomacy level]
 !#DC(HG_BATTLE_CAP_MULTIPLIER) = 2;  [Max quantity inside battle = quantity * this (original mod: 1 -> 2)]

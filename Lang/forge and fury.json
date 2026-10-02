@@ -8,12 +8,12 @@
         "951": {
             "name": "Henchmen Tweaks",
             "hint": "Enhanced Henchmen additions: obstacle-free start hex and henchman growth.",
-            "text": "HENCHMEN TWEAKS\n\nOption 951 (Forge & Fury, requires Enhanced Henchmen)\n\n{Clear start hex}\nIf a battlefield obstacle is on the hex (or hexes) where the henchman is placed at the start of battle, the obstacle is removed.\n\n{Growth}\nAfter every 5 battles won with a living henchman, its quantity grows by 5% (at least +1).\nWith Diplomacy: 5% + 5% per level (Basic 10%, Advanced 15%, Expert 20%, Master 25%, Grandmaster 30%).\nChanging or dismissing the henchman resets the quantity to 1."
+            "text": "HENCHMEN TWEAKS\n\nOption 951 (Forge & Fury, requires Enhanced Henchmen)\n\n{Clear start hex}\nIf a battlefield obstacle is on the hex (or hexes) where the henchman is placed at the start of battle, the obstacle is removed.\n\n{Growth}\nAfter every 10 battles won with a living henchman, its quantity grows by 5% (at least +1).\nWith Diplomacy: 5% + 5% per level (Basic 10%, Advanced 15%, Expert 20%, Master 25%, Grandmaster 30%).\nChanging or dismissing the henchman resets the quantity to 1."
         },
         "953": {
-            "name": "Holika (Tower Hero)",
-            "hint": "Mutare becomes Holika, a Tower Alchemist who can upgrade Naga Rakshasas into Asuras anywhere, like Gelu.",
-            "text": "HOLIKA\n\nOption 953 (Forge & Fury)\n\nThe extension hero Mutare is replaced by Holika, a female Tower Alchemist with a Temple Guardian commander named Raktabija. Like Dracon or Gelu she can't be chosen at game start, but can appear in taverns when Enable Extension Heroes is on.\n\nSpecialty: she can upgrade Naga Rakshasas (3rd Naga upgrade) in her army into Asuras from the creature info dialog, anywhere on the map - like Gelu does with Sharpshooters. Cost per creature: the price difference (2600 gold + 2 gems by default).\n\nNaga specialists (Fafner) also boost Asuras."
+            "name": "New Heroes (Holika, Aurelius)",
+            "hint": "Mutare becomes Holika (Tower, Naga Rakshasa -> Asura) and Roland becomes Aurelius (Conflux, Divine Phoenix -> Dark Phoenix).",
+            "text": "NEW HEROES\n\nOption 953 (Forge & Fury)\n\nHOLIKA: the extension hero Mutare is replaced by Holika, a female Tower Alchemist with a Temple Guardian commander named Raktabija. Specialty: she can upgrade Naga Rakshasas (3rd Naga upgrade) in her army into Asuras from the creature info dialog, anywhere on the map - like Gelu does with Sharpshooters. Cost per creature: the price difference (2600 gold + 2 gems by default). Naga specialists (Fafner) also boost Asuras.\n\nAURELIUS: the extension hero Roland is replaced by Aurelius, a male Conflux Planeswalker with an Astral Spirit commander named Vesper. He starts with Sprites and two of Air, Water and Fire Elementals. Specialty: he can evolve Divine Phoenixes in his army into Dark Phoenixes anywhere on the map. Cost per creature: the price difference.\n\nLike Dracon or Gelu they can't be chosen at game start, but can appear in taverns when Enable Extension Heroes is on."
         },
         "955": {
             "name": "Custom Artifacts",

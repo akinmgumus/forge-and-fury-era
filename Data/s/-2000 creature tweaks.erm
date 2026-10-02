@@ -5,16 +5,25 @@ ZVSE2
 ** - Gold Golems give 10 gold and Diamond Golems 20 gold per creature per day (heroes' armies and
 **   town garrisons of the player).
 ** - Commanders with the Poison ability (the former Death Stare ability, replaced by Advanced Classes Mod) keep the poison AND get the Death Stare back.
+** - Antichrist (ResOunD) deals a fixed 75 damage instead of 55-65.
 
 !#DC(CT_OPTION)             = 950;
 !#DC(CT_GOLD_GOLEM_GOLD)    = 10;
 !#DC(CT_DIAMOND_GOLEM_GOLD) = 20;
 !#DC(CT_COM_DEATH_STARE)    = 12;       [commander ability number (CO:B1)]
 
+!#DC(CT_ANTICHRIST)         = 219;      [ResOunD 4th Devil upgrade]
+!#DC(CT_ANTICHRIST_DAMAGE)  = 75;       [fixed damage (ResOunD: 55-65)]
+
 !#UN:P(CT_OPTION)/?i^ct_enabled^;
 
 !?FU(OnStartOrLoad);
 !!UN:P(CT_OPTION)/?i^ct_enabled^;
+
+; ============= STAT CHANGES (needs ResOunD) =======================================================
+
+!?FU(OnAfterErmInstructions)&i^ct_enabled^/i^cr_hasResound^;
+!!MA:M(CT_ANTICHRIST)/(CT_ANTICHRIST_DAMAGE) E(CT_ANTICHRIST)/(CT_ANTICHRIST_DAMAGE);
 
 ; ============= GOLEM INCOME =======================================================================
 
