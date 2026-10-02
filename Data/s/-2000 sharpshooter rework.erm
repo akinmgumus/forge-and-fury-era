@@ -135,8 +135,7 @@ ZVSE2
 !!VRi^ssr_lavaStack^:S(NO_STACK);
 
 ; Chance: 10% per stack experience rank (0-10)
-!!VR(eaStack:y):S(stack) +1 *-1;
-!!EA(eaStack):E?(rank:y)/12/d/d;
+!!FU(CR_GetStackRank):P(stack)/?(rank:y);   [in "-2000 fixes.erm"]
 !!VR(chance:y):S(rank) *(SSR_CHANCE_PER_RANK);
 !!VR(roll:y):R0/0/99;
 !!FU&(roll)>=(chance):E;

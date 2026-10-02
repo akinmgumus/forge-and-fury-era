@@ -6,8 +6,8 @@ dialog and battle - other plugins keep fixed-size per-creature data. Slots 122/1
 "bad1".."bad4" (def and sound prefix), so the new files only need those names.
 
 Outputs (in the mod folder):
-  Data/AmeCre.pac   a copy of ResOunD's AmeCre.pac (same name, so the game reads it instead of ResOunD's)
-                    with these files replaced/added:
+  Data/forge and fury creatures.pac   (Forge & Fury is above ResOunD in the mod list, so these files
+                    are found before ResOunD's AmeCre.pac):
       bad1             battle animation (ResOunD's Cphx.def with a new palette)
       zcrtrait.txt, Crtraits.txt, CRTRAIT0.txt   ResOunD's creature table, row "NOT USED (1)" replaced
       cranim.txt       ResOunD's animation timing table, row 122 replaced (Phoenix timings)
@@ -343,7 +343,7 @@ def main():
     anim[magic + 1] = phx_row[:-len('Pheonix')] + NAME
     files.append(('cranim.txt', '\r\n'.join(anim).encode('latin1')))
 
-    write_amecre(os.path.join(MOD, 'Data', 'AmeCre.pac'), amecre, files)
+    write_lod(os.path.join(MOD, 'Data', 'forge and fury creatures.pac'), files)
 
     snd = snd_entries(os.path.join(RESOUND, 'AmeCre.snd'))
     sounds = [('%s%s' % (FILE_NAME.upper(), k), snd['S252' + k]) for k in ('ATTK', 'DFND', 'KILL', 'MOVE', 'SHOT', 'WNCE')]
@@ -357,7 +357,9 @@ def main():
         f.write('\n'.join(cfg) + '\n')
 
     # files of the earlier attempt with creature 358
-    for old in (os.path.join('Data', 'amethyst.cfg'), os.path.join('Data', 'Creatures', '358.cfg')):
+    # (Data/AmeCre.pac: the earlier 57 MB copy of ResOunD's archive, no longer needed)
+    for old in (os.path.join('Data', 'amethyst.cfg'), os.path.join('Data', 'Creatures', '358.cfg'),
+                os.path.join('Data', 'AmeCre.pac')):
         if os.path.exists(os.path.join(MOD, old)):
             os.remove(os.path.join(MOD, old))
     for old in [n for n in zipfile.ZipFile(os.path.join(MOD, 'Data', 'forge and fury.zip')).namelist() if n.endswith('/0_360.png')]:

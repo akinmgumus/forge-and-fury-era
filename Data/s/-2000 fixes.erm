@@ -124,3 +124,23 @@ ZVSE2
 
   !!UN&(used)<>0/(smallName)=0/(largeName)=0:C(entry)/0/(UNC_INT)/0;
 !!en;
+
+** - CR_GetStackRank: stack experience rank (0-10) of a battlefield stack.
+**   "EA:E?" returns experience points, not the rank; the game's own function (0x727FA0, also used
+**   by TrainerX and ERA Scripts) turns them into a rank. Rank 11 (experience above rank 10) counts as 10.
+
+!?FU(CR_GetStackRank);
+!#VA(stack:x) (rank:x);
+
+!!VR(rank):S0;
+!!BM(stack):T?(type:y);
+!!FU&(type)<0:E;
+
+!!VR(eaStack:y):S(stack) +1 *-1;
+!!EA(eaStack):E?(exp:y)/d/d/d;
+!!FU&(exp)<=0:E;
+
+!!SN:E7503648/1/(type)/(exp);
+!!VR(rank):Sv1;
+!!VR(rank)&(rank)>10:S10;
+!!VR(rank)&(rank)<0:S0;

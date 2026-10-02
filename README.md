@@ -55,9 +55,14 @@ Every feature can be switched on or off in **WoG Options → Custom Scripts**. F
 The check is automatic. A feature whose mod is missing is switched off, even if its option is ticked.
 
 ## Installation
-1. Copy the `Forge and Fury` folder into `Mods`.
-2. Enable it in the ERA Mod Manager. Put it at the **top** of the list, above ResOunD, so it has the highest priority.
-3. Start a **new game** and tick the options you want in WoG Options → Custom Scripts.
+1. **Download:** on GitHub, click **Code → Download ZIP** (or `git clone` the repository).
+2. **Extract** it into the game's `Mods` folder and **rename the folder to `Forge and Fury`**. The ZIP from GitHub is named `forge-and-fury-era-main`; the scripts work with any name, but the rest of this README uses `Forge and Fury`.
+3. **Install the mods you want to use with it** (see [Requirements](#requirements)). Everything is optional except WoG and the Era Erm Framework.
+4. **Enable it** in the ERA Mod Manager and put it at the **top** of the list, above ResOunD, so it has the highest priority. This matters: Forge & Fury replaces some of ResOunD's files.
+5. Check [Recommended settings for other mods](#recommended-settings-for-other-mods), especially the Stack Experience Rebalance line-ending fix.
+6. Start a **new game** and tick the options you want in WoG Options → Custom Scripts. For Holika and Aurelius also tick **Enable Extension Heroes** (WoG option 100), otherwise they never appear in taverns.
+
+Nothing has to be built: all generated files (archives, sounds, creature configs, scripts) are in the repository. The Python scripts in `src/` are only needed to change them.
 
 **Savegames:** ERA stores scripts inside savegames. After an update, load the save, press **F12** on the adventure map to reload the scripts, then save again. Some features (stack experience tables, creature files) need a new game.
 
@@ -299,8 +304,9 @@ The minimum is 1, and there is no upper limit.
 
 ## Known issues
 - Holika's and Aurelius' texts (specialty, commander biography) replace Mutare's and Roland's texts even when option 953 is off.
-- `Data/AmeCre.pac` (the Dark Phoenix graphics) is a 57 MB copy of ResOunD's creature archive and is not in the repository: build it with `python src/make_dark_phoenix.py`. The tavern weights (`hctraits.txt`) are also always active.
-- Native hatreds (`Data/Creatures/*.cfg`) are always active, because the game reads creature files before options exist.
+- The tavern weights (`hctraits.txt`) are always active.
+- Native hatreds and the Dark Phoenix (`Data/Creatures/*.cfg`) are always active, because the game reads creature files before options exist.
+- `Data/forge and fury creatures.pac` replaces ResOunD's creature tables (`zcrtrait.txt`, `cranim.txt`) to add the Dark Phoenix row. If ResOunD updates those tables, run `python src/make_dark_phoenix.py` again.
 - The Emerald artifact archive (`Data/EmeraldArtifacts.pac`) is a copy of ResOunD's archive with the new artifacts added. If ResOunD updates that archive, Forge & Fury has to be updated too.
 
 ## For modders
@@ -314,6 +320,7 @@ The minimum is 1, and there is no upper limit.
 |---|---|---|
 | `-2000 attack speed table.erm` | `src/attack speed values.md` | `python src/make_attack_speed_table.py` |
 | `-2000 tum abilities.erm`, `Data/Creatures/*.cfg` | settings at the top of the generator script | `python src/make_tum_abilities.py` |
+| `Data/forge and fury creatures.pac`, `Data/forge and fury.snd`, `Data/Creatures/122.cfg`, Dark Phoenix portraits | ResOunD's files (needs ResOunD installed and Pillow) | `python src/make_dark_phoenix.py` |
 
 - Stack experience notes:
   - `EA:F` returns an empty line, not -1, when an ability is not found.
@@ -325,7 +332,7 @@ The minimum is 1, and there is no upper limit.
 Forge & Fury by **akinm**.
 
 It builds on, and patches files of, these mods:
-- **ResOunD / Third Upgrade Mod**: VMaiko, PerryR, Archer30 (with the Emerald and Amethyst plugins). `Data/EmeraldArtifacts.pac` and `Data/Creatures/*.cfg` are modified copies of ResOunD files.
+- **ResOunD / Third Upgrade Mod**: VMaiko, PerryR, Archer30 (with the Emerald and Amethyst plugins). `Data/EmeraldArtifacts.pac`, `Data/Creatures/*.cfg` and `Data/forge and fury creatures.pac` (Dark Phoenix animation recolored from ResOunD's Phoenix, Divine Phoenix sounds, creature tables) are modified copies of ResOunD files.
 - **Advanced Classes Mod**: PerryR
 - **Stack Experience Rebalance**: PerryR
 - **Enhanced Henchmen**: Archer30
