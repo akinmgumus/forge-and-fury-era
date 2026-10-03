@@ -21,8 +21,8 @@ ZVSE2
 !#DC(HG_BATTLE_CAP_MULTIPLIER) = 2;  [Max quantity inside battle = quantity * this (original mod: 1 -> 2)]
 
 ; Enabled/disabled in WoG Options -> Custom Scripts
-!#DC(HG_OPTION_CLEAR_HEX) = 951;
-!#DC(HG_OPTION_GROWTH)    = 951;       [both parts share option 951 "Henchmen Tweaks"]
+!#DC(HG_OPTION_CLEAR_HEX) = 950;
+!#DC(HG_OPTION_GROWTH)    = 950;       [both parts are in option 950 "Creature Tweaks"]
 !#UN:P(HG_OPTION_CLEAR_HEX)/?i^hg_clearHexEnabled^;
 !#VRi^hg_clearHexEnabled^|i^cr_hasHenchmen^<>(TRUE):S(FALSE); [needs Henchmen, see "31 forge and fury - dependencies.erm"]
 !#UN:P(HG_OPTION_GROWTH)/?i^hg_growthEnabled^;

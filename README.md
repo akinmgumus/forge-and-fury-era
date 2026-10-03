@@ -4,7 +4,7 @@
 
 An add-on for **Heroes of Might and Magic III: HoMM 3 ERA** (WoG). It adds:
 - new artifacts and combination artifacts,
-- two new heroes and a new creature (Dark Phoenix),
+- two new heroes, a new creature (Dark Phoenix) and a new skill (Training, replacing Nobility),
 - an Attack Speed mechanic,
 - creature reworks,
 - fixes for several popular ERA mods (ResOunD / Third Upgrade Mod, Advanced Classes Mod, Enhanced Henchmen, Stack Experience Rebalance, Easy Cheats).
@@ -18,8 +18,7 @@ Every feature can be switched on or off in **WoG Options → Custom Scripts**. F
 - [Installation](#installation)
 - [Options](#options)
 - [Creature Tweaks (950)](#creature-tweaks-950)
-- [Henchmen Tweaks (951)](#henchmen-tweaks-951)
-- [New Heroes (953)](#new-heroes-953)
+- [Heroes and Skills (953)](#heroes-and-skills-953)
 - [Dark Phoenix, a new creature](#dark-phoenix-a-new-creature)
 - [Custom Artifacts (955)](#custom-artifacts-955)
 - [Attack Speed (996)](#attack-speed-996)
@@ -46,6 +45,7 @@ Every feature can be switched on or off in **WoG Options → Custom Scripts**. F
 | Third-upgrade abilities and hatreds | ResOunD (Third Upgrade Mod), WoG Stack Experience |
 | Henchmen Tweaks | Enhanced Henchmen |
 | Holika, Aurelius | ResOunD and Advanced Classes Mod |
+| Training | Advanced Classes Mod, WoG Stack Experience |
 | Dark Phoenix | ResOunD |
 | All new artifacts | ResOunD (the Emerald artifact plugin) |
 | Eye of Providence: scouting events and artillery | Advanced Classes Mod (optional; the other bonuses work without it) |
@@ -70,9 +70,8 @@ Nothing has to be built: all generated files (archives, sounds, creature configs
 
 | Option | Name | Contents |
 |---|---|---|
-| 950 | Creature Tweaks | Sharpshooter Rework, golem income, commander Death Stare, third-upgrade abilities and hatreds |
-| 951 | Henchmen Tweaks | Obstacle-free start hex, henchman growth |
-| 953 | New Heroes | Holika (Tower) and Aurelius (Conflux) |
+| 950 | Creature Tweaks | Sharpshooter Rework, golem income, commander Death Stare, third-upgrade abilities and hatreds, henchmen |
+| 953 | Heroes and Skills | Holika (Tower), Aurelius (Conflux), Training skill |
 | 955 | Custom Artifacts | Pegasus Harness, Minerjack, Wealth of Erebus, Eye of Providence, Lightning Boots, Svalinn set |
 | 996 | Attack Speed | Replaces ERA Scripts' "Gnolls Marauders Strike First" |
 
@@ -141,10 +140,7 @@ The Third Upgrade Mod creatures in ResOunD sometimes miss stack experience abili
 - **Native hatreds** added by this mod (shown as "Hates …" in the creature description) give **+100% damage**, from rank 0.
 - Stack experience hatreds keep their original values (up to +200% at rank 10).
 
----
-
-## Henchmen Tweaks (951)
-Needs Enhanced Henchmen.
+### Henchmen (needs Enhanced Henchmen)
 - **Clear start hex:** an obstacle on a henchman's starting hex(es) is removed before the henchman is placed.
 - **Growth:** after every 10 battles won with a living henchman, its quantity grows by 5% (at least +1).
   - With Diplomacy the growth is 5% + 5% per level: Basic 10%, Advanced 15%, Expert 20%, Master 25%, Grandmaster 30%.
@@ -152,8 +148,10 @@ Needs Enhanced Henchmen.
   - In battle the quantity is capped at double the base.
 - Settings are at the top of `Data/s/-2000 henchmen growth.erm`.
 
-## New Heroes (953)
-Needs ResOunD and Advanced Classes Mod. Each new hero gives an upgrade that no town building can give.
+---
+
+## Heroes and Skills (953)
+The new heroes need ResOunD and Advanced Classes Mod. Each new hero gives an upgrade that no town building can give.
 
 ### Holika (Tower)
 - The campaign hero Mutare (slot 151) becomes **Holika**, a female Alchemist (Tower).
@@ -171,6 +169,24 @@ Needs ResOunD and Advanced Classes Mod. Each new hero gives an upgrade that no t
 - **Specialty:** he evolves the Divine Phoenixes in his army into **Dark Phoenixes** anywhere. The cost is the price difference.
 - **Start:** Offense and Leadership, Sprites and two of Air, Water and Fire Elementals (chosen at random).
 - New portraits and a new specialty icon.
+
+### Training (replaces Nobility)
+Needs Advanced Classes Mod and WoG stack experience. Advanced Classes Mod's Nobility (the Navigation slot) becomes **Training**.
+- Every day, at the start of the owner's turn, every creature in the hero's army gains a part of its **maximum** stack experience (the red number at the bottom of the stack experience window), up to a rank cap:
+
+| Level | Experience per day | Rank cap |
+|---|---|---|
+| Basic | 1/33 | 3 |
+| Advanced | 1/29 | 5 |
+| Expert | 1/25 | 7 |
+| Master | 1/20 | 8 |
+| Grandmaster | 1/17 | 10 |
+
+- New creatures join without experience, so a growing stack can drop a rank and earns it back with training. Stacks above the cap (e.g. from battles) are not changed. No message is shown.
+- Nobility specialists (Sylvia, Voy) become Training specialists: 3% more experience per hero level.
+- Nobility's own effects (extra recruits once a week, treasure chest bonus) are switched off.
+- New skill icons for all five levels (also in TrainerX).
+- The values were tuned with `src/training_sim.py`, which draws the rank per day of a growing stack.
 
 ## Dark Phoenix, a new creature
 Needs ResOunD. A level 6 Conflux creature in the unused creature slot 122, the evolution of the Divine Phoenix (only through Aurelius; it is never generated on the map).
@@ -304,6 +320,7 @@ The minimum is 1, and there is no upper limit.
 
 ## Known issues
 - Holika's and Aurelius' texts (specialty, commander biography) replace Mutare's and Roland's texts even when option 953 is off.
+- The Training icons and its name in TrainerX are shown even when option 953 is off (Nobility then works as before).
 - The tavern weights (`hctraits.txt`) are always active.
 - Native hatreds and the Dark Phoenix (`Data/Creatures/*.cfg`) are always active, because the game reads creature files before options exist.
 - `Data/forge and fury creatures.pac` replaces ResOunD's creature tables (`zcrtrait.txt`, `cranim.txt`) to add the Dark Phoenix row. If ResOunD updates those tables, run `python src/make_dark_phoenix.py` again.

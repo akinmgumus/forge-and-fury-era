@@ -1,0 +1,40 @@
+ZVSE2
+
+** TRAINING - switches off Nobility (Advanced Classes Mod) (option 953)
+**
+** The "30" prefix makes these handlers run before the Advanced Classes ones. SN:Q skips the
+** remaining handlers of the same function, so the ACM Nobility code does not run:
+** - AC_Function_18:      weekly "Nobility is ready" flag of every hero (extra recruits in towns)
+** - Hero_Nobility_Loop:  the extra recruits offer when a hero with Nobility enters a town
+** - FU25539:             the treasure chest bonus
+** The specialty icon click of Nobility specialists shows the Training specialist text instead.
+** See "-2000 training.erm".
+
+!?FU(AC_Function_18)&i^trn_enabled^;
+!!SN:Q;
+
+!?FU(Hero_Nobility_Loop)&i^trn_enabled^;
+!!SN:Q;
+
+!?FU25539&i^trn_enabled^;
+!!SN:Q;
+
+!?CM2&i^trn_enabled^;
+!!CM:F?(flags:y) I?(item:y) S?(subtype:y) T?(type:y);
+!!FU|(item)<>118/(type)<>512/(subtype)=13:E;   [not a click on the specialty icon]
+!!FU&(flags)<>0/(flags)<>512:E;                [not a left or right click]
+
+!!HE(CURRENT_HERO):N?(hero:y);
+!!HE(hero):X?(specType:y)/?(specSkill:y);
+!!FU|(specType)<>0/(specSkill)<>(SKILL_NAVIGATION):E; [not a Nobility (Training) specialist]
+
+!!CM:R0 T0;                                    [disable standard reaction, hide click from later handlers]
+
+!!HE(hero):E?t/?(heroLevel:y)/1;
+!!VR(pct:y):S(heroLevel) *3;
+!!HE(hero):B0/?(heroName:z);
+!!SN:T^custom_rules.training_specialist^/?(text:z)/^hero^/(heroName)/^pct^/(pct);
+
+!!VR(msgType:y):S(MSG_TYPE_MES);
+!!VR(msgType)&(flags)=512:S(MSG_TYPE_POPUP);
+!!IF:M1/(msgType)/(text);

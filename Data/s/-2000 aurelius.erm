@@ -13,7 +13,7 @@ ZVSE2
 **   Specialty texts: herospec.txt row 152, commander biography: znpc01.txt row 152,
 **   both in Data/00 forge and fury.pac.
 **
-** Enabled/disabled with Holika in WoG Options -> Custom Scripts (option 953, "New Heroes").
+** Enabled/disabled with Holika in WoG Options -> Custom Scripts (option 953, "Heroes and Skills").
 ** See also "30 aurelius - pre.erm" (specialty icon click text).
 
 ; ============= SETTINGS ===========================================================================

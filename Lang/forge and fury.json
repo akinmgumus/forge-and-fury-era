@@ -2,18 +2,13 @@
     "wog_options": {
         "950": {
             "name": "Creature Tweaks",
-            "hint": "Sharpshooter Rework, gold from Gold/Diamond Golems, Death Stare back for commanders, third upgrade abilities.",
-            "text": "CREATURE TWEAKS\n\nOption 950 (Forge & Fury)\n\n{Sharpshooter Rework}\nUpgrades: Sharpshooter -> Arctic Sharpshooter <-> Lava Sharpshooter (Hill Fort, or in town with Universal Creature Upgrades). Arctic and Lava cost 800 gold (upgrade from Sharpshooter: 400 gold per creature). Switching between Arctic and Lava is free.\n\nArctic Sharpshooter: Sharpshooter Attack +2, Defense +5, damage 11-13, HP 20.\nLava Sharpshooter: Sharpshooter Attack +5, Defense +2, damage 14, HP 20.\nStack experience stat bonuses still apply.\n\nArctic: casts Slow on a surviving target after shooting.\nLava: after shooting, Fire Walls burn on the targeted hex and its 6 neighbours (not on obstacles).\nChance: 10% per experience rank, 100% at rank 10.\n\n{Golem income}\nEvery Gold Golem gives 10 gold and every Diamond Golem 20 gold per day (in heroes' armies and town garrisons).\n\n{Commander Death Stare}\nCommanders with the Poison ability (Advanced Classes Mod) also get the Death Stare back.\n\n{Third upgrade abilities}\nThird upgrades (ResOunD) get the stack experience abilities of their lower upgrade they were missing (e.g. Winged Magog: No Range Penalty, Seraph: Magic Resistance). Pit Master summons Sharp-Horned Demons, Spellweaver clones itself. Hatreds cover every upgrade of the hated creature (e.g. Fairy hates Skeleton Knights too)."
-        },
-        "951": {
-            "name": "Henchmen Tweaks",
-            "hint": "Enhanced Henchmen additions: obstacle-free start hex and henchman growth.",
-            "text": "HENCHMEN TWEAKS\n\nOption 951 (Forge & Fury, requires Enhanced Henchmen)\n\n{Clear start hex}\nIf a battlefield obstacle is on the hex (or hexes) where the henchman is placed at the start of battle, the obstacle is removed.\n\n{Growth}\nAfter every 10 battles won with a living henchman, its quantity grows by 5% (at least +1).\nWith Diplomacy: 5% + 5% per level (Basic 10%, Advanced 15%, Expert 20%, Master 25%, Grandmaster 30%).\nChanging or dismissing the henchman resets the quantity to 1."
+            "hint": "Sharpshooter Rework, gold from Gold/Diamond Golems, Death Stare back for commanders, third upgrade abilities, henchmen tweaks.",
+            "text": "CREATURE TWEAKS\n\nOption 950 (Forge & Fury)\n\n{Sharpshooter Rework}\nUpgrades: Sharpshooter -> Arctic Sharpshooter <-> Lava Sharpshooter (Hill Fort, or in town with Universal Creature Upgrades). Arctic and Lava cost 800 gold (upgrade from Sharpshooter: 400 gold per creature). Switching between Arctic and Lava is free.\n\nArctic Sharpshooter: Sharpshooter Attack +2, Defense +5, damage 11-13, HP 20.\nLava Sharpshooter: Sharpshooter Attack +5, Defense +2, damage 14, HP 20.\nStack experience stat bonuses still apply.\n\nArctic: casts Slow on a surviving target after shooting.\nLava: after shooting, Fire Walls burn on the targeted hex and its 6 neighbours (not on obstacles).\nChance: 10% per experience rank, 100% at rank 10.\n\n{Golem income}\nEvery Gold Golem gives 10 gold and every Diamond Golem 20 gold per day (in heroes' armies and town garrisons).\n\n{Commander Death Stare}\nCommanders with the Poison ability (Advanced Classes Mod) also get the Death Stare back.\n\n{Third upgrade abilities}\nThird upgrades (ResOunD) get the stack experience abilities of their lower upgrade they were missing (e.g. Winged Magog: No Range Penalty, Seraph: Magic Resistance). Pit Master summons Sharp-Horned Demons, Spellweaver clones itself. Hatreds cover every upgrade of the hated creature (e.g. Fairy hates Skeleton Knights too).\n\n{Henchmen} (requires Enhanced Henchmen)\n{Clear start hex}\nIf a battlefield obstacle is on the hex (or hexes) where the henchman is placed at the start of battle, the obstacle is removed.\n\n{Growth}\nAfter every 10 battles won with a living henchman, its quantity grows by 5% (at least +1).\nWith Diplomacy: 5% + 5% per level (Basic 10%, Advanced 15%, Expert 20%, Master 25%, Grandmaster 30%).\nChanging or dismissing the henchman resets the quantity to 1."
         },
         "953": {
-            "name": "New Heroes (Holika, Aurelius)",
-            "hint": "Mutare becomes Holika (Tower, Naga Rakshasa -> Asura) and Roland becomes Aurelius (Conflux, Divine Phoenix -> Dark Phoenix).",
-            "text": "NEW HEROES\n\nOption 953 (Forge & Fury)\n\nHOLIKA: the extension hero Mutare is replaced by Holika, a female Tower Alchemist with a Temple Guardian commander named Raktabija. Specialty: she can upgrade Naga Rakshasas (3rd Naga upgrade) in her army into Asuras from the creature info dialog, anywhere on the map - like Gelu does with Sharpshooters. Cost per creature: the price difference (2600 gold + 2 gems by default). Naga specialists (Fafner) also boost Asuras.\n\nAURELIUS: the extension hero Roland is replaced by Aurelius, a male Conflux Planeswalker with an Astral Spirit commander named Vesper. He starts with Sprites and two of Air, Water and Fire Elementals. Specialty: he can evolve Divine Phoenixes in his army into Dark Phoenixes anywhere on the map. Cost per creature: the price difference.\n\nLike Dracon or Gelu they can't be chosen at game start, but can appear in taverns when Enable Extension Heroes is on."
+            "name": "Heroes and Skills",
+            "hint": "New heroes Holika (Tower) and Aurelius (Conflux); Nobility becomes Training (troops gain stack experience every day).",
+            "text": "HEROES AND SKILLS\n\nOption 953 (Forge & Fury, requires ResOunD and Advanced Classes Mod; Training also needs WoG stack experience)\n\nHOLIKA: the extension hero Mutare is replaced by Holika, a female Tower Alchemist with a Temple Guardian commander named Raktabija. Specialty: she can upgrade Naga Rakshasas (3rd Naga upgrade) in her army into Asuras from the creature info dialog, anywhere on the map - like Gelu does with Sharpshooters. Cost per creature: the price difference (2600 gold + 2 gems by default). Naga specialists (Fafner) also boost Asuras.\n\nAURELIUS: the extension hero Roland is replaced by Aurelius, a male Conflux Planeswalker with an Astral Spirit commander named Vesper. He starts with Sprites and two of Air, Water and Fire Elementals. Specialty: he can evolve Divine Phoenixes in his army into Dark Phoenixes anywhere on the map. Cost per creature: the price difference.\n\nLike Dracon or Gelu they can't be chosen at game start, but can appear in taverns when Enable Extension Heroes is on.\n\n{TRAINING}\nThe Nobility skill (Navigation slot) becomes Training. Every day, every creature in the hero's army gains a part of its maximum stack experience (the number at the bottom of the stack experience window), up to a rank cap:\n\nBasic: 1/33 per day, up to rank 3\nAdvanced: 1/29 per day, up to rank 5\nExpert: 1/25 per day, up to rank 7\nMaster: 1/20 per day, up to rank 8\nGrandmaster: 1/17 per day, up to rank 10\n\nNew creatures join without experience, so a growing stack can drop a rank and earns it back with training. Stacks above the cap are not changed.\n\nNobility specialists (Sylvia, Voy) become Training specialists: 3% more experience per hero level.\n\nNobility's own effects (extra recruits once a week, treasure chest bonus) are switched off."
         },
         "955": {
             "name": "Custom Artifacts",
@@ -60,7 +55,22 @@
             }
         }
     },
+    "trainer": {
+        "acm": {
+            "ss5": "Training"
+        }
+    },
     "custom_rules": {
+        "training_name": "{Training}",
+        "training_1": "{~Red}Basic Training{~}\n\nEvery day, every creature in the hero's army gains 1/33 of its maximum stack experience, up to rank 3.",
+        "training_2": "{~Red}Advanced Training{~}\n\nEvery day, every creature in the hero's army gains 1/29 of its maximum stack experience, up to rank 5.",
+        "training_3": "{~Red}Expert Training{~}\n\nEvery day, every creature in the hero's army gains 1/25 of its maximum stack experience, up to rank 7.",
+        "training_4": "{~Red}Master Training{~}\n\nEvery day, every creature in the hero's army gains 1/20 of its maximum stack experience, up to rank 8.",
+        "training_5": "{~Red}Grandmaster Training{~}\n\nEvery day, every creature in the hero's army gains 1/17 of its maximum stack experience, up to rank 10.",
+        "training_spec_short": "Training",
+        "training_spec_long": "Secondary Skill Bonus: Training",
+        "training_spec_text": "Training gives 3% more experience per hero level.",
+        "training_specialist": "{~r}Training Specialist{~}\n\n@hero@ gives {+@pct@%} more Training experience than other heroes with the Training skill (3% per hero level).",
         "naga_specialist": "{~r}Creature Specialist{~}\n\nIncreases the stats of any @mon1@, @mon2@, @mon3@ or @mon4@ for each level attained. Currently:\nAtt: {+@attack@}\nDef: {+@defense@}\nDamage: {+@damage@}\nHealth: {+@health@%}\nSpeed: +1"
     },
     "es": {

@@ -186,7 +186,8 @@ The riches of the underworld, joined from the Minerjack and the Cornucopia. Whoe
 !!en;
 !!FU&(numCandidates)<=0:E;
 
-!!VR(pick:y):R0/0/(numCandidates) -1;
+!!VR(lastIndex:y):S(numCandidates) -1;
+!!VR(pick:y):R0/0/(lastIndex);         [random 0..numCandidates-1]
 !!VR(res:y):S(candidates[pick]);
 !!OW:R(enemy)/(res)/?(have);
 !!VR(loot:y):S(have) *(WOE_LOOT_PCT) :100;

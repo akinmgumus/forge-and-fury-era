@@ -7,7 +7,7 @@ ZVSE2
 ** Enhanced Henchmen caps the henchman stack to 2 creatures after every action.
 ** Here we remember the real quantity, and "-2000 henchmen growth.erm" restores it.
 
-!?FU(hench_ManageDeadOrAlive)&i^hg_growthEnabled^;   [option 951, read in "-2000 henchmen growth.erm"]
+!?FU(hench_ManageDeadOrAlive)&i^hg_growthEnabled^;   [option 950, read in "-2000 henchmen growth.erm"]
 !#VA(stack:x) (side:x);
 
 !!VRi^hg_preNum_%(side)^:S0;

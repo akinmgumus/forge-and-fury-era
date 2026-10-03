@@ -1,0 +1,207 @@
+ZVSE2
+
+** TRAINING - replaces the Nobility skill of Advanced Classes Mod (skill slot 5, ex Navigation)
+**
+** Every day (start of the owner's turn) every stack in the hero's army gains experience:
+**   per creature = maximum experience of the creature / divisor, up to the top of the rank cap.
+** The maximum experience is the red number at the bottom of the stack experience window
+** (rank 10 experience + experience above rank 10). Values tuned with src/training_sim.py:
+**
+**   level         divisor   rank cap   (e.g. a growing Gog stack reaches the cap in about)
+**   Basic            33         3         6 days
+**   Advanced         29         5         9 days
+**   Expert           25         7        13 days
+**   Master           20         8        12 days
+**   Grandmaster      17        10        16 days
+**
+** - New creatures join without experience, so a growing stack shares the experience: it can drop
+**   a rank and earns it back with the next days of training (the gain is per creature).
+** - Stacks above the cap (e.g. from battles) are not changed. No message is shown.
+** - Training specialists (heroes with the Nobility specialty) give 3% more experience per hero level.
+** - Needs Advanced Classes Mod (Master/Grandmaster levels) and WoG stack experience.
+** - Nobility's own effects (extra recruits once a week, treasure chest bonus) are switched off,
+**   see "30 training - pre.erm".
+**
+** Enabled/disabled in WoG Options -> Custom Scripts (option 953 "Heroes and Skills", with the new heroes).
+
+; ============= SETTINGS ===========================================================================
+
+!#DC(TRN_OPTION) = 953;
+!#DC(TRN_SKILL)  = (SKILL_NAVIGATION);   [5: Navigation, Nobility in Advanced Classes Mod]
+!#DC(TRN_SPECIALIST_PCT_PER_LEVEL) = 3;
+
+!#UN:P(TRN_OPTION)/?i^trn_enabled^;
+!#VRi^trn_enabled^|i^cr_hasACM^<>(TRUE):S(FALSE); [needs ACM, see "31 forge and fury - dependencies.erm"]
+
+!?FU(OnStartOrLoad);
+!!UN:P(TRN_OPTION)/?i^trn_enabled^;
+!!VRi^trn_enabled^|i^cr_hasACM^<>(TRUE):S(FALSE);
+
+; ============= LEVEL, DIVISOR AND CAP =============================================================
+
+; Training level of a hero: 0 (not learned), 1 Basic .. 5 Grandmaster
+!?FU(TRN_GetLevel);
+!#VA(hero:x) (level:x);
+!!HE(hero):S(TRN_SKILL)/?(level);
+!!FU&(level)<=0:E;
+!!VR(level):+i^H3_Nobility_0_Hero%(hero)^ +i^H3_Nobility_1_Hero%(hero)^; [ACM Master / Grandmaster flags]
+!!VR(level)&(level)>5:S5;
+
+; Daily experience divisor and rank cap for Training level 1..5
+!?FU(TRN_GetSettings);
+!#VA(level:x) (divisor:x) (cap:x);
+!!VR(divisor):S33;
+!!VR(divisor)&(level)=2:S29;
+!!VR(divisor)&(level)=3:S25;
+!!VR(divisor)&(level)=4:S20;
+!!VR(divisor)&(level)=5:S17;
+!!VR(cap):S3;
+!!VR(cap)&(level)=2:S5;
+!!VR(cap)&(level)=3:S7;
+!!VR(cap)&(level)=4:S8;
+!!VR(cap)&(level)=5:S10;
+
+; ============= STACK EXPERIENCE HELPERS ===========================================================
+
+; Rank (0..10) of a creature type with the given experience (the game's own function, also used by TrainerX)
+!?FU(TRN_RankOfExp);
+!#VA(mon:x) (exp:x) (rank:x);
+!!SN:E7503648/1/(mon)/(exp);
+!!VR(rank):Sv1;
+!!VR(rank)&(rank)>10:S10;
+!!VR(rank)&(rank)<0:S0;
+
+; Lowest experience that gives the wanted rank (binary search over 0..rank 10 experience)
+!?FU(TRN_ExpForRank);
+!#VA(mon:x) (wantedRank:x) (exp:x);
+!!EA(mon):L?(high:y);
+!!VR(low:y):S0;
+!!re i/0/40;
+  !!br&(low)>=(high);
+  !!VR(mid:y):S(low) +(high) :2;
+  !!FU(TRN_RankOfExp):P(mon)/(mid)/?(rank:y);
+  !!if&(rank)>=(wantedRank);
+    !!VR(high):S(mid);
+  !!el;
+    !!VR(low):S(mid) +1;
+  !!en;
+!!en;
+!!VR(exp):S(low);
+
+; ============= DAILY TRAINING =====================================================================
+
+!?FU(OnEveryDay)&i^trn_enabled^/i^timerDay^>1;
+!!UN:P(WOG_OPT_STACK_EXPERIENCE)/?(stackExp:y);
+!!FU&(stackExp)<>(TRUE):E;
+
+!!re (hero:y)/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HE(hero):O?(owner:y);
+  !!co&(owner)<>i^timerOwner^;
+  !!FU(TRN_TrainHero):P(hero);
+!!en;
+
+!?FU(TRN_TrainHero);
+!#VA(hero:x);
+
+!!FU(TRN_GetLevel):P(hero)/?(level:y);
+!!FU&(level)<=0:E;
+!!FU(TRN_GetSettings):P(level)/?(divisor:y)/?(cap:y);
+
+; Specialists: 3% more experience per hero level
+!!VR(pct:y):S100;
+!!HE(hero):X?(specType:y)/?(specSkill:y);
+!!if&(specType)=0/(specSkill)=(TRN_SKILL);
+  !!HE(hero):E?t/?(heroLevel:y)/1;
+  !!VR(pct):S(heroLevel) *(TRN_SPECIALIST_PCT_PER_LEVEL) +100;
+!!en;
+
+!!re (slot:y)/(ARMY_SLOT_FIRST)/(ARMY_SLOT_LAST);
+  !!HE(hero):C0/(slot)/?(mon:y)/?(num:y)/?(exp:y);
+  !!co|(mon)<0/(num)<=0;
+
+  ; maximum experience = rank 10 experience + experience above rank 10
+  !!EA(mon):L?(rank10Exp:y) P?(topExp:y);
+  !!VR(maxExp:y):S(rank10Exp) +(topExp);
+  !!co&(maxExp)<=0;
+
+  ; top of the cap rank
+  !!if&(cap)>=10;
+    !!VR(capExp:y):S(maxExp);
+  !!el;
+    !!VR(nextRank:y):S(cap) +1;
+    !!FU(TRN_ExpForRank):P(mon)/(nextRank)/?(capExp);
+    !!VR(capExp):-1;
+  !!en;
+  !!co&(exp)>=(capExp);
+
+  !!VR(gain:y):S(maxExp) *(pct) :100 :(divisor);
+  !!VR(newExp:y):S(exp) +(gain);
+  !!VR(newExp)&(newExp)>(capExp):S(capExp);
+
+  !!HE(hero):C0/(slot)/d/d/(newExp)/2;   [mode 2: set the experience (per creature) of the whole stack]
+!!en;
+
+; ============= SKILL TEXTS ========================================================================
+; Advanced Classes Mod sets the skill names and descriptions from its own strings at several
+; moments. These handlers run after the ACM ones and put the Training texts back.
+
+!?FU(TRN_SetTexts);
+!!SN:T^custom_rules.training_name^/?(name:z);
+!!SN:H^secskill^/(TRN_SKILL)/0/(name);
+!!re i/(SKILL_BASIC)/(SKILL_EXPERT);
+  !!SN:T^custom_rules.training_%i^/?(desc:z);
+  !!SN:H^secskill^/(TRN_SKILL)/i/(desc);
+!!en;
+
+; Expert description of a hero's own skill: Master / Grandmaster text when the hero has it
+!?FU(TRN_SetHeroText);
+!#VA(hero:x);
+!!FU(TRN_GetLevel):P(hero)/?(level:y);
+!!FU&(level)<=3:E;
+!!SN:T^custom_rules.training_%(level)^/?(desc:z);
+!!SN:H^secskill^/(TRN_SKILL)/(SKILL_EXPERT)/(desc);
+
+!?FU(OnAfterErmInited)&i^trn_enabled^;
+!!FU(TRN_SetTexts):P;
+
+!?FU(OnStartOrLoad)&i^trn_enabled^;
+!!FU(TRN_SetTexts):P;
+
+!?FU(Set_SS_Skill_Name_and_Text)&i^trn_enabled^;
+!!FU(TRN_SetTexts):P;
+
+!?FU(AC_Set_SS_Names)&i^trn_enabled^/x16=(TRN_SKILL);
+!!SN:T^custom_rules.training_name^/?(name:z);
+!!SN:H^secskill^/(TRN_SKILL)/0/(name);
+
+!?FU(AC_Set_SS_Description)&i^trn_enabled^/x16=(TRN_SKILL);
+!!SN:T^custom_rules.training_3^/?(desc:z);
+!!SN:H^secskill^/(TRN_SKILL)/(SKILL_EXPERT)/(desc);
+!!FU(TRN_SetHeroText):Px1;
+
+!?FU(H3_Mod_Skill_Loop10)&i^trn_enabled^/x2=(TRN_SKILL);
+!!SN:T^custom_rules.training_3^/?(desc:z);
+!!SN:H^secskill^/(TRN_SKILL)/(SKILL_EXPERT)/(desc);
+!!FU(TRN_SetHeroText):Px1;
+
+; ============= SPECIALISTS ========================================================================
+; Heroes with the Nobility specialty (Navigation in the original game) become Training specialists.
+
+!?FU(OnStartOrLoad)&i^trn_enabled^;
+!!SN:T^custom_rules.training_spec_short^/?(short:z);
+!!SN:T^custom_rules.training_spec_long^/?(long:z);
+!!SN:T^custom_rules.training_spec_text^/?(desc:z);
+
+!!re (hero:y)/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!HE(hero):X?(specType:y)/?(specSkill:y);
+  !!co|(specType)<>0/(specSkill)<>(TRN_SKILL);
+  !!SN:H^spec^/(hero)/0/(short);
+  !!SN:H^spec^/(hero)/1/(long);
+  !!SN:H^spec^/(hero)/2/(desc);
+!!en;
+
+; Nobility's weekly flags of Advanced Classes Mod: cleared, so no extra recruits are offered
+; (also for flags stored in savegames from before).
+!!re i/(HERO_FIRST)/(HERO_LAST_WOG);
+  !!VRi^H3_Nobility_Hero%i_Active^:S0;
+!!en;
