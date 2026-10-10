@@ -144,3 +144,10 @@ ZVSE2
 !!VR(rank):Sv1;
 !!VR(rank)&(rank)>10:S10;
 !!VR(rank)&(rank)<0:S0;
+
+** - Morale / luck artifacts and Advanced Classes Mod: restores the temporary morale and luck that
+**   were saved before ACM's equip handler (see "30 acm fixes - pre.erm").
+
+!?AE1&i^cr_hasACM^/i^cr_aeTempSaved^;
+!!VRi^cr_aeTempSaved^:S(FALSE);
+!!HE(CURRENT_HERO):R0/i^cr_aeTempMorale^ R1/i^cr_aeTempLuck^;

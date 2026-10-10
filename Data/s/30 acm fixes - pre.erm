@@ -12,3 +12,17 @@ ZVSE2
 
 !?FU(AC_Function_26)&i^cr_hasACM^/-1000;
 !!SN:Q;
+
+** Morale / luck artifacts: when one of them is equipped, ACM takes it off and puts it on again with
+** HE:A (against two copies of the same artifact). During that, the morale and luck of the Emerald
+** artifacts (e.g. Field Martial's Ring +3, General's Order +2) end up as a NEGATIVE "temporary until
+** next battle" bonus: Glyph of Gallantry + both gave +1 morale instead of +6.
+** The temporary morale and luck are saved here and restored after ACM, in "-2000 fixes.erm".
+** Artifacts: 45-48 luck, 49-51 morale, 63-65 (Eagle Eye, the same ACM code).
+
+!?AE1&i^cr_hasACM^/1000;
+!!VRi^cr_aeTempSaved^:S(FALSE);
+!!FU|v998<45/v998>65:E;
+!!FU&v998>51/v998<63:E;
+!!HE(CURRENT_HERO):R0/?i^cr_aeTempMorale^ R1/?i^cr_aeTempLuck^;
+!!VRi^cr_aeTempSaved^:S(TRUE);
