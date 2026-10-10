@@ -1,0 +1,12 @@
+ZVSE2
+
+** ERA SCRIPTS FIXES - run BEFORE the ERA Scripts handlers (always active)
+**
+** - Option 727 (backpack artifacts): ES_727_CalculateBonus reads the player colour from the game's
+**   stack (hook context). Since ERA 3.9.31-port / HD 5.8 this value is sometimes not a player
+**   colour, and every call then shows "OW:H owner out of range" and "HE$ cannot find hero"
+**   error windows. Calls with an invalid colour are skipped (SN:Q skips the remaining handlers).
+
+!?FU(ES_727_CalculateBonus)&i^cr_hasEraScripts^;
+!#VA(owner:x);
+!!SN|(owner)<-1/(owner)>7:Q;              [-1 = current player is valid for OW:H]
