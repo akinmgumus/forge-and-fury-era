@@ -151,3 +151,77 @@ ZVSE2
 !?AE1&i^cr_hasACM^/i^cr_aeTempSaved^;
 !!VRi^cr_aeTempSaved^:S(FALSE);
 !!HE(CURRENT_HERO):R0/i^cr_aeTempMorale^ R1/i^cr_aeTempLuck^;
+
+** - "Always ask before combat" (ERA system options, Combat.QuickCombatType=3)
+**   ERA_SystemOptionsExtension.era asks in OnBeforeBattleUniversal_Quit, but only when exactly one side
+**   is a local human according to the combat manager (+0x54A6 left, +0x54A7 right). The game fills
+**   those bytes only later, while it builds the battle, so the plugin saw the previous battle: it asked
+**   in battles between computer players, and in the player's own battles it often did nothing - then
+**   the game's own Quick Combat setting (on) resolved the battle automatically.
+**   Fix:
+**   - In the player's own battles with "Always ask" selected, the question is asked HERE, with the
+**     plugin's texts and the same three choices, and the choice is applied the same way (quick combat
+**     flag 0x6987CC, hero spells in quick combat 0x6987E8; restored after the battle). Then both bytes
+**     are cleared, so the plugin does not ask a second time.
+**   - In all other battles the real values of the battle are written, so the plugin sees the truth.
+**   The game writes the bytes again when it builds the battle.
+
+!#DC(CR_QC_FLAG)   = 6915532;     [0x6987CC: quick combat on]
+!#DC(CR_QC_SPELLS) = 6915560;     [0x6987E8: hero casts spells in quick combat]
+!#DC(CR_GOSOLO)    = 6885977;     [0x691259: computer plays for the human player]
+!#DC(CR_NETWORK)   = 6919580;     [0x69959C: checked by the plugin as well]
+
+!?FU(OnBeforeBattleUniversal);
+!!UN:C(COMBAT_MANAGER)/(UNC_INT)/?(combatManager:y);
+!!FU&(combatManager)=0:E;
+
+!!VR(left:y):S0;
+!!VR(right:y):S0;
+!!VR(left)&i^battle_localHuman_0^:S1;
+!!VR(right)&i^battle_localHuman_1^:S1;
+!!UN:C(combatManager)/21670/(UNC_INT8)/(left);      [0x54A6: left side is a local human]
+!!UN:C(combatManager)/21671/(UNC_INT8)/(right);     [0x54A7: right side is a local human]
+
+; our own question (only one local human side, as the plugin)
+!!VR(humans:y):S(left) +(right);
+!!FU&(humans)<>1:E;
+!!UN:C(CR_GOSOLO)/(UNC_INT8)/?(goSolo:y);
+!!FU&(goSolo)<>0:E;
+!!UN:C(CR_NETWORK)/(UNC_INT)/?(network:y);
+!!FU&(network)<>0:E;
+!!UN:C(CR_QC_FLAG)/(UNC_INT)/?(quickCombat:y);
+!!FU&(quickCombat)=0:E;                         [the game's Quick Combat is off: always manual]
+
+!!SN:F^ClearIniCache^/^heroes3.ini^;           [the option can change during the game]
+!!SN:F^ReadStrFromIni^/^Combat.QuickCombatType^/^Settings.Extra^/^heroes3.ini^/?(typeStr:z);
+!!VR(type:y):V(typeStr);
+!!FU&(type)<>3:E;                               [not "Always ask": the plugin applies the setting]
+
+!!SN:T^era.opt.map.quickCombat.menu^/?z-1;
+!!SN:T^era.opt.map.quickCombatManual.menu^/?z2;
+!!SN:T^era.opt.map.quickCombatMana.menu^/?z3;
+!!SN:T^era.opt.map.quickCombatManaFree.menu^/?z4;
+!!VR(choice:y):S1 Sd<<i^cr_qcLastChoice^;
+!!IF:G1/1/(choice)/-1/2/3/4;
+!!FU(IntLog2):Pv1/?(choice);
+!!VR(choice)|(choice)<0/(choice)>2:S0;
+!!VRi^cr_qcLastChoice^:S(choice);
+
+!!if&i^cr_qcSaved^<>(TRUE);
+  !!UN:C(CR_QC_FLAG)/(UNC_INT)/?i^cr_qcOldFlag^;
+  !!UN:C(CR_QC_SPELLS)/(UNC_INT)/?i^cr_qcOldSpells^;
+  !!VRi^cr_qcSaved^:S(TRUE);
+!!en;
+
+!!UN&(choice)=0:C(CR_QC_FLAG)/(UNC_INT)/0;                        [manual]
+!!UN&(choice)=1:C(CR_QC_FLAG)/(UNC_INT)/1 C(CR_QC_SPELLS)/(UNC_INT)/1;  [quick combat with spells]
+!!UN&(choice)=2:C(CR_QC_FLAG)/(UNC_INT)/1 C(CR_QC_SPELLS)/(UNC_INT)/0;  [quick combat without spells]
+
+; the plugin would ask again: make it skip this battle
+!!UN:C(combatManager)/21670/(UNC_INT8)/0;
+!!UN:C(combatManager)/21671/(UNC_INT8)/0;
+
+!?FU(OnAfterBattleUniversal)&i^cr_qcSaved^;
+!!UN:C(CR_QC_FLAG)/(UNC_INT)/i^cr_qcOldFlag^;
+!!UN:C(CR_QC_SPELLS)/(UNC_INT)/i^cr_qcOldSpells^;
+!!VRi^cr_qcSaved^:S(FALSE);

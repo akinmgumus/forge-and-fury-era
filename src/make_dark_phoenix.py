@@ -1,19 +1,21 @@
-"""Builds the Dark Phoenix: a black-and-white recolor of the Phoenix, in the unused creature slot 122.
+"""Builds the Dark Phoenix: a black-and-white recolor of the Phoenix, in the unused creature slot 128.
 
-Why slot 122: adding creature 358 (raising Amethyst's creature count) crashed every creature
+Why slot 128: adding creature 358 (raising Amethyst's creature count) crashed every creature
 dialog and battle - other plugins keep fixed-size per-creature data. Slots 122/124/126/128
 ("NOT USED") are inside the original creature range, and the game's own table names their files
 "bad1".."bad4" (def and sound prefix), so the new files only need those names.
+Slots 122, 124 and 126 are used by the ERA Spells mod (Toxeos) for its summoned creatures, so the
+Dark Phoenix takes the last one, 128 ("NOT USED (4)", "bad4").
 
 Outputs (in the mod folder):
   Data/forge and fury creatures.pac   (Forge & Fury is above ResOunD in the mod list, so these files
                     are found before ResOunD's AmeCre.pac):
-      bad1             battle animation (ResOunD's Cphx.def with a new palette)
-      zcrtrait.txt, Crtraits.txt, CRTRAIT0.txt   ResOunD's creature table, row "NOT USED (1)" replaced
-      cranim.txt       ResOunD's animation timing table, row 122 replaced (Phoenix timings)
+      bad4             battle animation (ResOunD's Cphx.def with a new palette)
+      zcrtrait.txt, Crtraits.txt, CRTRAIT0.txt   ResOunD's creature table, row "NOT USED (4)" replaced
+      cranim.txt       ResOunD's animation timing table, row 128 replaced (Phoenix timings)
   Data/forge and fury.snd                 BAD1ATTK/DFND/KILL/MOVE/WNCE (Phoenix sounds)
-  Data/Creatures/122.cfg                  Amethyst creature config
-  Data/forge and fury.zip                 portrait pngs (twcrport.def/0_124.png, cprsmall.def/0_124.png)
+  Data/Creatures/128.cfg                  Amethyst creature config
+  Data/forge and fury.zip                 portrait pngs (twcrport.def/0_130.png, cprsmall.def/0_130.png)
 
 The recolor ("G"): the brightest flame parts become white, everything else deep black.
 Palette indices 0-7 (transparency, shadow, selection) are kept.
@@ -41,8 +43,8 @@ RESOUND = os.path.join(MODS, 'ResOunD', 'Data')
 # MODE 'dark':   the black-and-white Phoenix animation.
 MODE = 'dark'
 
-NEW_ID = 122                       # unused slot "NOT USED (1)"
-FILE_NAME = 'bad1'                 # def name and sound prefix of slot 122 in the game's creature table
+NEW_ID = 128                       # unused slot "NOT USED (4)" (122/124/126: ERA Spells)
+FILE_NAME = 'bad4'                 # def name and sound prefix of slot 128 in the game's creature table
 BASE_ID = 131                      # Phoenix
 PORTRAIT_FRAME = NEW_ID + 2        # portrait def frame = creature id + 2
 BASE_PORTRAIT_FRAME = BASE_ID + 2
@@ -331,16 +333,17 @@ def main():
 
     row = '\t'.join([NAME, PLURAL] + [str(v) for v in STATS] + [DESCRIPTION, ''])
     table = lod_read(amecre, 'zcrtrait.txt').decode('latin1')
-    table = replace_line(table, lambda l: l.startswith('NOT USED (1)\t'), row).encode('latin1')
+    table = replace_line(table, lambda l: l.startswith('NOT USED (4)\t'), row).encode('latin1')
     for name in ('zcrtrait.txt', 'Crtraits.txt', 'CRTRAIT0.txt'):
         files.append((name, table))
 
-    # cranim.txt: slot 122 is the first "NOT USED" row after the Magic Elemental
+    # cranim.txt: one row per creature, slot 128 is the 7th row after the Magic Elemental (121)
     anim = lod_read(amecre, 'cranim.txt').decode('latin1').split('\r\n')
     phx_row = next(l for l in anim if l.endswith('\tPheonix'))
     magic = next(i for i, l in enumerate(anim) if l.endswith('\tMagic Elemental'))
-    assert anim[magic + 1].endswith('\tNOT USED'), anim[magic + 1]
-    anim[magic + 1] = phx_row[:-len('Pheonix')] + NAME
+    row_index = magic + (NEW_ID - 121)
+    assert anim[row_index].endswith('\tNOT USED'), anim[row_index]
+    anim[row_index] = phx_row[:-len('Pheonix')] + NAME
     files.append(('cranim.txt', '\r\n'.join(anim).encode('latin1')))
 
     write_lod(os.path.join(MOD, 'Data', 'forge and fury creatures.pac'), files)
@@ -359,10 +362,10 @@ def main():
     # files of the earlier attempt with creature 358
     # (Data/AmeCre.pac: the earlier 57 MB copy of ResOunD's archive, no longer needed)
     for old in (os.path.join('Data', 'amethyst.cfg'), os.path.join('Data', 'Creatures', '358.cfg'),
-                os.path.join('Data', 'AmeCre.pac')):
+                os.path.join('Data', 'AmeCre.pac'), os.path.join('Data', 'Creatures', '122.cfg')):
         if os.path.exists(os.path.join(MOD, old)):
             os.remove(os.path.join(MOD, old))
-    for old in [n for n in zipfile.ZipFile(os.path.join(MOD, 'Data', 'forge and fury.zip')).namelist() if n.endswith('/0_360.png')]:
+    for old in [n for n in zipfile.ZipFile(os.path.join(MOD, 'Data', 'forge and fury.zip')).namelist() if n.endswith(('/0_360.png', 'twcrport.def/0_124.png', 'cprsmall.def/0_124.png'))]:
         pngs.setdefault(old, None)
 
     zpath = os.path.join(MOD, 'Data', 'forge and fury.zip')

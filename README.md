@@ -189,7 +189,7 @@ Needs Advanced Classes Mod and WoG stack experience. Advanced Classes Mod's Nobi
 - The values were tuned with `src/training_sim.py`, which draws the rank per day of a growing stack.
 
 ## Dark Phoenix, a new creature
-Needs ResOunD. A level 6 Conflux creature in the unused creature slot 122, the evolution of the Divine Phoenix (only through Aurelius; it is never generated on the map).
+Needs ResOunD. A level 6 Conflux creature in the unused creature slot 128 (122, 124 and 126 are used by the ERA Spells mod), the evolution of the Divine Phoenix (only through Aurelius; it is never generated on the map).
 
 | Attack | Defense | Damage | HP | Speed | Attack Speed | Cost |
 |---|---|---|---|---|---|---|
@@ -337,7 +337,7 @@ The minimum is 1, and there is no upper limit.
 |---|---|---|
 | `-2000 attack speed table.erm` | `src/attack speed values.md` | `python src/make_attack_speed_table.py` |
 | `-2000 tum abilities.erm`, `Data/Creatures/*.cfg` | settings at the top of the generator script | `python src/make_tum_abilities.py` |
-| `Data/forge and fury creatures.pac`, `Data/forge and fury.snd`, `Data/Creatures/122.cfg`, Dark Phoenix portraits | ResOunD's files (needs ResOunD installed and Pillow) | `python src/make_dark_phoenix.py` |
+| `Data/forge and fury creatures.pac`, `Data/forge and fury.snd`, `Data/Creatures/128.cfg`, Dark Phoenix portraits | ResOunD's files (needs ResOunD installed and Pillow) | `python src/make_dark_phoenix.py` |
 
 - Stack experience notes:
   - `EA:F` returns an empty line, not -1, when an ability is not found.

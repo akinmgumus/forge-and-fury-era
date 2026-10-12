@@ -1,9 +1,9 @@
 ZVSE2
 
-** DARK PHOENIX - new creature in the unused creature slot 122 (needs ResOunD)
+** DARK PHOENIX - new creature in the unused creature slot 128 (needs ResOunD)
 **
 ** Graphics, sounds, portraits and the Amethyst config are built by "src/make_dark_phoenix.py".
-** Slot 122 is one of the game's "NOT USED" slots; its def and sound names are "bad1" in the game's
+** Slot 128 is one of the game's "NOT USED" slots; its def and sound names are "bad4" in the game's
 ** creature table, so the files only needed those names. Names and stats are set here, because
 ** the creature tables of the base creature range are not read from ResOunD's archive.
 **
@@ -16,7 +16,7 @@ ZVSE2
 ** - Stack experience: the Divine Phoenix's rows plus Strike and Return (R5), No Retaliation (R7),
 **   reduced spell damage 5% per rank (golem-like, 50% at R10) and extra Rebirths (+1 R5, +2 R10).
 
-!#DC(DPHX_MON)        = 122;
+!#DC(DPHX_MON)        = 128;      [122/124/126 are used by the ERA Spells mod]
 !#DC(DPHX_EXP_SOURCE) = 252;      [Divine Phoenix]
 
 ; ============= STATS AND TEXTS ====================================================================
@@ -35,7 +35,7 @@ ZVSE2
 !!SN:H^monname^/(DPHX_MON)/2/^Fire spell immunity. Fear. Death Stare (10%, +3% per rank). Black Flame: stacks it hits can't be healed or resurrected. Rebirth. Fire Shield. Regeneration.^;
 
 ; ============= STACK EXPERIENCE ===================================================================
-; Slot 122 has no rows in WoG's experience table ("NOT USED"): copy all 20 rows and the experience
+; Slot 128 has no rows in WoG's experience table ("NOT USED"): copy all 20 rows and the experience
 ; settings of the Divine Phoenix, then add the Dark Phoenix's own rows to free slots.
 ; Runs after Stack Experience Rebalance sets its stat rows.
 
@@ -186,7 +186,7 @@ ZVSE2
 
 ; ============= TRAINERX ===========================================================================
 ; TrainerX lists the creatures by town pages (all 16 cells of the Conflux page are used) and then
-; the creatures above 196, so slot 122 never appears. Add one more page after the last one with
+; the creatures above 196, so slot 128 never appears. Add one more page after the last one with
 ; the Dark Phoenix in the first cell. These handlers run after TrainerX's own ones.
 
 !?FU(trainer_GetTablePages)&i^cr_hasResound^;

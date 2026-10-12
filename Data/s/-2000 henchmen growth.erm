@@ -87,6 +87,8 @@ ZVSE2
 !#VA(hex:x);
 
 !!FU|(hex)<=(BATTLE_HEX_FIRST)/(hex)>=(BATTLE_HEX_LAST):E;
+!!BA:Q?(isQuick:y);
+!!FU&(isQuick)<>0:E;                       [quick combat has no battlefield: BU:O gives an error]
 !!BU:O(hex)/?(obstacleFlags:y);
 !!FU(CR_RemoveObstacleSafe)&(obstacleFlags)<>0:P(hex);  [see "-2000 fixes.erm"]
 

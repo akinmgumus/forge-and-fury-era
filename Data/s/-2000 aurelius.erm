@@ -7,7 +7,7 @@ ZVSE2
 **   "Enable Extension Heroes" (WoG option 100) is on.
 ** - Starting army: Sprites and two of Air / Water / Fire Elementals (chosen at random each session).
 ** - Specialty: evolution only. He can evolve Divine Phoenixes (ResOunD) in his army into
-**   Dark Phoenixes (slot 122, see "-2000 dark phoenix.erm") from the creature info dialog,
+**   Dark Phoenixes (slot 128, see "-2000 dark phoenix.erm") from the creature info dialog,
 **   anywhere on the map. The game charges the price difference per creature.
 ** - Portraits (HPL009Sh / HPS009Sh) and specialty icon (un44/un32 frame 152): Data/forge and fury.zip.
 **   Specialty texts: herospec.txt row 152, commander biography: znpc01.txt row 152,
@@ -21,7 +21,7 @@ ZVSE2
 !#DC(AUR_OPTION)         = 953;
 !#DC(AUR_HERO)           = (HERO_ROLAND); [152]
 !#DC(AUR_SOURCE_MON)     = 252;           [Divine Phoenix - ResOunD]
-!#DC(AUR_TARGET_MON)     = 122;           [Dark Phoenix]
+!#DC(AUR_TARGET_MON)     = 128;           [Dark Phoenix]
 !#DC(AUR_SPEC_PICTURE)   = 152;           [Specialty icon frame in UN44/UN32.def (own name in our copies)]
 !#DC(AUR_COMMANDER_TYPE) = 8;             [Commander type: 8 = Astral Spirit (Conflux)]
 
